@@ -1,0 +1,165 @@
+.links {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+.link-extensions {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: 0.25;
+    stroke-width: 0.5px;
+}
+
+.clickable-row {
+    transition: all 0.2s;
+}
+
+.clickable-row.highlighted {
+    background-color: #e3f2fd !important;
+    box-shadow: inset 3px 0 0 #FF6347;
+}
+
+.clickable-row:hover {
+    background-color: #f5f5f5;
+}
+
+/* Aggiungere al CSS */
+.link--active {
+    stroke: #FF6347 !important;
+    stroke-width: 3px !important;
+    filter: drop-shadow(0 0 2px rgba(255, 99, 71, 0.5));
+}
+
+.link-extension--active {
+    stroke-opacity: 1;
+    stroke-dasharray: 2, 2;
+}
+
+.link--active {
+    stroke: #FF6347;
+    stroke-width: 3px;
+    stroke-opacity: 1;
+}
+
+.link-extension--active {
+    stroke: #FF6347;
+    stroke-width: 2px;
+    stroke-opacity: 1;
+}
+
+/* Stile per l'etichetta attiva */
+.label--active {
+    font-weight: bold;
+    fill: #FF6347;
+}
+
+.link--active {
+    stroke: #FF6347;
+    stroke-width: 3px;
+    stroke-opacity: 1;
+}
+
+.link-extension--active {
+    stroke: #FF6347;
+    stroke-width: 2px;
+    stroke-opacity: 1;
+    transition: stroke 0.3s, stroke-width 0.3s, stroke-opacity 0.3s;
+}
+
+.link--active {
+    stroke: #ff4444 !important;
+    stroke-width: 3px !important;
+    animation: pulse 0.5s infinite alternate;
+}
+
+.label--active {
+    fill: #ff4444 !important;
+    font-weight: 700;
+    text-shadow: 0 0 3px rgba(255, 68, 68, 0.3);
+}
+
+.node--active {
+    fill: #ff4444 !important;
+    stroke: white !important;
+    r: 6 !important;
+}
+
+@keyframes pulse {
+    from {
+        stroke-width: 2px;
+    }
+
+    to {
+        stroke-width: 4px;
+    }
+}
+
+/* Stili generali per la tabella */
+/* Stile per il contenitore della tabella */
+#taxa-table-container {
+    padding: 10px;
+    /* Un po' di padding per distanziare la tabella dai bordi */
+    max-height: 800px;
+    /* Imposta l'altezza massima per il contenitore */
+    overflow-y: auto;
+    /* Abilita la scrollbar verticale */
+    border: 1px solid #ddd;
+    /* Aggiungi un bordo al contenitore per separarlo dal background */
+    border-radius: 8px;
+    /* Rendi i bordi del contenitore arrotondati */
+}
+
+/* Ridurre il margine tra la scritta "Taxa List" e la tabella */
+h2 {
+    font-size: 1.25rem;
+    /* Puoi cambiare la dimensione del testo se necessario */
+    margin-bottom: 8px;
+    /* Riduci il margine inferiore tra il titolo e la tabella */
+}
+
+/* Migliora la spaziatura della tabella */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    /* Unisce i bordi della tabella */
+}
+
+/* Stile delle righe della tabella */
+th,
+td {
+    padding: 10px 15px;
+    /* Spaziatura interna per le celle */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    /* Bordi sottili sotto le righe */
+}
+
+/* Stile per le righe pari e dispari per migliorarne la leggibilità */
+tr:nth-child(odd) {
+    background-color: #f9fafb;
+    /* Colore di sfondo per le righe dispari */
+}
+
+tr:nth-child(even) {
+    background-color: #ffffff;
+    /* Colore di sfondo per le righe pari */
+}
+
+/* Stilizzare la tabella quando passa il mouse sopra una riga */
+tr:hover {
+    background-color: #f3f4f6;
+    /* Colore di sfondo al passaggio del mouse */
+}
+
+/* Aggiungere stile alla cella dell'intestazione */
+th {
+    background-color: #f3f4f6;
+    font-weight: bold;
+}
+
+/* Stile per la prima colonna */
+td:first-child {
+    font-weight: bold;
+    /* Rende il nome del taxon più evidente */
+}

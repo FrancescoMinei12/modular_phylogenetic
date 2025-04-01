@@ -1,9 +1,17 @@
 import { highlightPathAndLabel } from "./highlightning.js";
+import { renderSearchBar } from "../visualization/searchBarRenderer.js";
 
 export function renderTaxaTable(treeData, tableSelector) {
     console.log("Inizio rendering della tabella dei taxa...");
     const tableContainer = document.querySelector(tableSelector);
     tableContainer.innerHTML = "";
+
+    // Crea un contenitore per la barra di ricerca e la tabella
+    const tableWrapper = document.createElement("div");
+    tableWrapper.classList.add("taxa-table-container");
+
+    // Aggiungi la barra di ricerca
+    renderSearchBar(tableSelector, `${tableSelector} table`);
 
     const table = document.createElement("table");
     table.classList.add("taxa-table");
@@ -11,7 +19,7 @@ export function renderTaxaTable(treeData, tableSelector) {
     console.log("Creazione intestazioni della tabella...");
     const header = table.createTHead();
     const headerRow = header.insertRow();
-    headerRow.innerHTML = "<th>Taxon</th><th>Dettagli</th>";
+    headerRow.insertCell().textContent = "Taxon";
 
     console.log("Estrazione dei taxa dall'albero...");
     const taxa = extractTaxa(treeData);
@@ -22,15 +30,12 @@ export function renderTaxaTable(treeData, tableSelector) {
 
         const row = table.insertRow();
         row.classList.add("clickable-row");
+        row.style.cursor = "pointer";
+
         row.dataset.taxon = taxon.originalName;
 
         const nameCell = row.insertCell();
         nameCell.textContent = taxon.name;
-
-        const buttonCell = row.insertCell();
-        const button = document.createElement("button");
-        button.textContent = "Mostra";
-        button.classList.add("btn", "btn-sm", "btn-outline-primary");
 
         row.addEventListener("click", function () {
             const isHighlighted = this.classList.toggle("highlighted");
@@ -41,17 +46,11 @@ export function renderTaxaTable(treeData, tableSelector) {
                 highlightPathAndLabel(taxon.originalName);
             }
         });
-
-        button.addEventListener("click", () => {
-            console.log(`Cliccato sul pulsante del taxon: ${taxon.originalName}`);
-            highlightPathAndLabel(taxon.originalName);
-        });
-
-        buttonCell.appendChild(button);
     });
 
     console.log("Aggiunta della tabella al contenitore...");
-    tableContainer.appendChild(table);
+    tableWrapper.appendChild(table); // Aggiungi la tabella al contenitore
+    tableContainer.appendChild(tableWrapper); // Aggiungi il contenitore al DOM
     console.log("Rendering della tabella completato.");
 }
 
@@ -80,5 +79,6 @@ function extractTaxa(treeData) {
 
     traverse(treeData);
     console.log("[DEBUG] Taxa estratti:", taxa);
+    taxa.sort((a, b) => a.name.localeCompare(b.name));
     return taxa;
 }

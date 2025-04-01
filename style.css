@@ -4,6 +4,26 @@
     stroke-width: 1.5px;
 }
 
+.taxa-table-container {
+    max-height: 780px;
+    /* Altezza massima del contenitore */
+    overflow-y: auto;
+    /* Abilita lo scorrimento verticale */
+    border: 1px solid #ccc;
+    /* Bordo opzionale per evidenziare il contenitore */
+    padding: 5px;
+    /* Spaziatura interna opzionale */
+}
+
+.search-bar {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
 .link-extensions {
     fill: none;
     stroke: #000;

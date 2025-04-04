@@ -1,218 +1,295 @@
 {
-    "name": "Inner27",
+    "name": "Inner1",
     "children": [
         {
-            "name": "Inner25",
+            "name": "GCA_000006945.2"
+        },
+        {
+            "name": "Inner2",
             "children": [
                 {
-                    "name": "Inner23",
+                    "name": "Inner3",
                     "children": [
                         {
-                            "name": "Inner20",
+                            "name": "Inner4",
                             "children": [
                                 {
-                                    "name": "Inner13",
+                                    "name": "Inner5",
                                     "children": [
                                         {
-                                            "name": "Inner9",
-                                            "children": [
-                                                {
-                                                    "name": "Inner8",
-                                                    "children": [
-                                                        {
-                                                            "name": "Inner6",
-                                                            "children": [
-                                                                {
-                                                                    "name": "Inner4",
-                                                                    "children": [
-                                                                        {
-                                                                            "name": "Inner3",
-                                                                            "children": [
-                                                                                {
-                                                                                    "name": "GCA_000006945.2"
-                                                                                },
-                                                                                {
-                                                                                    "name": "Inner1",
-                                                                                    "children": [
-                                                                                        {
-                                                                                            "name": "GCA_000010245.1"
-                                                                                        },
-                                                                                        {
-                                                                                            "name": "GCA_018389705.1"
-                                                                                        }
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        },
-                                                                        {
-                                                                            "name": "GCF_000006945.2"
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "name": "GCA_000007545.2"
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Inner5",
-                                                            "children": [
-                                                                {
-                                                                    "name": "Inner2",
-                                                                    "children": [
-                                                                        {
-                                                                            "name": "GCA_000009605.1"
-                                                                        },
-                                                                        {
-                                                                            "name": "GCA_000009065.1"
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "name": "GCA_000008865.2"
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "GCA_000011111.1"
-                                                }
-                                            ]
+                                            "name": "GCA_000014789.1"
                                         },
                                         {
-                                            "name": "Inner11",
-                                            "children": [
-                                                {
-                                                    "name": "GCA_000013579.1"
-                                                },
-                                                {
-                                                    "name": "GCA_000012345.1"
-                                                }
-                                            ]
+                                            "name": "GCA_000016785.3"
                                         }
                                     ]
                                 },
                                 {
-                                    "name": "Inner12",
-                                    "children": [
-                                        {
-                                            "name": "GCA_000015793.1"
-                                        },
-                                        {
-                                            "name": "GCA_000014682.1"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "name": "Inner14",
-                            "children": [
-                                {
-                                    "name": "GCA_000017935.1"
-                                },
-                                {
-                                    "name": "GCA_000016824.1"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "GCA_000018946.1"
-                }
-            ]
-        },
-        {
-            "name": "Inner26",
-            "children": [
-                {
-                    "name": "GCA_000020968.1"
-                },
-                {
-                    "name": "GCA_000019957.1"
-                }
-            ]
-        },
-        {
-            "name": "Inner24",
-            "children": [
-                {
-                    "name": "Inner21",
-                    "children": [
-                        {
-                            "name": "Inner19",
-                            "children": [
-                                {
-                                    "name": "Inner16",
+                                    "name": "Inner6",
                                     "children": [
                                         {
                                             "name": "Inner7",
                                             "children": [
                                                 {
-                                                    "name": "GCA_000031999.1"
+                                                    "name": "GCA_000009065.1"
                                                 },
                                                 {
-                                                    "name": "GCA_000030998.1"
+                                                    "name": "GCA_000013650.1"
                                                 }
                                             ]
                                         },
                                         {
-                                            "name": "Inner10",
+                                            "name": "Inner8",
                                             "children": [
                                                 {
-                                                    "name": "GCA_000029997.1"
+                                                    "name": "GCA_000013649.1"
                                                 },
                                                 {
-                                                    "name": "GCA_000028996.1"
+                                                    "name": "GCA_000013656.1"
                                                 }
                                             ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "Inner15",
-                                    "children": [
-                                        {
-                                            "name": "GCA_000027995.1"
-                                        },
-                                        {
-                                            "name": "GCA_000026994.1"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "name": "Inner17",
+                            "name": "Inner9",
                             "children": [
                                 {
-                                    "name": "GCA_000025993.1"
+                                    "name": "Inner10",
+                                    "children": [
+                                        {
+                                            "name": "Inner11",
+                                            "children": [
+                                                {
+                                                    "name": "GCA_000013659.1"
+                                                },
+                                                {
+                                                    "name": "Inner12",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCF_000006945.2"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000013646.1"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Inner13",
+                                            "children": [
+                                                {
+                                                    "name": "GCA_000013652.1"
+                                                },
+                                                {
+                                                    "name": "GCA_000016784.1"
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 },
                                 {
-                                    "name": "GCA_000024992.1"
+                                    "name": "Inner14",
+                                    "children": [
+                                        {
+                                            "name": "Inner15",
+                                            "children": [
+                                                {
+                                                    "name": "GCA_000008865.2"
+                                                },
+                                                {
+                                                    "name": "GCA_000013645.1"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Inner16",
+                                            "children": [
+                                                {
+                                                    "name": "Inner17",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000014785.1"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000015679.1"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Inner18",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000013655.1"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000014786.1"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             ]
                         }
                     ]
                 },
                 {
-                    "name": "Inner22",
+                    "name": "Inner19",
                     "children": [
                         {
-                            "name": "Inner18",
+                            "name": "Inner20",
                             "children": [
                                 {
-                                    "name": "GCA_000023991.1"
+                                    "name": "Inner21",
+                                    "children": [
+                                        {
+                                            "name": "GCA_000010245.1"
+                                        },
+                                        {
+                                            "name": "GCA_000015678.1"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "name": "GCA_000022980.1"
+                                    "name": "Inner22",
+                                    "children": [
+                                        {
+                                            "name": "GCA_000013648.1"
+                                        },
+                                        {
+                                            "name": "GCA_000013658.1"
+                                        }
+                                    ]
                                 }
                             ]
                         },
                         {
-                            "name": "GCA_000021979.1"
+                            "name": "Inner23",
+                            "children": [
+                                {
+                                    "name": "Inner24",
+                                    "children": [
+                                        {
+                                            "name": "Inner25",
+                                            "children": [
+                                                {
+                                                    "name": "GCA_000014787.1"
+                                                },
+                                                {
+                                                    "name": "GCA_000014788.1"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Inner26",
+                                            "children": [
+                                                {
+                                                    "name": "Inner27",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000011234.1"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000012345.1"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Inner28",
+                                                    "children": [
+                                                        {
+                                                            "name": "Inner29",
+                                                            "children": [
+                                                                {
+                                                                    "name": "GCA_018389705.1"
+                                                                },
+                                                                {
+                                                                    "name": "GCA_000013651.1"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Inner30",
+                                                            "children": [
+                                                                {
+                                                                    "name": "GCA_000013654.1"
+                                                                },
+                                                                {
+                                                                    "name": "GCA_000016783.1"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Inner31",
+                                    "children": [
+                                        {
+                                            "name": "Inner32",
+                                            "children": [
+                                                {
+                                                    "name": "Inner33",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000013647.1"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000014790.1"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Inner34",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000007545.2"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000013657.1"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Inner35",
+                                            "children": [
+                                                {
+                                                    "name": "Inner36",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000013653.1"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000015680.1"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Inner37",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCA_000009605.1"
+                                                        },
+                                                        {
+                                                            "name": "GCA_000013660.1"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 }

@@ -1,4 +1,4 @@
 .vscode
-.str.txt
-outputGBFF.json
-outputGFF_FASTA.json
+.venv
+.vscode
+/files

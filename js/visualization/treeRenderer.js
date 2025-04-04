@@ -49,12 +49,6 @@ export function renderTree(treeData, container) {
         if (d.children) d.children.forEach(function (d) { setRadius(d, y0, k); });
     }
 
-    function setColor(d) {
-        d.color = d.children ? "#4F46E5" : "#10B981";
-        console.log(`[DEBUG] Imposta colore ${d.data.name}: ${d.color}`); // Aggiunto
-        if (d.children) d.children.forEach(setColor);
-    }
-
     function linkConstant(d) {
         console.log(`[DEBUG] Genera link da ${d.source.data.name} a ${d.target.data.name}`); // Aggiunto
         return linkStep(d.source.x, d.source.y, d.target.x, d.target.y);

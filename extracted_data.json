@@ -1,0 +1,476 @@
+{
+    "GCA_000006945.2:AE006468.2:STM0007:1": [
+        {
+            "complete-identifier": "GCA_000006945.2:AE006468.2:STM0007:1",
+            "genome-name": "GCA_000006945.2",
+            "locus-tag": "STM0007",
+            "product": "transaldolase B"
+        },
+        {
+            "complete-identifier": "GCA_000014789.1:AE006468.2:STM2473:1",
+            "genome-name": "GCA_000014789.1",
+            "locus-tag": "STM2473",
+            "product": "transaldolase A"
+        },
+        {
+            "complete-identifier": "GCA_000016785.3:AE006468.2:STM3421:1",
+            "genome-name": "GCA_000016785.3",
+            "locus-tag": "STM3421",
+            "product": "transaldolase C"
+        }
+    ],
+    "GCA_000006945.2:AE006468.2:STM0008:1": [
+        {
+            "complete-identifier": "GCA_000006945.2:AE006468.2:STM0008:1",
+            "genome-name": "GCA_000006945.2",
+            "locus-tag": "STM0008",
+            "product": "putative molybdochetalase"
+        },
+        {
+            "complete-identifier": "GCA_000009065.1:AE006468.2:STM1234:1",
+            "genome-name": "GCA_000009065.1",
+            "locus-tag": "STM1234",
+            "product": "molybdochetalase accessory protein"
+        }
+    ],
+    "GCA_000014789.1:CP000612.1:SAR0009:1": [
+        {
+            "complete-identifier": "GCA_000014789.1:CP000612.1:SAR0009:1",
+            "genome-name": "GCA_000014789.1",
+            "locus-tag": "SAR0009",
+            "product": "DNA polymerase III subunit alpha"
+        },
+        {
+            "complete-identifier": "GCA_000013650.1:CP000612.1:SAR0010:1",
+            "genome-name": "GCA_000013650.1",
+            "locus-tag": "SAR0010",
+            "product": "DNA polymerase III subunit alpha variant"
+        },
+        {
+            "complete-identifier": "GCA_000013649.1:CP000612.1:SAR0011:1",
+            "genome-name": "GCA_000013649.1",
+            "locus-tag": "SAR0011",
+            "product": "DNA polymerase III subunit alpha paralog"
+        }
+    ],
+    "GCA_000016785.3:CP001363.1:SE0009:1": [
+        {
+            "complete-identifier": "GCA_000016785.3:CP001363.1:SE0009:1",
+            "genome-name": "GCA_000016785.3",
+            "locus-tag": "SE0009",
+            "product": "RNA polymerase sigma factor"
+        },
+        {
+            "complete-identifier": "GCA_000013656.1:CP001363.1:SE0010:1",
+            "genome-name": "GCA_000013656.1",
+            "locus-tag": "SE0010",
+            "product": "RNA polymerase sigma factor variant"
+        }
+    ],
+    "GCA_000009065.1:AM933172.1:ECS0008:1": [
+        {
+            "complete-identifier": "GCA_000009065.1:AM933172.1:ECS0008:1",
+            "genome-name": "GCA_000009065.1",
+            "locus-tag": "ECS0008",
+            "product": "ribosomal protein S12"
+        },
+        {
+            "complete-identifier": "GCA_000013659.1:AM933172.1:ECS0009:1",
+            "genome-name": "GCA_000013659.1",
+            "locus-tag": "ECS0009",
+            "product": "ribosomal protein S12 paralog"
+        }
+    ],
+    "GCA_000013650.1:CP000802.1:EF0007:1": [
+        {
+            "complete-identifier": "GCA_000013650.1:CP000802.1:EF0007:1",
+            "genome-name": "GCA_000013650.1",
+            "locus-tag": "EF0007",
+            "product": "DNA gyrase subunit A"
+        },
+        {
+            "complete-identifier": "GCF_000006945.2:CP000802.1:EF0008:1",
+            "genome-name": "GCF_000006945.2",
+            "locus-tag": "EF0008",
+            "product": "DNA gyrase subunit A variant"
+        }
+    ],
+    "GCA_000013649.1:CP000803.1:EF1008:1": [
+        {
+            "complete-identifier": "GCA_000013649.1:CP000803.1:EF1008:1",
+            "genome-name": "GCA_000013649.1",
+            "locus-tag": "EF1008",
+            "product": "DNA gyrase subunit B"
+        }
+    ],
+    "GCA_000013656.1:CP000810.1:EF2009:1": [
+        {
+            "complete-identifier": "GCA_000013656.1:CP000810.1:EF2009:1",
+            "genome-name": "GCA_000013656.1",
+            "locus-tag": "EF2009",
+            "product": "RNA polymerase beta subunit"
+        }
+    ],
+    "GCA_000013659.1:CP000813.1:EF3010:1": [
+        {
+            "complete-identifier": "GCA_000013659.1:CP000813.1:EF3010:1",
+            "genome-name": "GCA_000013659.1",
+            "locus-tag": "EF3010",
+            "product": "DNA-directed RNA polymerase"
+        },
+        {
+            "complete-identifier": "GCA_000013646.1:CP000813.1:EF3011:1",
+            "genome-name": "GCA_000013646.1",
+            "locus-tag": "EF3011",
+            "product": "DNA-directed RNA polymerase subunit"
+        },
+        {
+            "complete-identifier": "GCA_000013652.1:CP000813.1:EF3012:1",
+            "genome-name": "GCA_000013652.1",
+            "locus-tag": "EF3012",
+            "product": "RNA polymerase omega subunit"
+        }
+    ],
+    "GCF_000006945.2:AE006468.2:STM0010:1": [
+        {
+            "complete-identifier": "GCF_000006945.2:AE006468.2:STM0010:1",
+            "genome-name": "GCF_000006945.2",
+            "locus-tag": "STM0010",
+            "product": "DNA topoisomerase I"
+        }
+    ],
+    "GCA_000013646.1:CP000800.1:EF4001:1": [
+        {
+            "complete-identifier": "GCA_000013646.1:CP000800.1:EF4001:1",
+            "genome-name": "GCA_000013646.1",
+            "locus-tag": "EF4001",
+            "product": "DNA polymerase I"
+        },
+        {
+            "complete-identifier": "GCA_000016784.1:CP000800.1:EF4002:1",
+            "genome-name": "GCA_000016784.1",
+            "locus-tag": "EF4002",
+            "product": "DNA polymerase I large fragment"
+        },
+        {
+            "complete-identifier": "GCA_000008865.2:CP000800.1:EF4003:1",
+            "genome-name": "GCA_000008865.2",
+            "locus-tag": "EF4003",
+            "product": "DNA polymerase I small fragment"
+        }
+    ],
+    "GCA_000013652.1:CP000806.1:EF5002:1": [
+        {
+            "complete-identifier": "GCA_000013652.1:CP000806.1:EF5002:1",
+            "genome-name": "GCA_000013652.1",
+            "locus-tag": "EF5002",
+            "product": "DNA ligase"
+        }
+    ],
+    "GCA_000016784.1:CP001362.1:SE1003:1": [
+        {
+            "complete-identifier": "GCA_000016784.1:CP001362.1:SE1003:1",
+            "genome-name": "GCA_000016784.1",
+            "locus-tag": "SE1003",
+            "product": "DNA helicase"
+        },
+        {
+            "complete-identifier": "GCA_000013645.1:CP001362.1:SE1004:1",
+            "genome-name": "GCA_000013645.1",
+            "locus-tag": "SE1004",
+            "product": "DNA helicase loader"
+        }
+    ],
+    "GCA_000008865.2:CP000850.1:SA0004:1": [
+        {
+            "complete-identifier": "GCA_000008865.2:CP000850.1:SA0004:1",
+            "genome-name": "GCA_000008865.2",
+            "locus-tag": "SA0004",
+            "product": "DNA polymerase III subunit epsilon"
+        }
+    ],
+    "GCA_000013645.1:CP000799.1:EF6005:1": [
+        {
+            "complete-identifier": "GCA_000013645.1:CP000799.1:EF6005:1",
+            "genome-name": "GCA_000013645.1",
+            "locus-tag": "EF6005",
+            "product": "DNA polymerase III subunit theta"
+        },
+        {
+            "complete-identifier": "GCA_000014785.1:CP000799.1:EF6006:1",
+            "genome-name": "GCA_000014785.1",
+            "locus-tag": "EF6006",
+            "product": "DNA polymerase III subunit theta variant"
+        }
+    ],
+    "GCA_000014785.1:CP000608.1:SAR1006:1": [
+        {
+            "complete-identifier": "GCA_000014785.1:CP000608.1:SAR1006:1",
+            "genome-name": "GCA_000014785.1",
+            "locus-tag": "SAR1006",
+            "product": "DNA polymerase III subunit gamma/tau"
+        }
+    ],
+    "GCA_000015679.1:CP001280.1:LM0007:1": [
+        {
+            "complete-identifier": "GCA_000015679.1:CP001280.1:LM0007:1",
+            "genome-name": "GCA_000015679.1",
+            "locus-tag": "LM0007",
+            "product": "DNA polymerase III subunit delta"
+        },
+        {
+            "complete-identifier": "GCA_000013655.1:CP001280.1:LM0008:1",
+            "genome-name": "GCA_000013655.1",
+            "locus-tag": "LM0008",
+            "product": "DNA polymerase III subunit delta variant"
+        }
+    ],
+    "GCA_000013655.1:CP000809.1:EF7008:1": [
+        {
+            "complete-identifier": "GCA_000013655.1:CP000809.1:EF7008:1",
+            "genome-name": "GCA_000013655.1",
+            "locus-tag": "EF7008",
+            "product": "DNA polymerase III subunit delta prime"
+        }
+    ],
+    "GCA_000014786.1:CP000609.1:SAR2009:1": [
+        {
+            "complete-identifier": "GCA_000014786.1:CP000609.1:SAR2009:1",
+            "genome-name": "GCA_000014786.1",
+            "locus-tag": "SAR2009",
+            "product": "DNA polymerase III subunit chi"
+        },
+        {
+            "complete-identifier": "GCA_000010245.1:CP000609.1:SAR2010:1",
+            "genome-name": "GCA_000010245.1",
+            "locus-tag": "SAR2010",
+            "product": "DNA polymerase III subunit chi variant"
+        }
+    ],
+    "GCA_000010245.1:CP000653.1:BS0001:1": [
+        {
+            "complete-identifier": "GCA_000010245.1:CP000653.1:BS0001:1",
+            "genome-name": "GCA_000010245.1",
+            "locus-tag": "BS0001",
+            "product": "DNA polymerase III subunit psi"
+        }
+    ],
+    "GCA_000015678.1:CP001279.1:LM1002:1": [
+        {
+            "complete-identifier": "GCA_000015678.1:CP001279.1:LM1002:1",
+            "genome-name": "GCA_000015678.1",
+            "locus-tag": "LM1002",
+            "product": "DNA polymerase III subunit beta"
+        },
+        {
+            "complete-identifier": "GCA_000013648.1:CP001279.1:LM1003:1",
+            "genome-name": "GCA_000013648.1",
+            "locus-tag": "LM1003",
+            "product": "DNA polymerase III sliding clamp"
+        }
+    ],
+    "GCA_000013648.1:CP000802.1:EF8003:1": [
+        {
+            "complete-identifier": "GCA_000013648.1:CP000802.1:EF8003:1",
+            "genome-name": "GCA_000013648.1",
+            "locus-tag": "EF8003",
+            "product": "DNA polymerase II"
+        }
+    ],
+    "GCA_000013658.1:CP000812.1:EF9004:1": [
+        {
+            "complete-identifier": "GCA_000013658.1:CP000812.1:EF9004:1",
+            "genome-name": "GCA_000013658.1",
+            "locus-tag": "EF9004",
+            "product": "DNA polymerase IV"
+        },
+        {
+            "complete-identifier": "GCA_000014787.1:CP000812.1:EF9005:1",
+            "genome-name": "GCA_000014787.1",
+            "locus-tag": "EF9005",
+            "product": "DNA polymerase IV accessory protein"
+        }
+    ],
+    "GCA_000014787.1:CP000610.1:SAR3005:1": [
+        {
+            "complete-identifier": "GCA_000014787.1:CP000610.1:SAR3005:1",
+            "genome-name": "GCA_000014787.1",
+            "locus-tag": "SAR3005",
+            "product": "DNA polymerase V"
+        }
+    ],
+    "GCA_000014788.1:CP000611.1:SAR4006:1": [
+        {
+            "complete-identifier": "GCA_000014788.1:CP000611.1:SAR4006:1",
+            "genome-name": "GCA_000014788.1",
+            "locus-tag": "SAR4006",
+            "product": "DNA polymerase I"
+        },
+        {
+            "complete-identifier": "GCA_000011234.1:CP000611.1:SAR4007:1",
+            "genome-name": "GCA_000011234.1",
+            "locus-tag": "SAR4007",
+            "product": "DNA polymerase I large fragment"
+        }
+    ],
+    "GCA_000011234.1:CP000521.1:PA0007:1": [
+        {
+            "complete-identifier": "GCA_000011234.1:CP000521.1:PA0007:1",
+            "genome-name": "GCA_000011234.1",
+            "locus-tag": "PA0007",
+            "product": "DNA polymerase III subunit alpha"
+        },
+        {
+            "complete-identifier": "GCA_000012345.1:CP000521.1:PA0008:1",
+            "genome-name": "GCA_000012345.1",
+            "locus-tag": "PA0008",
+            "product": "DNA polymerase III subunit alpha variant"
+        }
+    ],
+    "GCA_000012345.1:CP000432.1:EC0008:1": [
+        {
+            "complete-identifier": "GCA_000012345.1:CP000432.1:EC0008:1",
+            "genome-name": "GCA_000012345.1",
+            "locus-tag": "EC0008",
+            "product": "DNA polymerase III subunit epsilon"
+        }
+    ],
+    "GCA_018389705.1:CP043554.1:NT0009:1": [
+        {
+            "complete-identifier": "GCA_018389705.1:CP043554.1:NT0009:1",
+            "genome-name": "GCA_018389705.1",
+            "locus-tag": "NT0009",
+            "product": "DNA polymerase III subunit theta"
+        },
+        {
+            "complete-identifier": "GCA_000013651.1:CP043554.1:NT0010:1",
+            "genome-name": "GCA_000013651.1",
+            "locus-tag": "NT0010",
+            "product": "DNA polymerase III subunit theta variant"
+        }
+    ],
+    "GCA_000013651.1:CP000805.1:EF6001:1": [
+        {
+            "complete-identifier": "GCA_000013651.1:CP000805.1:EF6001:1",
+            "genome-name": "GCA_000013651.1",
+            "locus-tag": "EF6001",
+            "product": "DNA polymerase III subunit gamma/tau"
+        }
+    ],
+    "GCA_000013654.1:CP000808.1:EF7002:1": [
+        {
+            "complete-identifier": "GCA_000013654.1:CP000808.1:EF7002:1",
+            "genome-name": "GCA_000013654.1",
+            "locus-tag": "EF7002",
+            "product": "DNA polymerase III subunit delta"
+        },
+        {
+            "complete-identifier": "GCA_000016783.1:CP000808.1:EF7003:1",
+            "genome-name": "GCA_000016783.1",
+            "locus-tag": "EF7003",
+            "product": "DNA polymerase III subunit delta variant"
+        }
+    ],
+    "GCA_000016783.1:CP001361.1:SE2005:1": [
+        {
+            "complete-identifier": "GCA_000016783.1:CP001361.1:SE2005:1",
+            "genome-name": "GCA_000016783.1",
+            "locus-tag": "SE2005",
+            "product": "DNA polymerase III subunit delta prime"
+        }
+    ],
+    "GCA_000013647.1:CP000801.1:EF5006:1": [
+        {
+            "complete-identifier": "GCA_000013647.1:CP000801.1:EF5006:1",
+            "genome-name": "GCA_000013647.1",
+            "locus-tag": "EF5006",
+            "product": "DNA polymerase III subunit chi"
+        }
+    ],
+    "GCA_000014790.1:CP000613.1:SAR5007:1": [
+        {
+            "complete-identifier": "GCA_000014790.1:CP000613.1:SAR5007:1",
+            "genome-name": "GCA_000014790.1",
+            "locus-tag": "SAR5007",
+            "product": "DNA polymerase III subunit psi"
+        },
+        {
+            "complete-identifier": "GCA_000007545.2:CP000613.1:SAR5008:1",
+            "genome-name": "GCA_000007545.2",
+            "locus-tag": "SAR5008",
+            "product": "DNA polymerase III subunit psi variant"
+        }
+    ],
+    "GCA_000007545.2:CP000480.1:CL0008:1": [
+        {
+            "complete-identifier": "GCA_000007545.2:CP000480.1:CL0008:1",
+            "genome-name": "GCA_000007545.2",
+            "locus-tag": "CL0008",
+            "product": "DNA polymerase III subunit beta"
+        }
+    ],
+    "GCA_000013657.1:CP000811.1:EF8005:1": [
+        {
+            "complete-identifier": "GCA_000013657.1:CP000811.1:EF8005:1",
+            "genome-name": "GCA_000013657.1",
+            "locus-tag": "EF8005",
+            "product": "DNA polymerase II"
+        },
+        {
+            "complete-identifier": "GCA_000013653.1:CP000811.1:EF8006:1",
+            "genome-name": "GCA_000013653.1",
+            "locus-tag": "EF8006",
+            "product": "DNA polymerase II accessory factor"
+        }
+    ],
+    "GCA_000013653.1:CP000807.1:EF6009:1": [
+        {
+            "complete-identifier": "GCA_000013653.1:CP000807.1:EF6009:1",
+            "genome-name": "GCA_000013653.1",
+            "locus-tag": "EF6009",
+            "product": "DNA polymerase IV"
+        }
+    ],
+    "GCA_000015680.1:CP001281.1:LM2003:1": [
+        {
+            "complete-identifier": "GCA_000015680.1:CP001281.1:LM2003:1",
+            "genome-name": "GCA_000015680.1",
+            "locus-tag": "LM2003",
+            "product": "DNA polymerase V"
+        },
+        {
+            "complete-identifier": "GCA_000009605.1:CP001281.1:LM2004:1",
+            "genome-name": "GCA_000009605.1",
+            "locus-tag": "LM2004",
+            "product": "DNA polymerase V accessory protein"
+        }
+    ],
+    "GCA_000009605.1:CP000266.1:MT0006:1": [
+        {
+            "complete-identifier": "GCA_000009605.1:CP000266.1:MT0006:1",
+            "genome-name": "GCA_000009605.1",
+            "locus-tag": "MT0006",
+            "product": "DNA polymerase I"
+        }
+    ],
+    "GCA_000013660.1:CP000814.1:EF9006:1": [
+        {
+            "complete-identifier": "GCA_000013660.1:CP000814.1:EF9006:1",
+            "genome-name": "GCA_000013660.1",
+            "locus-tag": "EF9006",
+            "product": "DNA-directed RNA polymerase"
+        },
+        {
+            "complete-identifier": "GCA_000013660.1:CP000814.1:EF9007:1",
+            "genome-name": "GCA_000013660.1",
+            "locus-tag": "EF9007",
+            "product": "RNA polymerase subunit alpha"
+        },
+        {
+            "complete-identifier": "GCA_000013660.1:CP000814.1:EF9008:1",
+            "genome-name": "GCA_000013660.1",
+            "locus-tag": "EF9008",
+            "product": "RNA polymerase subunit beta"
+        }
+    ]
+}

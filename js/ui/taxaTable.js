@@ -1,84 +1,114 @@
 import { highlightPathAndLabel } from "./highlightning.js";
 import { renderSearchBar } from "../visualization/searchBarRenderer.js";
 
+/**
+ * @module taxaTable
+ * @description Module for rendering taxonomic data in tabular format
+ */
+
+/**
+ * @function renderTaxaTable
+ * @description Renders a table of taxonomic data with search functionality
+ * @param {Object} treeData - The hierarchical tree data containing taxonomic information
+ * @param {string} tableSelector - CSS selector for the container element
+ */
 export function renderTaxaTable(treeData, tableSelector) {
-    console.log("Inizio rendering della tabella dei taxa...");
-    const tableContainer = document.querySelector(tableSelector);
-    tableContainer.innerHTML = "";
+    try {
+        const tableContainer = document.querySelector(tableSelector);
+        if (!tableContainer) {
+            throw new Error(`Container element not found: ${tableSelector}`);
+        }
 
-    // Crea un contenitore per la barra di ricerca e la tabella
-    const tableWrapper = document.createElement("div");
-    tableWrapper.classList.add("taxa-table-container");
+        tableContainer.innerHTML = "";
 
-    // Aggiungi la barra di ricerca
-    renderSearchBar(tableSelector, `${tableSelector} table`);
+        const tableWrapper = document.createElement("div");
+        tableWrapper.classList.add("taxa-table-container");
 
-    const table = document.createElement("table");
-    table.classList.add("taxa-table");
+        try {
+            renderSearchBar(tableSelector, `${tableSelector} table`);
+        } catch (error) {
+            console.error("Error rendering search bar:", error);
+        }
 
-    console.log("Creazione intestazioni della tabella...");
-    const header = table.createTHead();
-    const headerRow = header.insertRow();
-    headerRow.insertCell().textContent = "Taxon";
+        const table = document.createElement("table");
+        table.classList.add("taxa-table");
 
-    console.log("Estrazione dei taxa dall'albero...");
-    const taxa = extractTaxa(treeData);
-    console.log("Taxa estratti:", taxa);
+        const header = table.createTHead();
+        const headerRow = header.insertRow();
+        const headerCell = document.createElement("th");
+        headerCell.textContent = "Taxon";
+        headerRow.appendChild(headerCell);
 
-    taxa.forEach(taxon => {
-        console.log("Aggiunta riga per il taxon:", taxon);
+        const taxa = extractTaxa(treeData);
 
-        const row = table.insertRow();
-        row.classList.add("clickable-row");
-        row.style.cursor = "pointer";
+        taxa.forEach(taxon => {
+            try {
+                const row = table.insertRow();
+                row.classList.add("clickable-row");
+                row.style.cursor = "pointer";
+                row.dataset.taxon = taxon.originalName;
 
-        row.dataset.taxon = taxon.originalName;
+                const nameCell = row.insertCell();
+                nameCell.textContent = taxon.name;
 
-        const nameCell = row.insertCell();
-        nameCell.textContent = taxon.name;
+                row.addEventListener("click", function () {
+                    try {
+                        const isHighlighted = this.classList.toggle("highlighted");
 
-        row.addEventListener("click", function () {
-            const isHighlighted = this.classList.toggle("highlighted");
-
-            if (!isHighlighted) {
-                highlightPathAndLabel(taxon.originalName);
-            } else {
-                highlightPathAndLabel(taxon.originalName);
+                        if (!isHighlighted) {
+                            highlightPathAndLabel(taxon.originalName);
+                        } else {
+                            highlightPathAndLabel(taxon.originalName);
+                        }
+                    } catch (error) {
+                        console.error(`Error handling click for taxon "${taxon.name}":`, error);
+                    }
+                });
+            } catch (error) {
+                console.error(`Error creating row for taxon "${taxon.name}":`, error);
             }
         });
-    });
 
-    console.log("Aggiunta della tabella al contenitore...");
-    tableWrapper.appendChild(table); // Aggiungi la tabella al contenitore
-    tableContainer.appendChild(tableWrapper); // Aggiungi il contenitore al DOM
-    console.log("Rendering della tabella completato.");
+        tableWrapper.appendChild(table);
+        tableContainer.appendChild(tableWrapper);
+    } catch (error) {
+        console.error("Critical error in taxa table rendering:", error);
+    }
 }
 
+/**
+ * @function extractTaxa
+ * @description Extracts taxonomic data from the tree structure and sorts it alphabetically
+ * @param {Object} treeData - The hierarchical tree data containing taxonomic information
+ * @returns {Array} An array of taxa objects with name and originalName properties
+ * @private
+ */
 function extractTaxa(treeData) {
-    const taxa = [];
-    console.log("[DEBUG] Albero in input:", treeData);
+    try {
+        const taxa = [];
 
-    function traverse(node) {
-        console.log(`[DEBUG] Visitando nodo: ${node.name || 'root'}`);
+        function traverse(node) {
+            try {
+                if (node.name && node.name.startsWith("GCA")) {
+                    taxa.push({
+                        name: node.name.replace(/_/g, " "),
+                        originalName: node.name
+                    });
+                }
 
-        // Controlla se è un nodo foglia GCA
-        if (node.name && node.name.startsWith("GCA")) {
-            console.log(`[DEBUG] Trovato taxon: ${node.name}`);
-            taxa.push({
-                name: node.name.replace(/_/g, " "),
-                originalName: node.name
-            });
+                if (node.branchset && node.branchset.length > 0) {
+                    node.branchset.forEach(child => traverse(child));
+                }
+            } catch (error) {
+                console.error(`Error traversing node "${node?.name || 'unknown'}":`, error);
+            }
         }
 
-        // Cerca nei children invece che in branchset
-        if (node.children && node.children.length > 0) {
-            console.log(`[DEBUG] Visitando ${node.children.length} figli di ${node.name}`);
-            node.children.forEach(child => traverse(child));
-        }
+        traverse(treeData);
+        taxa.sort((a, b) => a.name.localeCompare(b.name));
+        return taxa;
+    } catch (error) {
+        console.error("Error extracting taxa from tree data:", error);
+        return [];
     }
-
-    traverse(treeData);
-    console.log("[DEBUG] Taxa estratti:", taxa);
-    taxa.sort((a, b) => a.name.localeCompare(b.name));
-    return taxa;
 }

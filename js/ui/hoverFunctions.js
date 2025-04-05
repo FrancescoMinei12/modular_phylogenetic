@@ -1,11 +1,21 @@
+/**
+ * @module hoverFunctions
+ * @description Module for handling hover interactions in the phylogenetic tree visualization
+ */
+
+/**
+ * @function mouseOvered
+ * @description Creates a hover handler function that highlights nodes, links and paths
+ * @param {boolean} active - Whether the hover state is active or not
+ * @returns {Function} Handler function for mouseover/mouseout events
+ */
 export function mouseOvered(active) {
     return function (d) {
-        // Evidenzia l'etichetta
         d3.select(this).classed("label--active", active);
 
         d3.select(d.linkExtensionNode)
-            .classed("link-extension--active", active)  // Applica la classe CSS per evidenziare
-            .attr("stroke", active ? "#FF6347" : "#000")  // Colore del percorso
+            .classed("link-extension--active", active)
+            .attr("stroke", active ? "#FF6347" : "#000")
             .attr("stroke-width", active ? "2px" : "0.5px")
             .attr("stroke-opacity", active ? 1 : 0.25)
             .each(moveToFront);
@@ -23,6 +33,11 @@ export function mouseOvered(active) {
     };
 }
 
+/**
+ * @function moveToFront
+ * @description Moves the current SVG element to the front of its container
+ * @private
+ */
 function moveToFront() {
     this.parentNode.appendChild(this);
 }

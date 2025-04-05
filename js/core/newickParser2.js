@@ -1,3 +1,15 @@
+/**
+ * @file newick_parser.js
+ * @brief Newick format phylogenetic tree parser
+ */
+
+/**
+ * @brief Parses Newick string into hierarchical tree structure
+ * @param {string} newick_str Newick format string (e.g., "(A:0.1,B:0.2)Root;")
+ * @return {object|null} Tree object with name, length, branchset properties
+ * @throws {Error} On invalid input type or Newick syntax errors
+ * @note Handles nested parentheses, node names, branch lengths and validates bracket matching
+ */
 export function parseNewick(a) {
     if (typeof a !== 'string') {
         console.error('Errore: i dati passati non sono una stringa');
@@ -17,7 +29,6 @@ export function parseNewick(a) {
 
         switch (token) {
             case '(':
-                // Inizia un nuovo clade
                 const newNode = { branchset: [] };
                 if (!current.branchset) {
                     current.branchset = [];
@@ -28,7 +39,6 @@ export function parseNewick(a) {
                 break;
 
             case ',':
-                // Nuovo ramo nello stesso clade
                 current = { branchset: [] };
                 if (stack.length === 0) {
                     console.error('Errore di sintassi: virgola senza parentesi aperta');
@@ -38,7 +48,6 @@ export function parseNewick(a) {
                 break;
 
             case ')':
-                // Fine clade
                 if (stack.length === 0) {
                     console.error('Errore di sintassi: parentesi chiusa senza apertura');
                     return null;
@@ -47,19 +56,15 @@ export function parseNewick(a) {
                 break;
 
             case ':':
-                // Ignora le lunghezze dei rami per ora
                 break;
 
             case ';':
-                // Fine dell'albero
                 break;
 
             default:
                 if (prevToken === '(' || prevToken === ',' || prevToken === ')') {
-                    // È un nome di nodo
                     current.name = token;
                 } else if (prevToken === ':') {
-                    // È una lunghezza di ramo
                     current.length = parseFloat(token);
                 }
                 break;

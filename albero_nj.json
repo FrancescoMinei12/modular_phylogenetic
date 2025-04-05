@@ -1,21 +1,21 @@
 {
     "name": "Inner1",
-    "children": [
+    "branchset": [
         {
             "name": "GCA_000006945.2"
         },
         {
             "name": "Inner2",
-            "children": [
+            "branchset": [
                 {
                     "name": "Inner3",
-                    "children": [
+                    "branchset": [
                         {
                             "name": "Inner4",
-                            "children": [
+                            "branchset": [
                                 {
                                     "name": "Inner5",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "GCA_000014789.1"
                                         },
@@ -26,10 +26,10 @@
                                 },
                                 {
                                     "name": "Inner6",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "Inner7",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "GCA_000009065.1"
                                                 },
@@ -40,7 +40,7 @@
                                         },
                                         {
                                             "name": "Inner8",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "GCA_000013649.1"
                                                 },
@@ -55,19 +55,19 @@
                         },
                         {
                             "name": "Inner9",
-                            "children": [
+                            "branchset": [
                                 {
                                     "name": "Inner10",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "Inner11",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "GCA_000013659.1"
                                                 },
                                                 {
                                                     "name": "Inner12",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCF_000006945.2"
                                                         },
@@ -80,7 +80,7 @@
                                         },
                                         {
                                             "name": "Inner13",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "GCA_000013652.1"
                                                 },
@@ -93,10 +93,10 @@
                                 },
                                 {
                                     "name": "Inner14",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "Inner15",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "GCA_000008865.2"
                                                 },
@@ -107,10 +107,10 @@
                                         },
                                         {
                                             "name": "Inner16",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "Inner17",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000014785.1"
                                                         },
@@ -121,7 +121,7 @@
                                                 },
                                                 {
                                                     "name": "Inner18",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000013655.1"
                                                         },
@@ -140,13 +140,13 @@
                 },
                 {
                     "name": "Inner19",
-                    "children": [
+                    "branchset": [
                         {
                             "name": "Inner20",
-                            "children": [
+                            "branchset": [
                                 {
                                     "name": "Inner21",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "GCA_000010245.1"
                                         },
@@ -157,7 +157,7 @@
                                 },
                                 {
                                     "name": "Inner22",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "GCA_000013648.1"
                                         },
@@ -170,13 +170,13 @@
                         },
                         {
                             "name": "Inner23",
-                            "children": [
+                            "branchset": [
                                 {
                                     "name": "Inner24",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "Inner25",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "GCA_000014787.1"
                                                 },
@@ -187,10 +187,10 @@
                                         },
                                         {
                                             "name": "Inner26",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "Inner27",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000011234.1"
                                                         },
@@ -201,10 +201,10 @@
                                                 },
                                                 {
                                                     "name": "Inner28",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "Inner29",
-                                                            "children": [
+                                                            "branchset": [
                                                                 {
                                                                     "name": "GCA_018389705.1"
                                                                 },
@@ -215,7 +215,7 @@
                                                         },
                                                         {
                                                             "name": "Inner30",
-                                                            "children": [
+                                                            "branchset": [
                                                                 {
                                                                     "name": "GCA_000013654.1"
                                                                 },
@@ -232,13 +232,13 @@
                                 },
                                 {
                                     "name": "Inner31",
-                                    "children": [
+                                    "branchset": [
                                         {
                                             "name": "Inner32",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "Inner33",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000013647.1"
                                                         },
@@ -249,7 +249,7 @@
                                                 },
                                                 {
                                                     "name": "Inner34",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000007545.2"
                                                         },
@@ -262,10 +262,10 @@
                                         },
                                         {
                                             "name": "Inner35",
-                                            "children": [
+                                            "branchset": [
                                                 {
                                                     "name": "Inner36",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000013653.1"
                                                         },
@@ -276,7 +276,7 @@
                                                 },
                                                 {
                                                     "name": "Inner37",
-                                                    "children": [
+                                                    "branchset": [
                                                         {
                                                             "name": "GCA_000009605.1"
                                                         },

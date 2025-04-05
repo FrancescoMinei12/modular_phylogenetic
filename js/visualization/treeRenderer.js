@@ -1,21 +1,27 @@
 import { mouseOvered } from "../ui/hoverFunctions.js";
 import { getColorForTaxa } from "../core/colorManager.js";
+/**
+ * @module treeRenderer
+ * @description Module responsible for rendering a radial phylogenetic tree using D3.js.
+ * It builds the tree layout, draws nodes and links, applies color styles, 
+ * and enables interactivity through event listeners.
+ */
 
+/**
+ * Renders a circular clustered tree visualization using D3.
+ *
+ * @param {Object} treeData - The hierarchical tree data (from Newick parser).
+ * @param {string} container - The CSS selector where the SVG tree should be rendered.
+ */
 export function renderTree(treeData, container) {
-    console.log("[DEBUG] Inizio rendering albero con dati:", treeData); // Aggiunto
-
     const outerRadius = Math.min(800, window.innerWidth * 0.6) / 2;
     const innerRadius = outerRadius - 100;
-    console.log(`[DEBUG] Raggio calcolato - Esterno: ${outerRadius}, Interno: ${innerRadius}`); // Aggiunto
 
     const root = d3.hierarchy(treeData, function (d) {
-        console.log(`[DEBUG] Processo nodo: ${d?.name || 'senza nome'}`); // Aggiunto
         return d.branchset;
     }).sum(function (d) {
-        console.log(`[DEBUG] Assegnazione peso a: ${d?.name} - ${d.branchset ? 'nodo interno' : 'foglia'}`); // Aggiunto
         return d.branchset ? 0 : 1;
     }).sort(function (a, b) {
-        console.log(`[DEBUG] Ordina: ${a.data.name} vs ${b.data.name}`); // Aggiunto
         return (a.value - b.value) || d3.ascending(a.data.length, b.data.length);
     });
 
@@ -29,33 +35,55 @@ export function renderTree(treeData, container) {
         .style("display", "block");
 
     const chart = svg.append("g")
-        .attr("class", "tree-chart") // Aggiungi una classe identificativa
-        .datum(root) // Allega i dati direttamente al gruppo <g>
-        .attr("transform", `translate(${outerRadius},${outerRadius})`)
-        .each(() => console.log("[DEBUG] Gruppo principale creato")); // Aggiunto
+        .attr("class", "tree-chart")
+        .datum(root)
+        .attr("transform", `translate(${outerRadius},${outerRadius})`);
 
     cluster(root);
-    console.log("[DEBUG] Layout cluster applicato:", root); // Aggiunto
 
+    /**
+     * Recursively computes the maximum path length of the tree.
+     *
+     * @param {Object} d - A node in the tree.
+     * @returns {number} - The accumulated maximum length.
+     */
     function maxLength(d) {
         const result = d.data.length + (d.children ? d3.max(d.children, maxLength) : 0);
-        console.log(`[DEBUG] maxLength per ${d.data.name}: ${result}`); // Aggiunto
         return result;
     }
 
+    /**
+     * Recursively sets the radius for each node.
+     *
+     * @param {Object} d - A node in the tree.
+     * @param {number} y0 - Accumulated branch length.
+     * @param {number} k - Scale factor.
+     */
     function setRadius(d, y0, k) {
         d.radius = (y0 += d.data.length) * k;
-        console.log(`[DEBUG] Imposta raggio ${d.data.name}: ${d.radius}`); // Aggiunto
         if (d.children) d.children.forEach(function (d) { setRadius(d, y0, k); });
     }
 
+    /**
+     * Returns the SVG path for a curved link between nodes.
+     *
+     * @param {Object} d - A link object.
+     * @returns {string} - The SVG path string.
+     */
     function linkConstant(d) {
-        console.log(`[DEBUG] Genera link da ${d.source.data.name} a ${d.target.data.name}`); // Aggiunto
         return linkStep(d.source.x, d.source.y, d.target.x, d.target.y);
     }
 
+    /**
+     * Returns an SVG path string for a radial step arc.
+     *
+     * @param {number} startAngle - Angle in degrees for the source node.
+     * @param {number} startRadius - Radius for the source node.
+     * @param {number} endAngle - Angle in degrees for the target node.
+     * @param {number} endRadius - Radius for the target node.
+     * @returns {string} - The SVG path string.
+     */
     function linkStep(startAngle, startRadius, endAngle, endRadius) {
-        console.log(`[DEBUG] Calcola percorso: ${startAngle}°, ${startRadius}px -> ${endAngle}°, ${endRadius}px`); // Aggiunto
         const c0 = Math.cos(startAngle = (startAngle - 90) / 180 * Math.PI),
             s0 = Math.sin(startAngle),
             c1 = Math.cos(endAngle = (endAngle - 90) / 180 * Math.PI),
@@ -65,38 +93,34 @@ export function renderTree(treeData, container) {
             + "L" + endRadius * c1 + "," + endRadius * s1;
     }
 
-    // Funzione per creare l'extension del link
+    /**
+     * Returns an SVG path string extending the link from target to the outer radius.
+     *
+     * @param {Object} d - A link object.
+     * @returns {string} - The SVG path string.
+     */
     function linkExtensionConstant(d) {
-        console.log(`[DEBUG] Estensione link per ${d.target.data.name}`); // Aggiunto
         return linkStep(d.target.x, d.target.y, d.target.x, innerRadius);
     }
 
-    // Carichiamo e visualizziamo l'albero
     root.data.length = 0;
     setRadius(root, 0, innerRadius / maxLength(root));
-    console.log("[DEBUG] Raggi impostati:", root); // Aggiunto
-
     getColorForTaxa(root);
-    console.log("[DEBUG] Colori assegnati"); // Aggiunto
 
     const linkExtension = chart.append("g")
         .attr("class", "link-extensions")
         .selectAll("path")
         .data(root.links().filter(d => {
-            // Filtra solo i nodi foglia (senza children/branchset)
             const isLeaf = !(d.target.children || d.target.branchset);
-            console.log(`[RENDER] Link extension per ${d.target.data.name} (${isLeaf ? 'foglia' : 'nodo interno'})`);
             return isLeaf;
         }))
         .enter().append("path")
         .each(function (d) {
-            // Salva riferimento DOM nel nodo target
-            console.log(`[REF] Collega linkExtensionNode a ${d.target.data.name}`);
             d.target.linkExtensionNode = this;
-            d.target.linkExtensionData = d; // Salva i dati del link
+            d.target.linkExtensionData = d;
         })
         .attr("d", linkExtensionConstant)
-        .style("pointer-events", "none"); // Disabilita interazioni
+        .style("pointer-events", "none");
 
     const link = chart.append("g")
         .attr("class", "links")
@@ -104,7 +128,6 @@ export function renderTree(treeData, container) {
         .data(root.links())
         .enter().append("path")
         .each(function (d) {
-            console.log(`[REF] Collegamento principale: ${d.source.data.name} -> ${d.target.data.name}`);
             d.target.linkNode = this;
             d.source.linkNodes = d.source.linkNodes || [];
             d.source.linkNodes.push({
@@ -113,10 +136,7 @@ export function renderTree(treeData, container) {
             });
         })
         .attr("d", linkConstant)
-        .attr("stroke", d => {
-            console.log(`[STYLE] Colore link ${d.target.data.name}: ${d.target.color}`);
-            return d.target.color;
-        })
+        .attr("stroke", d => d.target.color)
         .attr("stroke-width", 1.5)
         .style("stroke-linecap", "round");
 
@@ -126,8 +146,7 @@ export function renderTree(treeData, container) {
         .data(root.leaves())
         .enter().append("text")
         .each(function (d) {
-            console.log(`[REF] Etichetta creata per ${d.data.name}`);
-            d.labelNode = this; // Riferimento diretto al DOM
+            d.labelNode = this;
         })
         .attr("dy", ".31em")
         .attr("font-size", "10px")
@@ -135,29 +154,18 @@ export function renderTree(treeData, container) {
             const rotation = d.x - 90;
             const translateX = innerRadius + 4;
             const flip = d.x >= 180 ? "rotate(180)" : "";
-            console.log(`[POS] Etichetta ${d.data.name}: rotazione ${rotation}°, translateX ${translateX}px ${flip}`);
             return `rotate(${rotation})translate(${translateX},0)${flip}`;
         })
         .attr("text-anchor", d => {
-            const anchor = d.x < 180 ? "start" : "end";
-            console.log(`[ALIGN] Allineamento ${d.data.name}: ${anchor}`);
-            return anchor;
+            return d.x < 180 ? "start" : "end";
         })
-        .text(d => {
-            const cleanedName = d.data.name.replace(/_/g, " ");
-            console.log(`[TEXT] Testo etichetta: ${cleanedName}`);
-            return cleanedName;
-        })
+        .text(d => d.data.name.replace(/_/g, " "))
         .on("mouseover", function (event, d) {
-            console.log(`[EVENT] Mouseover su ${d.data.name}`);
             d3.select(this).transition().attr("font-size", "12px");
             mouseOvered(true).call(this, d);
         })
         .on("mouseout", function (event, d) {
-            console.log(`[EVENT] Mouseout da ${d.data.name}`);
             d3.select(this).transition().attr("font-size", "10px");
             mouseOvered(false).call(this, d);
         });
-
-    console.log("[DEBUG] Renderizzazione albero completata");
 }

@@ -1,54 +1,67 @@
+/**
+ * @file searchBarRenderer.js
+ * @brief Module for rendering and handling search bar functionality for tables
+ */
+
+/**
+ * @function renderSearchBar
+ * @brief Creates and appends a search bar that filters table content
+ * @param {string} containerSelector - CSS selector for the container element
+ * @param {string} tableSelector - CSS selector for the table to be filtered
+ */
 export function renderSearchBar(containerSelector, tableSelector) {
-    const container = document.querySelector(containerSelector);
+    const containerElement = document.querySelector(containerSelector);
 
-    // Crea la barra di ricerca
-    const searchBar = document.createElement("input");
-    searchBar.type = "text";
-    searchBar.placeholder = "Cerca...";
-    searchBar.classList.add("search-bar");
+    const searchBarElement = document.createElement("input");
+    searchBarElement.type = "text";
+    searchBarElement.placeholder = "Search...";
+    searchBarElement.classList.add("search-bar");
 
-    // Aggiungi un evento per la ricerca
-    searchBar.addEventListener("input", function () {
-        const query = searchBar.value;
-        filterTable(query, tableSelector);
+    searchBarElement.addEventListener("input", function () {
+        const queryText = searchBarElement.value;
+        filterTable(queryText, tableSelector);
     });
 
-    // Aggiungi la barra di ricerca al contenitore
-    container.appendChild(searchBar);
+    containerElement.appendChild(searchBarElement);
 }
 
-function filterTable(query, tableSelector) {
-    const table = document.querySelector(tableSelector);
-    const rows = table.querySelectorAll("tr");
+/**
+ * @function filterTable
+ * @brief Filters table rows based on search query text
+ * @param {string} queryText - The search text to filter by
+ * @param {string} tableSelector - CSS selector for the table to be filtered
+ */
+function filterTable(queryText, tableSelector) {
+    const tableElement = document.querySelector(tableSelector);
+    const tableRows = tableElement.querySelectorAll("tr");
 
-    let hasResults = false;
+    let hasResultsFlag = false;
 
-    rows.forEach((row, index) => {
-        if (index === 0) return; // Salta l'intestazione della tabella
+    tableRows.forEach((rowElement, rowIndex) => {
+        if (rowIndex === 0) return;
 
-        const cells = Array.from(row.querySelectorAll("td"));
-        const rowText = cells.map(cell => cell.textContent.toLowerCase()).join(" ");
+        const cellElements = Array.from(rowElement.querySelectorAll("td"));
+        const rowContent = cellElements.map(cell => cell.textContent.toLowerCase()).join(" ");
 
-        if (rowText.includes(query.toLowerCase())) {
-            row.style.display = ""; // Mostra la riga
-            hasResults = true;
+        if (rowContent.includes(queryText.toLowerCase())) {
+            rowElement.style.display = "";
+            hasResultsFlag = true;
         } else {
-            row.style.display = "none"; // Nascondi la riga
+            rowElement.style.display = "none";
         }
     });
 
-    // Mostra un messaggio se non ci sono risultati
-    const noResultsRow = table.querySelector(".no-results");
-    if (!hasResults) {
-        if (!noResultsRow) {
-            const noResults = table.insertRow();
-            noResults.classList.add("no-results");
-            const cell = noResults.insertCell();
-            cell.colSpan = table.rows[0].cells.length; // Occupa tutte le colonne
-            cell.textContent = "Nessun risultato trovato.";
-            cell.style.textAlign = "center";
+    const noResultsElement = tableElement.querySelector(".no-results");
+    if (!hasResultsFlag) {
+        if (!noResultsElement) {
+            const noResultsRow = tableElement.insertRow();
+            noResultsRow.classList.add("no-results");
+            const messageCell = noResultsRow.insertCell();
+            messageCell.colSpan = tableElement.rows[0].cells.length;
+            messageCell.textContent = "Nessun risultato trovato.";
+            messageCell.style.textAlign = "center";
         }
-    } else if (noResultsRow) {
-        noResultsRow.remove();
+    } else if (noResultsElement) {
+        noResultsElement.remove();
     }
 }

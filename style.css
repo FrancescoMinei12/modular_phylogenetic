@@ -1,27 +1,95 @@
+/* Stili generali per tutte le tabelle */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f3f4f6;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+tr:nth-child(odd) {
+    background-color: #f9fafb;
+}
+
+tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+tr:hover {
+    background-color: #f3f4f6;
+}
+
+/* Stili per i container delle tabelle con scrollbar */
+.taxa-table-container,
+.gene-family-table-container,
+.product-table-container {
+    max-height: 780px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+/* Stili per le righe cliccabili */
+.clickable-row {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clickable-row:hover {
+    background-color: #f5f5f5;
+}
+
+/* Stili per righe evidenziate */
+.taxa-table tr.highlighted,
+.gene-family-table tr.highlighted,
+.product-table tr.highlighted {
+    background-color: #e3f2fd !important;
+    box-shadow: inset 3px 0 0 #FF6347;
+    font-weight: bold;
+}
+
+/* Barra di ricerca */
+.search-bar {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Stili per l'albero filogenetico */
 .links {
     fill: none;
     stroke: #000;
     stroke-width: 1.5px;
 }
 
-.taxa-table-container {
-    max-height: 780px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    padding: 5px;
-}
-
-.gene-family-table tr.highlighted,
-.taxa-table tr.highlighted {
-    background-color: #e3f2fd !important;
-    box-shadow: inset 3px 0 0 #FF6347;
-    font-weight: bold;
-}
-
 .link--active {
     stroke: #ff4444 !important;
     stroke-width: 3px !important;
     animation: pulse 0.5s infinite alternate;
+}
+
+.link-extensions {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: 0.25;
+    stroke-width: 0.5px;
 }
 
 .link-extension--active {
@@ -53,77 +121,8 @@
     }
 }
 
-.search-bar {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.link-extensions {
-    fill: none;
-    stroke: #000;
-    stroke-opacity: 0.25;
-    stroke-width: 0.5px;
-}
-
-.clickable-row {
-    transition: all 0.2s;
-}
-
-.clickable-row.highlighted {
-    background-color: #e3f2fd !important;
-    box-shadow: inset 3px 0 0 #FF6347;
-}
-
-.clickable-row:hover {
-    background-color: #f5f5f5;
-}
-
-#taxa-table-container {
-    padding: 10px;
-    max-height: 800px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-}
-
+/* Titoli */
 h2 {
     font-size: 1.25rem;
     margin-bottom: 8px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    padding: 10px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-tr:nth-child(odd) {
-    background-color: #f9fafb;
-}
-
-tr:nth-child(even) {
-    background-color: #ffffff;
-}
-
-tr:hover {
-    background-color: #f3f4f6;
-}
-
-th {
-    background-color: #f3f4f6;
-    font-weight: bold;
-}
-
-td:first-child {
-    font-weight: bold;
 }

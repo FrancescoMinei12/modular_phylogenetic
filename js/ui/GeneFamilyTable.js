@@ -1,73 +1,92 @@
-import { highlightPathAndLabel, highlightGeneFamily } from "./highlightning.js";
+import { highlightGeneFamily } from "./highlightning.js";
 import { renderSearchBar } from "../visualization/searchBarRenderer.js";
 
+/**
+ * @module GeneFamilyTable
+ * @description Module for rendering and handling gene family tables
+ */
+
+/**
+ * @function renderGeneFamilyTable
+ * @description Renders a table displaying gene families with search functionality
+ * @param {Object} data - The gene family data to render
+ * @param {string} container - CSS selector for the container element
+ */
 export function renderGeneFamilyTable(data, container) {
-    console.log("Inizio rendering della tabella delle famiglie geniche...");
-    const tableContainer = document.querySelector(container);
-    tableContainer.innerHTML = "";
+    try {
+        const tableContainer = document.querySelector(container);
+        if (!tableContainer) {
+            throw new Error(`Container element not found: ${container}`);
+        }
 
-    // Crea un contenitore per la barra di ricerca e la tabella
-    const tableWrapper = document.createElement("div");
-    tableWrapper.classList.add("taxa-table-container");
+        tableContainer.innerHTML = "";
 
-    // Aggiungi la barra di ricerca
-    renderSearchBar(container, `${container} table`);
+        const tableWrapper = document.createElement("div");
+        tableWrapper.classList.add("taxa-table-container");
 
-    // Crea la tabella
-    const table = document.createElement("table");
-    table.classList.add("gene-family-table");
+        try {
+            renderSearchBar(container, `${container} table`);
+        } catch (error) {
+            console.error("Error rendering search bar:", error);
+        }
 
-    // Crea l'header della tabella - solo colonna Famiglia
-    const header = table.createTHead();
-    const headerRow = header.insertRow();
-    const th = document.createElement("th");
-    th.textContent = "Famiglia";
-    headerRow.appendChild(th);
+        const table = document.createElement("table");
+        table.classList.add("gene-family-table");
 
-    // Crea il corpo della tabella
-    const tbody = table.createTBody();
+        const header = table.createTHead();
+        const headerRow = header.insertRow();
+        const familyHeaderCell = document.createElement("th");
+        familyHeaderCell.textContent = "Family";
+        headerRow.appendChild(familyHeaderCell);
 
-    // Estrai le famiglie geniche
-    console.log("Estrazione delle famiglie geniche...");
-    const families = extractFamilies(data);
-    console.log("Famiglie estratte:", families.length);
+        const tbody = table.createTBody();
 
-    // Popola la tabella con le famiglie
-    families.forEach(familyId => {
-        console.log("Aggiunta riga per la famiglia:", familyId);
+        const familyList = extractFamilies(data);
 
-        const row = tbody.insertRow();
-        row.classList.add("clickable-row");
-        row.style.cursor = "pointer";
-
-        row.dataset.family = familyId;
-
-        const familyCell = row.insertCell();
-        familyCell.textContent = familyId;
-
-        row.addEventListener("click", function () {
-            // Usa la nuova funzione per evidenziare l'intera famiglia genica
+        familyList.forEach(familyId => {
             try {
-                highlightGeneFamily(data, familyId);
-            } catch (e) {
-                console.log("Errore nell'highlighting della famiglia genica:", e);
+                const row = tbody.insertRow();
+                row.classList.add("clickable-row");
+                row.style.cursor = "pointer";
+                row.dataset.family = familyId;
+
+                const familyCell = row.insertCell();
+                familyCell.textContent = familyId;
+
+                row.addEventListener("click", function () {
+                    try {
+                        highlightGeneFamily(data, familyId);
+                    } catch (error) {
+                        console.error(`Error highlighting gene family "${familyId}":`, error);
+                    }
+                });
+            } catch (error) {
+                console.error(`Error creating row for family "${familyId}":`, error);
             }
         });
-    });
 
-    console.log("Aggiunta della tabella al contenitore...");
-    tableWrapper.appendChild(table);
-    tableContainer.appendChild(tableWrapper);
-    console.log("Rendering della tabella completato.");
+        tableWrapper.appendChild(table);
+        tableContainer.appendChild(tableWrapper);
+    } catch (error) {
+        console.error("Critical error in gene family table rendering:", error);
+    }
 }
 
+/**
+ * @function extractFamilies
+ * @description Extracts family IDs from the data and sorts them alphabetically
+ * @param {Object} data - The gene family data
+ * @returns {string[]} Array of sorted family IDs
+ * @private
+ */
 function extractFamilies(data) {
-    console.log("[DEBUG] Dati delle famiglie in input:", Object.keys(data).length);
+    try {
+        const familyList = Object.keys(data);
+        familyList.sort((a, b) => a.localeCompare(b));
 
-    // Estrai le chiavi e ordinale alfabeticamente
-    const families = Object.keys(data);
-    families.sort((a, b) => a.localeCompare(b));
-
-    console.log("[DEBUG] Famiglie estratte:", families.length);
-    return families;
+        return familyList;
+    } catch (error) {
+        console.error("Error extracting families from data:", error);
+        return [];
+    }
 }

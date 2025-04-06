@@ -136,19 +136,15 @@ function extractTaxa(treeData) {
  */
 function updateTaxonDisplayName(originalName, newName) {
     try {
-        // 1. Trova le etichette dell'albero utilizzando D3
         const treeLabels = d3.selectAll(".labels text");
 
-        // 2. Filtra per trovare l'etichetta corrispondente al taxon originale
         treeLabels.each(function (d) {
             if (d.data && d.data.name === originalName) {
-                // 3. Aggiorna il testo dell'etichetta
                 d3.select(this).text(newName);
                 console.log(`Aggiornato nome taxon da "${originalName}" a "${newName}"`);
             }
         });
 
-        // 4. Salva le modifiche in localStorage
         const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
         customNames[originalName] = newName;
         localStorage.setItem('customTaxonNames', JSON.stringify(customNames));

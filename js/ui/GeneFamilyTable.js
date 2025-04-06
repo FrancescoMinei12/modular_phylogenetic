@@ -1,92 +1,72 @@
-import { highlightGeneFamily } from "./highlightning.js";
 import { renderSearchBar } from "../visualization/searchBarRenderer.js";
+import { highlightGeneFamily } from "./highlightning.js";
 
 /**
- * @module GeneFamilyTable
- * @description Module for rendering and handling gene family tables
+ * @module geneFamilyTable
+ * @description Module for rendering and handling gene family tables with search and highlighting
  */
 
 /**
  * @function renderGeneFamilyTable
  * @description Renders a table displaying gene families with search functionality
  * @param {Object} data - The gene family data to render
- * @param {string} container - CSS selector for the container element
+ * @param {string} containerSelector - CSS selector for the container element
  */
-export function renderGeneFamilyTable(data, container) {
-    try {
-        const tableContainer = document.querySelector(container);
-        if (!tableContainer) {
-            throw new Error(`Container element not found: ${container}`);
-        }
-
-        tableContainer.innerHTML = "";
-
-        const tableWrapper = document.createElement("div");
-        tableWrapper.classList.add("taxa-table-container");
-
-        try {
-            renderSearchBar(container, `${container} table`);
-        } catch (error) {
-            console.error("Error rendering search bar:", error);
-        }
-
-        const table = document.createElement("table");
-        table.classList.add("gene-family-table");
-
-        const header = table.createTHead();
-        const headerRow = header.insertRow();
-        const familyHeaderCell = document.createElement("th");
-        familyHeaderCell.textContent = "Family";
-        headerRow.appendChild(familyHeaderCell);
-
-        const tbody = table.createTBody();
-
-        const familyList = extractFamilies(data);
-
-        familyList.forEach(familyId => {
-            try {
-                const row = tbody.insertRow();
-                row.classList.add("clickable-row");
-                row.style.cursor = "pointer";
-                row.dataset.family = familyId;
-
-                const familyCell = row.insertCell();
-                familyCell.textContent = familyId;
-
-                row.addEventListener("click", function () {
-                    try {
-                        highlightGeneFamily(data, familyId);
-                    } catch (error) {
-                        console.error(`Error highlighting gene family "${familyId}":`, error);
-                    }
-                });
-            } catch (error) {
-                console.error(`Error creating row for family "${familyId}":`, error);
-            }
-        });
-
-        tableWrapper.appendChild(table);
-        tableContainer.appendChild(tableWrapper);
-    } catch (error) {
-        console.error("Critical error in gene family table rendering:", error);
+export function renderGeneFamilyTable(data, containerSelector) {
+    const tableContainer = document.querySelector(containerSelector);
+    if (!tableContainer) {
+        throw new Error(`Container element not found: ${containerSelector}`);
     }
+
+    tableContainer.innerHTML = "";
+
+    renderSearchBar(containerSelector, `${containerSelector} table`);
+
+    const tableWrapper = document.createElement("div");
+    tableWrapper.classList.add("gene-family-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
+
+    const familyTable = document.createElement("table");
+    familyTable.classList.add("gene-family-table");
+
+    const tableHeader = familyTable.createTHead();
+    const headerRow = tableHeader.insertRow();
+
+    const headerCell = headerRow.insertCell();
+    headerCell.textContent = "Gene Family";
+
+    const tableBody = familyTable.createTBody();
+    const familyList = extractFamilies(data);
+
+    familyList.forEach(familyId => {
+        const tableRow = tableBody.insertRow();
+        tableRow.classList.add("clickable-row");
+        tableRow.style.cursor = "pointer";
+        tableRow.dataset.family = familyId;
+
+        const familyCell = tableRow.insertCell();
+        familyCell.textContent = familyId;
+
+        /**
+         * @event click
+         * @description Highlights the selected gene family
+         */
+        tableRow.addEventListener("click", function () {
+            this.classList.toggle("highlighted");
+            highlightGeneFamily(data, familyId);
+        });
+    });
+
+    tableWrapper.appendChild(familyTable);
+    tableContainer.appendChild(tableWrapper);
 }
 
 /**
  * @function extractFamilies
- * @description Extracts family IDs from the data and sorts them alphabetically
+ * @description Extracts and sorts gene family IDs alphabetically
  * @param {Object} data - The gene family data
- * @returns {string[]} Array of sorted family IDs
+ * @returns {string[]} Sorted array of family IDs
  * @private
  */
 function extractFamilies(data) {
-    try {
-        const familyList = Object.keys(data);
-        familyList.sort((a, b) => a.localeCompare(b));
-
-        return familyList;
-    } catch (error) {
-        console.error("Error extracting families from data:", error);
-        return [];
-    }
+    return Object.keys(data).sort((a, b) => a.localeCompare(b));
 }

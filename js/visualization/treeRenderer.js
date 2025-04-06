@@ -14,7 +14,7 @@ import { getColorForTaxa } from "../core/colorManager.js";
  * @param {string} container - The CSS selector where the SVG tree should be rendered.
  */
 export function renderTree(treeData, container) {
-    const outerRadius = Math.min(800, window.innerWidth * 0.6) / 2;
+    const outerRadius = Math.min(750, window.innerWidth * 0.6) / 2;
     const innerRadius = outerRadius - 100;
 
     const root = d3.hierarchy(treeData, function (d) {
@@ -32,7 +32,8 @@ export function renderTree(treeData, container) {
     const svg = d3.select(container).append("svg")
         .attr("width", outerRadius * 2)
         .attr("height", outerRadius * 2)
-        .style("display", "block");
+        .style("display", "block")
+        .style("margin", "0 auto");
 
     const chart = svg.append("g")
         .attr("class", "tree-chart")

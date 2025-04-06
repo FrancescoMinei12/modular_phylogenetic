@@ -1,4 +1,9 @@
-/* Stili generali per tutte le tabelle */
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -35,7 +40,7 @@ tr:hover {
 .taxa-table-container,
 .gene-family-table-container,
 .product-table-container {
-    max-height: 780px;
+    max-height: 680px;
     overflow-y: auto;
     border: 1px solid #ccc;
     border-radius: 8px;

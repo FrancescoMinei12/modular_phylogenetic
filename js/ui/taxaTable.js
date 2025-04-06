@@ -34,7 +34,6 @@ export function renderTaxaTable(treeData, tableSelector) {
     const nameHeaderCell = headerRow.insertCell();
     nameHeaderCell.textContent = "Taxon";
 
-    // Aggiunta header colonna per modifica nome
     const editHeaderCell = headerRow.insertCell();
     editHeaderCell.textContent = "Nome personalizzato";
 
@@ -50,28 +49,22 @@ export function renderTaxaTable(treeData, tableSelector) {
         const nameCell = tableRow.insertCell();
         nameCell.textContent = taxon.name;
 
-        // Aggiunta campo di input per il nome personalizzato
         const editCell = tableRow.insertCell();
         const editInput = document.createElement("input");
         editInput.type = "text";
-        editInput.value = taxon.name; // Inizializza con il nome corrente
+        editInput.value = taxon.name;
         editInput.classList.add("border", "border-gray-300", "rounded", "px-2", "py-1", "w-full", "text-sm");
         editInput.placeholder = "Inserisci nome personalizzato";
 
-        // Aggiungi l'evento per gestire il cambio di nome
         editInput.addEventListener("change", function () {
             const newName = this.value.trim();
             if (newName) {
-                // Aggiorna il nome visualizzato nella cella
                 nameCell.textContent = newName;
 
-                // Salva il nome personalizzato in un attributo per reference
                 tableRow.dataset.customName = newName;
 
-                // Aggiorna il sistema di visualizzazione del nome (se necessario)
                 updateTaxonDisplayName(taxon.originalName, newName);
             } else {
-                // Se il campo è vuoto, ripristina il nome originale
                 this.value = taxon.name;
             }
         });

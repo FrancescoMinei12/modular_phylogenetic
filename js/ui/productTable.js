@@ -1,5 +1,6 @@
 import { renderSearchBar } from "../visualization/searchBarRenderer.js";
 import { highlightProduct } from "./highlightning.js";
+import { renderGenesForProduct } from "../visualization/renderGenesForProduct.js";
 
 /**
  * @module productTable
@@ -14,28 +15,28 @@ import { highlightProduct } from "./highlightning.js";
  */
 export function renderProductTable(data, tableSelector) {
     const tableContainer = document.querySelector(tableSelector);
+    if (!tableContainer) {
+        throw new Error(`Container element not found: ${tableSelector}`);
+    }
+
     tableContainer.innerHTML = "";
 
     renderSearchBar(tableSelector, `${tableSelector} table`);
 
     const tableWrapper = document.createElement("div");
-    tableWrapper.classList.add("product-table-container");
-    tableWrapper.classList.add("h-[400px]");
-    tableWrapper.classList.add("overflow-y-auto");
-    tableWrapper.classList.add("pr-2");
+    tableWrapper.classList.add("product-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
 
     const productTable = document.createElement("table");
     productTable.classList.add("product-table");
 
     const tableHeader = productTable.createTHead();
     const headerRow = tableHeader.insertRow();
-    const productHeaderCell = document.createElement("th");
-    productHeaderCell.textContent = "Prodotto";
-    headerRow.appendChild(productHeaderCell);
 
-    const countHeaderCell = document.createElement("th");
-    countHeaderCell.textContent = "Occorrenze";
-    headerRow.appendChild(countHeaderCell);
+    const nameHeaderCell = headerRow.insertCell();
+    nameHeaderCell.textContent = "Product";
+
+    const countHeaderCell = headerRow.insertCell();
+    countHeaderCell.textContent = "Occurrences";
 
     const productCounts = countProducts(data);
     const tableBody = productTable.createTBody();
@@ -58,8 +59,26 @@ export function renderProductTable(data, tableSelector) {
          * @description Handles row click to toggle highlighting and visualize connected elements
          */
         tableRow.addEventListener("click", function () {
-            this.classList.toggle("highlighted");
+            document.querySelectorAll(".clickable-row").forEach(row => {
+                row.classList.toggle("highlighted", row === this);
+            });
+
             highlightProduct(data, productName);
+
+            const detailsSection = document.getElementById("gene-details-section");
+
+            const detailsTitle = document.getElementById("gene-details-title");
+            const detailsContent = document.getElementById("gene-details-content");
+
+            detailsTitle.textContent = `Genes with product: ${productName}`;
+
+            detailsContent.innerHTML = "";
+
+            renderGenesForProduct(data, productName, detailsContent);
+
+            detailsSection.classList.remove("hidden");
+
+            detailsSection.scrollIntoView({ behavior: "smooth" });
         });
     });
 
@@ -94,3 +113,4 @@ function countProducts(data) {
     return Array.from(productMap.entries())
         .sort((a, b) => b[1] - a[1]);
 }
+

@@ -1,6 +1,12 @@
 import { renderSearchBar } from "../visualization/searchBarRenderer.js";
 import { highlightPathAndLabel } from "./highlightning.js";
-
+import {
+    extractTaxa,
+    loadCustomNamesFromFile,
+    importCustomNames,
+    saveCustomNamesToFile,
+    updateTaxonDisplayName  // Add this import
+} from "../core/taxonFileManager.js";
 /**
  * @module taxaTable
  * @description Module for rendering taxonomic data in tabular format with search and highlighting
@@ -18,9 +24,28 @@ export function renderTaxaTable(treeData, tableSelector) {
         throw new Error(`Container element not found: ${tableSelector}`);
     }
 
+    loadCustomNamesFromFile(treeData, tableSelector);
+
     tableContainer.innerHTML = "";
 
     renderSearchBar(tableSelector, `${tableSelector} table`);
+
+    const importContainer = document.createElement("div");
+    importContainer.classList.add("mb-3", "flex", "justify-end", "gap-2");
+
+    const importButton = document.createElement("button");
+    importButton.textContent = "Importa nomi personalizzati";
+    importButton.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600");
+    importButton.addEventListener("click", () => importCustomNames(treeData, tableSelector));
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Salva nomi su file";
+    saveButton.classList.add("px-3", "py-1", "bg-purple-500", "text-white", "rounded", "text-sm", "hover:bg-purple-600");
+    saveButton.addEventListener("click", () => saveCustomNamesToFile(treeData));
+
+    importContainer.appendChild(importButton);
+    importContainer.appendChild(saveButton);
+    tableContainer.appendChild(importContainer);
 
     const tableWrapper = document.createElement("div");
     tableWrapper.classList.add("taxa-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
@@ -88,60 +113,4 @@ export function renderTaxaTable(treeData, tableSelector) {
 
     tableWrapper.appendChild(taxaTable);
     tableContainer.appendChild(tableWrapper);
-}
-
-/**
- * @function extractTaxa
- * @description Extracts and alphabetically sorts taxa from tree data
- * @param {Object} treeData - The hierarchical tree data containing taxonomic information
- * @returns {Array} Array of { name, originalName } objects
- * @private
- */
-function extractTaxa(treeData) {
-    const taxa = [];
-
-    function traverse(node) {
-        if (node.name?.startsWith("GCA")) {
-            taxa.push({
-                name: node.name.replace(/_/g, " "),
-                originalName: node.name
-            });
-        }
-
-        node.branchset?.forEach(child => traverse(child));
-    }
-
-    try {
-        traverse(treeData);
-        taxa.sort((a, b) => a.name.localeCompare(b.name));
-    } catch (error) {
-        console.error("Error extracting taxa from tree:", error);
-    }
-
-    return taxa;
-}
-
-/**
- * @function updateTaxonDisplayName
- * @description Aggiorna il nome visualizzato per un taxon in tutto il sistema
- * @param {string} originalName - Il nome originale del taxon
- * @param {string} newName - Il nuovo nome da visualizzare
- */
-function updateTaxonDisplayName(originalName, newName) {
-    try {
-        const treeLabels = d3.selectAll(".labels text");
-
-        treeLabels.each(function (d) {
-            if (d.data && d.data.name === originalName) {
-                d3.select(this).text(newName);
-                console.log(`Aggiornato nome taxon da "${originalName}" a "${newName}"`);
-            }
-        });
-
-        const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
-        customNames[originalName] = newName;
-        localStorage.setItem('customTaxonNames', JSON.stringify(customNames));
-    } catch (e) {
-        console.error(`Errore nell'aggiornamento del nome del taxon:`, e);
-    }
 }

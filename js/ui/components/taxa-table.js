@@ -1,12 +1,6 @@
-import { renderSearchBar } from "../visualization/searchBarRenderer.js";
-import { highlightPathAndLabel } from "./highlightning.js";
-import {
-    extractTaxa,
-    loadCustomNamesFromFile,
-    importCustomNames,
-    saveCustomNamesToFile,
-    updateTaxonDisplayName  // Add this import
-} from "../core/taxonFileManager.js";
+import { extractTaxa } from "../../core/taxonomy/taxon-extractor.js";
+import { applyCustomNames } from "../../core/taxonomy/custom-name-manager.js";
+import { loadCustomNamesFromFile } from "../../core/io/file-io.js";
 /**
  * @module taxaTable
  * @description Module for rendering taxonomic data in tabular format with search and highlighting
@@ -94,7 +88,6 @@ export function renderTaxaTable(treeData, tableSelector) {
             }
         });
 
-        // Impedisci che il click sul campo di input attivi l'evento di click della riga
         editInput.addEventListener("click", function (event) {
             event.stopPropagation();
         });

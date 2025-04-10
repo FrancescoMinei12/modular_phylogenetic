@@ -1,5 +1,5 @@
-import { mouseOvered } from "../ui/hoverFunctions.js";
-import { getColorForTaxa } from "../core/colorManager.js";
+import { mouseOvered } from "../interactions/hover-functions.js"
+import { getColorForTaxa } from "../visualization/color-manager.js";
 /**
  * @module treeRenderer
  * @description Module responsible for rendering a radial phylogenetic tree using D3.js.

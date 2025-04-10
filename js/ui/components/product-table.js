@@ -1,6 +1,6 @@
-import { renderSearchBar } from "../visualization/searchBarRenderer.js";
-import { highlightProduct } from "./highlightning.js";
-import { renderGenesForProduct } from "../visualization/renderGenesForProduct.js";
+import { renderSearchBar } from "../visualization/search-bar.js";
+import { highlightProduct } from "../interactions/highlightning.js";
+import { renderGenesForProduct } from "../visualization/product-genes-renderer.js";
 
 /**
  * @module productTable

@@ -1,5 +1,5 @@
-import { renderSearchBar } from "../visualization/searchBarRenderer.js";
-import { highlightGeneFamily } from "./highlightning.js";
+import { renderSearchBar } from "../visualization/search-bar.js";
+import { highlightGeneFamily } from "../interactions/highlightning.js";
 
 /**
  * @module geneFamilyTable

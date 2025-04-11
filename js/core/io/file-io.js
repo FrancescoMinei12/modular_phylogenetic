@@ -1,3 +1,5 @@
+import { applyCustomNames } from '../taxonomy/custom-name-manager.js';
+
 /**
  * @function importCustomNames
  * @description Imports custom names from a JSON file
@@ -85,7 +87,7 @@ export async function loadCustomNamesFromFile(treeData, tableSelector) {
 
         let response;
         try {
-            response = await fetch('./customTaxaNames.json');
+            response = await fetch('../../../assets/customTaxaNames.json');
         } catch (fetchError) {
             console.warn("Could not fetch customTaxaNames.json:", fetchError);
 

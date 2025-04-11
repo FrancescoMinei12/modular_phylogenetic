@@ -1,6 +1,8 @@
 import { extractTaxa } from "../../core/taxonomy/taxon-extractor.js";
-import { applyCustomNames } from "../../core/taxonomy/custom-name-manager.js";
+import { renderSearchBar } from "../visualization/search-bar.js";
 import { loadCustomNamesFromFile } from "../../core/io/file-io.js";
+import { highlightPathAndLabel } from "../interactions/highlightning.js";
+import { updateTaxonDisplayName } from "../../core/taxonomy/custom-name-manager.js";
 /**
  * @module taxaTable
  * @description Module for rendering taxonomic data in tabular format with search and highlighting

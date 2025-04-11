@@ -1,8 +1,5 @@
-import { extractTaxa } from "../../core/taxonomy/taxon-extractor.js";
-import { renderSearchBar } from "../visualization/search-bar.js";
-import { loadCustomNamesFromFile } from "../../core/io/file-io.js";
-import { highlightPathAndLabel } from "../interactions/highlightning.js";
-import { updateTaxonDisplayName } from "../../core/taxonomy/custom-name-manager.js";
+import { PhylogeneticTree } from "../../namespace-init.js";
+
 /**
  * @module taxaTable
  * @description Module for rendering taxonomic data in tabular format with search and highlighting
@@ -14,17 +11,17 @@ import { updateTaxonDisplayName } from "../../core/taxonomy/custom-name-manager.
  * @param {Object} treeData - The hierarchical tree data containing taxonomic information
  * @param {string} tableSelector - CSS selector for the container element
  */
-export function renderTaxaTable(treeData, tableSelector) {
+function renderTaxaTable(treeData, tableSelector) {
     const tableContainer = document.querySelector(tableSelector);
     if (!tableContainer) {
         throw new Error(`Container element not found: ${tableSelector}`);
     }
 
-    loadCustomNamesFromFile(treeData, tableSelector);
+    PhylogeneticTree.core.io.file.loadCustomNamesFromFile(treeData, tableSelector);
 
     tableContainer.innerHTML = "";
 
-    renderSearchBar(tableSelector, `${tableSelector} table`);
+    PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(tableSelector, `${tableSelector} table`);
 
     const importContainer = document.createElement("div");
     importContainer.classList.add("mb-3", "flex", "justify-end", "gap-2");
@@ -58,7 +55,7 @@ export function renderTaxaTable(treeData, tableSelector) {
     const editHeaderCell = headerRow.insertCell();
     editHeaderCell.textContent = "Nome personalizzato";
 
-    const taxa = extractTaxa(treeData);
+    const taxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
     const tableBody = taxaTable.createTBody();
 
     taxa.forEach(taxon => {
@@ -84,7 +81,7 @@ export function renderTaxaTable(treeData, tableSelector) {
 
                 tableRow.dataset.customName = newName;
 
-                updateTaxonDisplayName(taxon.originalName, newName);
+                PhylogeneticTree.core.taxonomy.CustomNameManager.updateTaxonDisplayName(taxon.originalName, newName);
             } else {
                 this.value = taxon.name;
             }
@@ -102,10 +99,14 @@ export function renderTaxaTable(treeData, tableSelector) {
          */
         tableRow.addEventListener("click", function () {
             this.classList.toggle("highlighted");
-            highlightPathAndLabel(taxon.originalName);
+            PhylogeneticTree.ui.interactions.highlightning.highlightPathAndLabel(taxon.originalName);
         });
     });
 
     tableWrapper.appendChild(taxaTable);
     tableContainer.appendChild(tableWrapper);
 }
+
+PhylogeneticTree.ui.components.TaxaTable = {
+    renderTaxaTable
+};

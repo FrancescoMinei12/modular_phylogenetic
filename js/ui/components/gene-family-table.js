@@ -1,5 +1,4 @@
-import { renderSearchBar } from "../visualization/search-bar.js";
-import { highlightGeneFamily } from "../interactions/highlightning.js";
+import { PhylogeneticTree } from "../../namespace-init.js";
 
 /**
  * @module geneFamilyTable
@@ -12,7 +11,7 @@ import { highlightGeneFamily } from "../interactions/highlightning.js";
  * @param {Object} data - The gene family data to render
  * @param {string} containerSelector - CSS selector for the container element
  */
-export function renderGeneFamilyTable(data, containerSelector) {
+function renderGeneFamilyTable(data, containerSelector) {
     const tableContainer = document.querySelector(containerSelector);
     if (!tableContainer) {
         throw new Error(`Container element not found: ${containerSelector}`);
@@ -20,7 +19,7 @@ export function renderGeneFamilyTable(data, containerSelector) {
 
     tableContainer.innerHTML = "";
 
-    renderSearchBar(containerSelector, `${containerSelector} table`);
+    PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(containerSelector, `${containerSelector} table`);
 
     const tableWrapper = document.createElement("div");
     tableWrapper.classList.add("gene-family-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
@@ -52,7 +51,7 @@ export function renderGeneFamilyTable(data, containerSelector) {
          */
         tableRow.addEventListener("click", function () {
             this.classList.toggle("highlighted");
-            highlightGeneFamily(data, familyId);
+            PhylogeneticTree.ui.interactions.highlightning.highlightGeneFamily(data, familyId);
         });
     });
 
@@ -70,3 +69,7 @@ export function renderGeneFamilyTable(data, containerSelector) {
 function extractFamilies(data) {
     return Object.keys(data).sort((a, b) => a.localeCompare(b));
 }
+
+PhylogeneticTree.ui.components.GeneFamilyTable = {
+    renderGeneFamilyTable
+};

@@ -1,3 +1,4 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @module highlightning
  * @description Module for handling highlighting functionality in the phylogenetic tree and related tables
@@ -15,7 +16,7 @@ let currentProductHighlight = null;
  * @description Highlights a path in the phylogenetic tree based on taxon name
  * @param {string} taxonName - Name of the taxon to highlight
  */
-export function highlightPathAndLabel(taxonName) {
+function highlightPathAndLabel(taxonName) {
     if (typeof d3 === 'undefined') {
         return;
     }
@@ -56,7 +57,7 @@ export function highlightPathAndLabel(taxonName) {
  * @param {Object} data - The gene family data
  * @param {string} familyId - ID of the gene family to highlight
  */
-export function highlightGeneFamily(data, familyId) {
+function highlightGeneFamily(data, familyId) {
     if (typeof d3 === 'undefined') {
         return;
     }
@@ -118,7 +119,7 @@ export function highlightGeneFamily(data, familyId) {
  * @param {Object} data - The gene data
  * @param {string} productName - Name of the product to highlight
  */
-export function highlightProduct(data, productName) {
+function highlightProduct(data, productName) {
     if (typeof d3 === 'undefined') {
         return;
     }
@@ -270,3 +271,9 @@ function highlightPath(targetNode) {
         currentNode = currentNode.parent;
     }
 }
+
+PhylogeneticTree.ui.interactions.highlightning = {
+    highlightPathAndLabel,
+    highlightGeneFamily,
+    highlightProduct
+};

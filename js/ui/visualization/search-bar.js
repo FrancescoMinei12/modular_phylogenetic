@@ -1,3 +1,4 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @file searchBarRenderer.js
  * @brief Module for rendering and handling search bar functionality for tables
@@ -9,7 +10,7 @@
  * @param {string} containerSelector - CSS selector for the container element
  * @param {string} tableSelector - CSS selector for the table to be filtered
  */
-export function renderSearchBar(containerSelector, tableSelector) {
+function renderSearchBar(containerSelector, tableSelector) {
     const containerElement = document.querySelector(containerSelector);
 
     const searchBarElement = document.createElement("input");
@@ -65,3 +66,7 @@ function filterTable(queryText, tableSelector) {
         noResultsElement.remove();
     }
 }
+
+PhylogeneticTree.ui.visualization.SearchBar = {
+    renderSearchBar
+};

@@ -1,6 +1,4 @@
-import { renderSearchBar } from "../visualization/search-bar.js";
-import { highlightProduct } from "../interactions/highlightning.js";
-import { renderGenesForProduct } from "../visualization/product-genes-renderer.js";
+import { PhylogeneticTree } from "../../namespace-init.js";
 
 /**
  * @module productTable
@@ -13,7 +11,7 @@ import { renderGenesForProduct } from "../visualization/product-genes-renderer.j
  * @param {Object} data - The extracted gene data containing product information
  * @param {string} tableSelector - CSS selector for the container where the table will be rendered
  */
-export function renderProductTable(data, tableSelector) {
+function renderProductTable(data, tableSelector) {
     const tableContainer = document.querySelector(tableSelector);
     if (!tableContainer) {
         throw new Error(`Container element not found: ${tableSelector}`);
@@ -21,7 +19,7 @@ export function renderProductTable(data, tableSelector) {
 
     tableContainer.innerHTML = "";
 
-    renderSearchBar(tableSelector, `${tableSelector} table`);
+    PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(tableSelector, `${tableSelector} table`);
 
     const tableWrapper = document.createElement("div");
     tableWrapper.classList.add("product-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
@@ -63,7 +61,7 @@ export function renderProductTable(data, tableSelector) {
                 row.classList.toggle("highlighted", row === this);
             });
 
-            highlightProduct(data, productName);
+            PhylogeneticTree.ui.interactions.highlightning.highlightProduct(data, productName);
 
             const detailsSection = document.getElementById("gene-details-section");
 
@@ -74,7 +72,7 @@ export function renderProductTable(data, tableSelector) {
 
             detailsContent.innerHTML = "";
 
-            renderGenesForProduct(data, productName, detailsContent);
+            PhylogeneticTree.ui.visualization.ProductGenesRenderer.renderGenesForProduct(data, productName, detailsContent);
 
             detailsSection.classList.remove("hidden");
 
@@ -114,3 +112,6 @@ function countProducts(data) {
         .sort((a, b) => b[1] - a[1]);
 }
 
+PhylogeneticTree.ui.components.ProductTable = {
+    renderProductTable
+};

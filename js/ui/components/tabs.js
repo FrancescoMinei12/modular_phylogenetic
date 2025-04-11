@@ -1,5 +1,4 @@
-import { renderProductTable } from "./product-table.js";
-import { renderGeneFamilyTable } from "./gene-family-table.js";
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @module tabs
  * @description Module for managing tab navigation in the user interface
@@ -7,7 +6,7 @@ import { renderGeneFamilyTable } from "./gene-family-table.js";
 
 let geneData;
 
-export function setGeneData(data) {
+function setGeneData(data) {
     geneData = data;
 }
 
@@ -32,9 +31,9 @@ function showTab(tabName) {
     document.getElementById("gene-details-section").classList.add("hidden");
 
     if (tabName === 'product') {
-        renderProductTable(geneData, "#product-tab");
+        PhylogeneticTree.ui.components.ProductTable.renderProductTable(geneData, "#product-tab");
     } else if (tabName === 'famiglie') {
-        renderGeneFamilyTable(geneData, "#famiglie-tab");
+        PhylogeneticTree.ui.components.GeneFamilyTable.renderGeneFamilyTable(geneData, "#famiglie-tab");
     }
 
 }
@@ -42,3 +41,7 @@ function showTab(tabName) {
 window.showTab = showTab;
 
 showTab('taxa');
+
+PhylogeneticTree.ui.components.Tabs = {
+    setGeneData
+};

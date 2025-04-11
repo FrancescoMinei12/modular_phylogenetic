@@ -1,10 +1,12 @@
+import { PhylogeneticTree } from '../../namespace-init.js';
+
 /**
  * @function updateTaxonDisplayName
  * @description Updates the display name for a taxon throughout the system
  * @param {string} originalName - The original taxon name
  * @param {string} newName - The new display name
  */
-export function updateTaxonDisplayName(originalName, newName) {
+function updateTaxonDisplayName(originalName, newName) {
     try {
         const treeLabels = d3.selectAll(".labels text");
 
@@ -29,7 +31,7 @@ export function updateTaxonDisplayName(originalName, newName) {
  * @param {Object} treeData - Phylogenetic tree data
  * @param {string} tableSelector - CSS selector for the table container
  */
-export function applyCustomNames(customNames, treeData, tableSelector) {
+function applyCustomNames(customNames, treeData, tableSelector) {
     for (const [originalName, customName] of Object.entries(customNames)) {
         updateTaxonDisplayName(originalName, customName);
     }
@@ -51,4 +53,9 @@ export function applyCustomNames(customNames, treeData, tableSelector) {
             }
         });
     }
+}
+
+PhylogeneticTree.core.taxonomy.CustomNameManager = {
+    updateTaxonDisplayName,
+    applyCustomNames
 }

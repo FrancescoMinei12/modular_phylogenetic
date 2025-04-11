@@ -1,3 +1,5 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
+
 /**
  * @function extractTaxa
  * @description Extracts and alphabetically sorts taxa from tree data
@@ -5,7 +7,7 @@
  * @returns {Array} Array of { name, originalName } objects
  * @private
  */
-export function extractTaxa(treeData) {
+function extractTaxa(treeData) {
     const taxa = [];
 
     function traverse(node) {
@@ -27,4 +29,8 @@ export function extractTaxa(treeData) {
     }
 
     return taxa;
+}
+
+PhylogeneticTree.core.taxonomy.TaxonExtractor = {
+    extractTaxa
 }

@@ -1,3 +1,4 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @module hoverFunctions
  * @description Module for handling hover interactions in the phylogenetic tree visualization
@@ -9,7 +10,7 @@
  * @param {boolean} active - Whether the hover state is active or not
  * @returns {Function} Handler function for mouseover/mouseout events
  */
-export function mouseOvered(active) {
+function mouseOvered(active) {
     return function (d) {
         d3.select(this).classed("label--active", active);
 
@@ -41,3 +42,7 @@ export function mouseOvered(active) {
 function moveToFront() {
     this.parentNode.appendChild(this);
 }
+
+PhylogeneticTree.ui.interactions.hoverFunctions = {
+    mouseOvered
+};

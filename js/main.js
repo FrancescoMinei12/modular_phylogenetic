@@ -1,21 +1,18 @@
-import { parseNewick } from "./core/parser/newickParser2.js";
-import { renderTree } from "./ui/visualization/tree-renderer.js";
-import { renderTaxaTable } from "./ui/components/taxa-table.js";
-import { setGeneData } from "./ui/components/tabs.js";
+import { PhylogeneticTree } from "./namespace-init.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const newickText = await fetch("../assets/albero_nj.newick").then(res => res.text());
-        const treeData = parseNewick(newickText);
+        const treeData = PhylogeneticTree.core.parser.parseNewick2(newickText);
 
-        renderTree(treeData, "#tree-container");
+        PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, "#tree-container");
 
         const taxonomyData = await fetch("../assets/albero_nj.json").then(res => res.json());
-        renderTaxaTable(taxonomyData, "#taxa-tab");
+        PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");
 
         const geneData = await fetch("../assets/extracted_data.json").then(res => res.json());
 
-        setGeneData(geneData);
+        PhylogeneticTree.ui.components.Tabs.setGeneData(geneData);
     } catch (error) {
         console.error("Errore nel caricamento dei dati:", error);
     }

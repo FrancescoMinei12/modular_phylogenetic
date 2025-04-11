@@ -1,3 +1,5 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
+
 /**
  * @module colorManager
  * @description Module for handling color assignments in the phylogenetic visualization
@@ -9,7 +11,7 @@
  * @param {string} taxaName - Name of the taxon to assign color to
  * @returns {string} Hexadecimal color code
  */
-export function getColorForTaxa(taxaName) {
+function getColorForTaxa(taxaName) {
     try {
         if (!taxaName) {
             console.error("Invalid taxon name provided");
@@ -23,3 +25,7 @@ export function getColorForTaxa(taxaName) {
         return "#CCCCCC";
     }
 }
+
+PhylogeneticTree.ui.visualization.ColorManager = {
+    getColorForTaxa
+};

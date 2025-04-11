@@ -1,3 +1,4 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @function renderGenesForProduct
  * @description Renders a table with genes associated with a specific product
@@ -5,7 +6,7 @@
  * @param {string} productName - Product name to filter
  * @param {HTMLElement} container - Element where the table will be inserted
  */
-export function renderGenesForProduct(data, productName, container) {
+function renderGenesForProduct(data, productName, container) {
     const genesTable = document.createElement("table");
     genesTable.classList.add("w-full", "border-collapse");
 
@@ -50,3 +51,7 @@ export function renderGenesForProduct(data, productName, container) {
 
     container.appendChild(genesTable);
 }
+
+PhylogeneticTree.ui.visualization.ProductGenesRenderer = {
+    renderGenesForProduct
+};

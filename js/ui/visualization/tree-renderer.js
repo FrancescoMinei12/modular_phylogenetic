@@ -1,5 +1,4 @@
-import { mouseOvered } from "../interactions/hover-functions.js"
-import { getColorForTaxa } from "../visualization/color-manager.js";
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @module treeRenderer
  * @description Module responsible for rendering a radial phylogenetic tree using D3.js.
@@ -13,7 +12,7 @@ import { getColorForTaxa } from "../visualization/color-manager.js";
  * @param {Object} treeData - The hierarchical tree data (from Newick parser).
  * @param {string} container - The CSS selector where the SVG tree should be rendered.
  */
-export function renderTree(treeData, container) {
+function renderTree(treeData, container) {
     const outerRadius = Math.min(750, window.innerWidth * 0.6) / 2;
     const innerRadius = outerRadius - 100;
 
@@ -106,7 +105,7 @@ export function renderTree(treeData, container) {
 
     root.data.length = 0;
     setRadius(root, 0, innerRadius / maxLength(root));
-    getColorForTaxa(root);
+    PhylogeneticTree.ui.visualization.ColorManager.getColorForTaxa(root);
 
     const linkExtension = chart.append("g")
         .attr("class", "link-extensions")
@@ -163,10 +162,14 @@ export function renderTree(treeData, container) {
         .text(d => d.data.name.replace(/_/g, " "))
         .on("mouseover", function (event, d) {
             d3.select(this).transition().attr("font-size", "12px");
-            mouseOvered(true).call(this, d);
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(true).call(this, d);
         })
         .on("mouseout", function (event, d) {
             d3.select(this).transition().attr("font-size", "10px");
-            mouseOvered(false).call(this, d);
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
         });
 }
+
+PhylogeneticTree.ui.visualization.TreeRenderer = {
+    renderTree
+};

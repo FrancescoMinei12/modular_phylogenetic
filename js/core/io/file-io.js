@@ -1,4 +1,4 @@
-import { applyCustomNames } from '../taxonomy/custom-name-manager.js';
+import { PhylogeneticTree } from '../../namespace-init.js';
 
 /**
  * @function importCustomNames
@@ -6,7 +6,8 @@ import { applyCustomNames } from '../taxonomy/custom-name-manager.js';
  * @param {Object} treeData - Phylogenetic tree data
  * @param {string} tableSelector - CSS selector for the table container
  */
-export function importCustomNames(treeData, tableSelector) {
+
+function importCustomNames(treeData, tableSelector) {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = ".json";
@@ -21,7 +22,7 @@ export function importCustomNames(treeData, tableSelector) {
             const content = await file.text();
             const customNames = JSON.parse(content);
 
-            applyCustomNames(customNames, treeData, tableSelector);
+            PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(customNames, treeData, tableSelector);
 
             const existingNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
             const mergedNames = { ...existingNames, ...customNames };
@@ -44,10 +45,10 @@ export function importCustomNames(treeData, tableSelector) {
  * @description Saves the current custom taxa names to a downloadable file
  * @param {Object} treeData - Used to ensure all taxa are included
  */
-export function saveCustomNamesToFile(treeData) {
+function saveCustomNamesToFile(treeData) {
     try {
         const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
-        const allTaxa = extractTaxa(treeData);
+        const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
         allTaxa.forEach(taxon => {
             if (!customNames[taxon.originalName]) {
                 customNames[taxon.originalName] = taxon.name;
@@ -81,7 +82,7 @@ export function saveCustomNamesToFile(treeData) {
  * @param {Object} treeData - The hierarchical tree data
  * @param {string} tableSelector - CSS selector for the table container
  */
-export async function loadCustomNamesFromFile(treeData, tableSelector) {
+async function loadCustomNamesFromFile(treeData, tableSelector) {
     try {
         const storedNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
 
@@ -92,7 +93,7 @@ export async function loadCustomNamesFromFile(treeData, tableSelector) {
             console.warn("Could not fetch customTaxaNames.json:", fetchError);
 
             if (Object.keys(storedNames).length > 0) {
-                applyCustomNames(storedNames, treeData, tableSelector);
+                PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(storedNames, treeData, tableSelector);
             }
             return;
         }
@@ -101,14 +102,14 @@ export async function loadCustomNamesFromFile(treeData, tableSelector) {
             const fileNames = await response.json();
 
             const mergedNames = { ...fileNames, ...storedNames };
-            applyCustomNames(mergedNames, treeData, tableSelector);
+            PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(mergedNames, treeData, tableSelector);
             localStorage.setItem('customTaxonNames', JSON.stringify(mergedNames));
         } else {
             if (Object.keys(storedNames).length > 0) {
-                applyCustomNames(storedNames, treeData, tableSelector);
+                PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(storedNames, treeData, tableSelector);
             }
 
-            const allTaxa = extractTaxa(treeData);
+            const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
             const defaultNames = {};
 
             allTaxa.forEach(taxon => {
@@ -122,7 +123,13 @@ export async function loadCustomNamesFromFile(treeData, tableSelector) {
 
         const storedNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
         if (Object.keys(storedNames).length > 0) {
-            applyCustomNames(storedNames, treeData, tableSelector);
+            PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(storedNames, treeData, tableSelector);
         }
     }
+}
+
+PhylogeneticTree.core.io.file = {
+    importCustomNames,
+    saveCustomNamesToFile,
+    loadCustomNamesFromFile
 }

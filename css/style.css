@@ -36,7 +36,6 @@ tr:hover {
     background-color: #f3f4f6;
 }
 
-/* Stili per i container delle tabelle con scrollbar */
 .taxa-table-container,
 .gene-family-table-container,
 .product-table-container {
@@ -48,7 +47,6 @@ tr:hover {
     margin-top: 10px;
 }
 
-/* Stili per le righe cliccabili */
 .clickable-row {
     cursor: pointer;
     transition: all 0.2s;
@@ -58,7 +56,6 @@ tr:hover {
     background-color: #f5f5f5;
 }
 
-/* Stili per righe evidenziate */
 .taxa-table tr.highlighted,
 .gene-family-table tr.highlighted,
 .product-table tr.highlighted {
@@ -67,7 +64,6 @@ tr:hover {
     font-weight: bold;
 }
 
-/* Barra di ricerca */
 .search-bar {
     width: 100%;
     padding: 8px;
@@ -77,7 +73,6 @@ tr:hover {
     font-size: 14px;
 }
 
-/* Stili per l'albero filogenetico */
 .links {
     fill: none;
     stroke: #000;
@@ -85,8 +80,8 @@ tr:hover {
 }
 
 .link--active {
-    stroke: #ff4444 !important;
-    stroke-width: 3px !important;
+    stroke: #FF4500 !important;
+    stroke-width: 2.5px !important;
     animation: pulse 0.5s infinite alternate;
 }
 
@@ -105,15 +100,20 @@ tr:hover {
 }
 
 .label--active {
-    fill: #ff4444 !important;
-    font-weight: 700;
-    text-shadow: 0 0 3px rgba(255, 68, 68, 0.3);
+    fill: #FF4500 !important;
+    font-weight: bold !important;
+    stroke: none !important;
 }
 
 .node--active {
     fill: #ff4444 !important;
     stroke: white !important;
     r: 6 !important;
+}
+
+.node--active circle {
+    fill: #FF4500;
+    r: 5.5;
 }
 
 @keyframes pulse {
@@ -126,7 +126,6 @@ tr:hover {
     }
 }
 
-/* Titoli */
 h2 {
     font-size: 1.25rem;
     margin-bottom: 8px;

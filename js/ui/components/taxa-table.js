@@ -24,15 +24,15 @@ function renderTaxaTable(treeData, tableSelector) {
     PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(tableSelector, `${tableSelector} table`);
 
     const importContainer = document.createElement("div");
-    importContainer.classList.add("mb-3", "flex", "justify-end", "gap-2");
+    importContainer.classList.add("mb-3", "flex", "justify-start", "gap-2");
 
     const importButton = document.createElement("button");
-    importButton.textContent = "Importa nomi personalizzati";
+    importButton.textContent = "Import custom names";
     importButton.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600");
     importButton.addEventListener("click", () => importCustomNames(treeData, tableSelector));
 
     const saveButton = document.createElement("button");
-    saveButton.textContent = "Salva nomi su file";
+    saveButton.textContent = "Save names to file";
     saveButton.classList.add("px-3", "py-1", "bg-purple-500", "text-white", "rounded", "text-sm", "hover:bg-purple-600");
     saveButton.addEventListener("click", () => saveCustomNamesToFile(treeData));
 
@@ -72,7 +72,7 @@ function renderTaxaTable(treeData, tableSelector) {
         editInput.type = "text";
         editInput.value = taxon.name;
         editInput.classList.add("border", "border-gray-300", "rounded", "px-2", "py-1", "w-full", "text-sm");
-        editInput.placeholder = "Inserisci nome personalizzato";
+        editInput.placeholder = "Enter custom name";
 
         editInput.addEventListener("change", function () {
             const newName = this.value.trim();

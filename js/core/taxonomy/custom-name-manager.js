@@ -8,7 +8,7 @@ import { PhylogeneticTree } from '../../namespace-init.js';
  */
 function updateTaxonDisplayName(originalName, newName) {
     try {
-        const treeLabels = d3.selectAll(".labels text");
+        const treeLabels = d3.selectAll(".labels text, .nodes .node text");
 
         treeLabels.each(function (d) {
             if (d.data && d.data.name === originalName) {

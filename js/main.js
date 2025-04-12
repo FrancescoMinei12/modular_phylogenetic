@@ -22,9 +22,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         const newickText = await fetch("../assets/albero_nj.newick").then(res => res.text());
         const treeData = PhylogeneticTree.core.parser.parseNewick2(newickText);
 
+        const container = "#tree-container";
 
-        PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, "#tree-container");
+        PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, container);
 
+        PhylogeneticTree.ui.components.layoutSwitch.createToggleSwitch("#layout-switch", (isOn) => {
+            const treeContainer = document.querySelector(container);
+            if (treeContainer)
+                treeContainer.innerHTML = "";
+
+            if (isOn) {
+                PhylogeneticTree.ui.visualization.TreeRendererHorizontal.renderTree(treeData, container);
+            } else {
+                PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, container);
+            }
+
+            const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
+            if (Object.keys(customNames).length > 0) {
+                PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(customNames, treeData, "#taxa-tab");
+            }
+        });
 
         const taxonomyData = await fetch("../assets/albero_nj.json").then(res => res.json());
         PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");

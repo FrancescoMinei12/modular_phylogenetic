@@ -194,6 +194,11 @@ function resetHighlights() {
             .classed("label--active", false)
             .classed("node--active", false);
 
+        d3.selectAll(".tree-chart text")
+            .style("fill", null)
+            .style("font-weight", null)
+            .style("stroke", null);
+
         d3.selectAll(".taxa-table tr.highlighted, .gene-family-table tr.highlighted, .product-table tr.highlighted")
             .classed("highlighted", false);
     } catch (e) {
@@ -254,11 +259,16 @@ function highlightPath(targetNode) {
                     .classed("link--active", true)
                     .raise();
             }
+
             if (currentNode.labelNode) {
                 d3.select(currentNode.labelNode)
                     .classed("label--active", true)
+                    .style("fill", "#FF4500")
+                    .style("font-weight", "bold")
+                    .style("stroke", "none")
                     .raise();
             }
+
             if (currentNode.nodeElement) {
                 d3.select(currentNode.nodeElement)
                     .classed("node--active", true)

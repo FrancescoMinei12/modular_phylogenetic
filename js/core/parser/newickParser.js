@@ -19,8 +19,8 @@ import { PhylogeneticTree } from '../../namespace-init.js';
  */
 function parseNewick(a) {
     if (typeof a !== 'string') {
-        console.error('Errore: i dati passati non sono una stringa');
-        return null;  // Gestisci l'errore
+        console.error('Error: input data is not a string');
+        return null;
     }
     for (var e = [], r = {}, s = a.split(/\s*(;|\(|\)|,|:)\s*/), t = 0; t < s.length; t++) {
         var n = s[t];
@@ -44,7 +44,7 @@ function parseNewick(a) {
  */
 function parseNewick2(a) {
     if (typeof a !== 'string') {
-        console.error('Errore: i dati passati non sono una stringa');
+        console.error('Error: input data is not a string');
         return null;
     }
 
@@ -73,7 +73,7 @@ function parseNewick2(a) {
             case ',':
                 current = { branchset: [] };
                 if (stack.length === 0) {
-                    console.error('Errore di sintassi: virgola senza parentesi aperta');
+                    console.error('Syntax error: comma without opening parenthesis');
                     return null;
                 }
                 stack[stack.length - 1].branchset.push(current);
@@ -81,7 +81,7 @@ function parseNewick2(a) {
 
             case ')':
                 if (stack.length === 0) {
-                    console.error('Errore di sintassi: parentesi chiusa senza apertura');
+                    console.error('Syntax error: closing parenthesis without opening parenthesis');
                     return null;
                 }
                 current = stack.pop();

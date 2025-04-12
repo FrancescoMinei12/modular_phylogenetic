@@ -6,7 +6,6 @@
  */
 
 import { PhylogeneticTree } from "./namespace-init.js";
-
 /**
  * @brief Main application initialization function
  * @description Executes when the DOM is fully loaded. Handles the complete startup sequence:
@@ -25,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const container = "#tree-container";
 
         PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, container);
+        PhylogeneticTree.ui.components.TreeControls.createControlPanel("#controls-container", treeData, container);
 
         PhylogeneticTree.ui.components.layoutSwitch.createToggleSwitch("#layout-switch", (isOn) => {
             const treeContainer = document.querySelector(container);

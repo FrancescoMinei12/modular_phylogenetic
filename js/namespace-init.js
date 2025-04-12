@@ -25,6 +25,7 @@ import "./ui/components/gene-family-table.js";
 import "./ui/components/product-table.js";
 import "./ui/components/tabs.js";
 import "./ui/components/layout-switch.js";
+import "./ui/components/controllers-bar.js";
 
 import "./ui/interactions/highlightning.js";
 import "./ui/interactions/hover-functions.js";

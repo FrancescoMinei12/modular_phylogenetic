@@ -130,3 +130,105 @@ h2 {
     font-size: 1.25rem;
     margin-bottom: 8px;
 }
+
+.tree-control-panel {
+    display: flex;
+    gap: 16px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.zoom-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.zoom-controls button {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.zoom-controls button:hover {
+    background-color: #e0e0e0;
+}
+
+.label-size-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.label-size-control input {
+    width: 100px;
+}
+
+.pan-mode {
+    cursor: grab;
+    transition: none;
+}
+
+.pan-mode:active {
+    cursor: grabbing;
+}
+
+.move-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.move-controls button {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.move-controls button:hover {
+    background-color: #e0e0e0;
+}
+
+.toggle-button.active {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    color: #0d47a1;
+}
+
+.zoom-controls button i,
+.move-controls button i {
+    font-size: 14px;
+    line-height: 1;
+}
+
+#tree-container {
+    transform-origin: 0 0;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#tree-container.pan-mode {
+    transition: none;
+}
+
+#tree-container:not(.pan-mode) {
+    transition: transform 0.2s ease-out;
+}
+
+.tree-container-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}

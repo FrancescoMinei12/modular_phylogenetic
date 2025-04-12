@@ -29,12 +29,12 @@ function renderTaxaTable(treeData, tableSelector) {
     const importButton = document.createElement("button");
     importButton.textContent = "Import custom names";
     importButton.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600");
-    importButton.addEventListener("click", () => importCustomNames(treeData, tableSelector));
+    importButton.addEventListener("click", () => PhylogeneticTree.core.io.file.importCustomNames(treeData, tableSelector));
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "Save names to file";
     saveButton.classList.add("px-3", "py-1", "bg-purple-500", "text-white", "rounded", "text-sm", "hover:bg-purple-600");
-    saveButton.addEventListener("click", () => saveCustomNamesToFile(treeData));
+    saveButton.addEventListener("click", () => PhylogeneticTree.core.io.file.saveCustomNamesToFile(treeData));
 
     importContainer.appendChild(importButton);
     importContainer.appendChild(saveButton);

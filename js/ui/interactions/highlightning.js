@@ -285,5 +285,6 @@ function highlightPath(targetNode) {
 PhylogeneticTree.ui.interactions.highlightning = {
     highlightPathAndLabel,
     highlightGeneFamily,
-    highlightProduct
+    highlightProduct,
+    resetHighlights
 };

@@ -1,4 +1,5 @@
 import { PhylogeneticTree } from "../../namespace-init.js";
+import { TreeConfig } from "../config/tree-config.js";
 
 /**
  * @module treeRendererHorizontal
@@ -13,15 +14,9 @@ import { PhylogeneticTree } from "../../namespace-init.js";
  * @param {HTMLElement} container - The DOM element where the SVG tree should be rendered.
  */
 function renderTree(treeData, container) {
-    const width = Math.min(800, window.innerWidth * 0.9);
-    const height = 700;
-
-    const margin = {
-        top: 55,
-        right: 90,
-        bottom: 55,
-        left: 90
-    };
+    const width = TreeConfig.width;
+    const height = TreeConfig.height;
+    const margin = TreeConfig.margin;
 
     const svg = d3.select(container)
         .append("svg")
@@ -30,7 +25,13 @@ function renderTree(treeData, container) {
         .style("display", "block")
         .style("margin", "0 auto");
 
-    const root = d3.hierarchy(treeData, d => d.branchset);
+    const root = d3.hierarchy(treeData, function (d) {
+        return d.branchset;
+    }).sum(function (d) {
+        return d.branchset ? 0 : 1;
+    }).sort(function (a, b) {
+        return (a.value - b.value) || d3.ascending(a.data.length, b.data.length);
+    });
 
     const chart = svg.append("g")
         .attr("class", "tree-chart")
@@ -38,7 +39,7 @@ function renderTree(treeData, container) {
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     const treeLayout = d3.tree()
-        .nodeSize([30, 0])
+        .nodeSize([TreeConfig.horizontal.nodeSpacing, 0])
         .size([
             height - margin.top - margin.bottom,
             width - margin.left - margin.right

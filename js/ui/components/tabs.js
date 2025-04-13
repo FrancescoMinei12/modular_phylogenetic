@@ -30,6 +30,12 @@ function showTab(tabName) {
 
     document.getElementById("gene-details-section").classList.add("hidden");
 
+    if (PhylogeneticTree.ui.interactions &&
+        PhylogeneticTree.ui.interactions.highlightning &&
+        typeof PhylogeneticTree.ui.interactions.highlightning.resetHighlights === 'function') {
+        PhylogeneticTree.ui.interactions.highlightning.resetHighlights();
+    }
+
     if (tabName === 'product') {
         PhylogeneticTree.ui.components.ProductTable.renderProductTable(geneData, "#product-tab");
     } else if (tabName === 'famiglie') {

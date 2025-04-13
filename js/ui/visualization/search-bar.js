@@ -18,6 +18,10 @@ function renderSearchBar(containerSelector, tableSelector) {
     searchBarElement.placeholder = "Search...";
     searchBarElement.classList.add("search-bar");
 
+    const containerId = containerSelector.replace(/[^a-zA-Z0-9]/g, '-').replace(/^-+|-+$/g, '');
+    searchBarElement.id = `search-${containerId}`;
+    searchBarElement.name = `search-${containerId}`;
+
     searchBarElement.addEventListener("input", function () {
         const queryText = searchBarElement.value;
         filterTable(queryText, tableSelector);

@@ -82,6 +82,8 @@ function createControlPanel(containerId, treeData, treeContainerId) {
     labelSizeSlider.min = "8";
     labelSizeSlider.max = "16";
     labelSizeSlider.value = "12";
+    labelSizeSlider.id = "label-size-control";
+    labelSizeSlider.name = "label-size";
     labelSizeSlider.addEventListener("input", (e) => changeLabelSize(e.target.value, treeContainerId));
 
     zoomControls.appendChild(zoomInBtn);

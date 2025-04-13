@@ -11,6 +11,8 @@ function importCustomNames(treeData, tableSelector) {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = ".json";
+    fileInput.id = "custom-names-import";
+    fileInput.name = "custom-names-import";
     fileInput.style.display = "none";
     document.body.appendChild(fileInput);
 

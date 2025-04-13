@@ -73,6 +73,8 @@ function renderTaxaTable(treeData, tableSelector) {
         editInput.value = taxon.name;
         editInput.classList.add("border", "border-gray-300", "rounded", "px-2", "py-1", "w-full", "text-sm");
         editInput.placeholder = "Enter custom name";
+        editInput.id = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+        editInput.name = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
         editInput.addEventListener("change", function () {
             const newName = this.value.trim();

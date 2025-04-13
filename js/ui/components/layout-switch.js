@@ -34,6 +34,9 @@ function createToggleSwitch(containerSelector, onToggle = () => { }) {
     input.type = "checkbox";
     input.className = "sr-only";
 
+    input.id = "tree-layout-toggle";
+    input.name = "tree-layout";
+
     const labelTextRight = document.createElement("span");
     labelTextRight.className = "ml-2 text-sm font-medium text-gray-700";
     labelTextRight.textContent = "Horizontal";

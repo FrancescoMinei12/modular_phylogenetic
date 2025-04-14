@@ -1,5 +1,4 @@
 import { PhylogeneticTree } from "../../namespace-init.js";
-import { TreeConfig } from "../config/tree-config.js";
 /**
  * @module treeRenderer
  * @description Module responsible for rendering a radial phylogenetic tree using D3.js.
@@ -13,9 +12,10 @@ import { TreeConfig } from "../config/tree-config.js";
  * @param {Object} treeData - The hierarchical tree data (from Newick parser).
  * @param {string} container - The CSS selector where the SVG tree should be rendered.
  */
+
 function renderTree(treeData, container) {
-    const minDimension = Math.min(TreeConfig.width, TreeConfig.height);
-    const outerRadius = minDimension * TreeConfig.radial.outerRadiusRatio;
+    const minDimension = Math.min(PhylogeneticTree.ui.config.Tree.TreeConfig.width, PhylogeneticTree.ui.config.Tree.TreeConfig.height);
+    const outerRadius = minDimension * PhylogeneticTree.ui.config.Tree.TreeConfig.radial.outerRadiusRatio;
     const innerRadius = outerRadius - 100;
 
     const root = d3.hierarchy(treeData, function (d) {

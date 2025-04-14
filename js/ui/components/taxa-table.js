@@ -23,8 +23,11 @@ function renderTaxaTable(treeData, tableSelector) {
 
     PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(tableSelector, `${tableSelector} table`);
 
-    const importContainer = document.createElement("div");
-    importContainer.classList.add("mb-3", "flex", "justify-start", "gap-2");
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("mb-3", "flex", "justify-between", "items-center", "w-full");
+
+    const leftButtonGroup = document.createElement("div");
+    leftButtonGroup.classList.add("flex", "gap-2");
 
     const importButton = document.createElement("button");
     importButton.textContent = "Import custom names";
@@ -36,9 +39,19 @@ function renderTaxaTable(treeData, tableSelector) {
     saveButton.classList.add("px-3", "py-1", "bg-purple-500", "text-white", "rounded", "text-sm", "hover:bg-purple-600");
     saveButton.addEventListener("click", () => PhylogeneticTree.core.io.file.saveCustomNamesToFile(treeData));
 
-    importContainer.appendChild(importButton);
-    importContainer.appendChild(saveButton);
-    tableContainer.appendChild(importContainer);
+    leftButtonGroup.appendChild(importButton);
+    leftButtonGroup.appendChild(saveButton);
+
+    const rightButtonGroup = document.createElement("div");
+    const resetButton = document.createElement("button");
+    resetButton.textContent = "Reset names";
+    resetButton.classList.add("px-3", "py-1", "bg-red-500", "text-white", "rounded", "text-sm", "hover:bg-red-600");
+    resetButton.addEventListener("click", () => resetCustomNames(treeData, tableSelector));
+    rightButtonGroup.appendChild(resetButton);
+
+    buttonContainer.appendChild(leftButtonGroup);
+    buttonContainer.appendChild(rightButtonGroup);
+    tableContainer.appendChild(buttonContainer);
 
     const tableWrapper = document.createElement("div");
     tableWrapper.classList.add("taxa-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
@@ -109,6 +122,47 @@ function renderTaxaTable(treeData, tableSelector) {
     tableContainer.appendChild(tableWrapper);
 }
 
+/**
+ * @function resetCustomNames
+ * @description Resets all custom taxon names to their original values
+ * @param {Object} treeData - The hierarchical tree data
+ * @param {string} tableSelector - CSS selector for the table container
+ */
+function resetCustomNames(treeData, tableSelector) {
+    try {
+        localStorage.removeItem('customTaxonNames');
+
+        const taxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
+
+        taxa.forEach(taxon => {
+            const row = document.querySelector(`tr[data-taxon="${taxon.originalName}"]`);
+            if (row) {
+                const nameCell = row.cells[0];
+                nameCell.textContent = taxon.originalName;
+
+                const inputId = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+                const inputField = document.getElementById(inputId);
+                if (inputField) {
+                    inputField.value = taxon.originalName;
+                }
+            }
+        });
+
+        const treeLabels = d3.selectAll(".labels text");
+        treeLabels.each(function (d) {
+            if (d.data && d.data.name) {
+                d3.select(this).text(d.data.name);
+            }
+        });
+
+        alert('All custom names have been reset to original values.');
+    } catch (error) {
+        console.error('Error resetting custom names:', error);
+        alert('Error resetting custom names');
+    }
+}
+
 PhylogeneticTree.ui.components.TaxaTable = {
-    renderTaxaTable
+    renderTaxaTable,
+    resetCustomNames
 };

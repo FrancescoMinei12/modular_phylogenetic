@@ -27,6 +27,8 @@ import "./ui/components/tabs.js";
 import "./ui/components/layout-switch.js";
 import "./ui/components/controllers-bar.js";
 
+import "./ui/config/tree-config.js";
+
 import "./ui/interactions/highlightning.js";
 import "./ui/interactions/hover-functions.js";
 

@@ -1,3 +1,4 @@
+import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @file Configuration for phylogenetic tree visualization
  * @module treeConfig
@@ -13,7 +14,7 @@
  * @property {Object} horizontal - Horizontal layout settings {nodeSpacing}
  */
 
-export const TreeConfig = {
+const TreeConfig = {
     width: Math.min(800, window.innerWidth * 0.85),
     height: 800,
 
@@ -31,3 +32,7 @@ export const TreeConfig = {
         nodeSpacing: 30,
     }
 };
+
+PhylogeneticTree.ui.config.Tree = {
+    TreeConfig
+}

@@ -55,6 +55,13 @@ export const PhylogeneticTree = {
         components: {},
 
         /**
+         * @namespace config
+         * @brief Configuration settings
+         * @description Namespace for application configuration settings.
+         */
+        config: {},
+
+        /**
          * @namespace interactions
          * @brief User interaction handlers
          * @description Namespace for managing user interactions and event handling.

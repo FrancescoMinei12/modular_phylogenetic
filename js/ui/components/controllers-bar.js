@@ -99,7 +99,89 @@ function createControlPanel(containerId, treeData, treeContainerId) {
     controlPanel.appendChild(moveControls);
     controlPanel.appendChild(labelSizeControl);
 
+    const rangeSliderContainer = document.createElement("div");
+    rangeSliderContainer.className = "range-slider-container";
+    rangeSliderContainer.style.width = "30%";
+    rangeSliderContainer.style.marginLeft = "auto";
+    rangeSliderContainer.style.paddingLeft = "15px";
+
+    const rangeLabel = document.createElement("span");
+    rangeLabel.textContent = "Filtro range:";
+    rangeLabel.className = "range-slider-label";
+
+    const rangeSlider = document.createElement("div");
+    rangeSlider.id = "range-slider";
+    rangeSlider.className = "range-slider";
+
+    const minValueElement = document.createElement("span");
+    const maxValueElement = document.createElement("span");
+
+    const minLabelElement = document.createElement("span");
+    minLabelElement.textContent = "Singleton: ";
+    const maxLabelElement = document.createElement("span");
+    maxLabelElement.textContent = "Core: ";
+
+    const middleLabelElement = document.createElement("span");
+    middleLabelElement.textContent = "Dispensable: ";
+    const diffValueElement = document.createElement("span");
+
+    const rangeValues = document.createElement("div");
+    rangeValues.className = "range-slider-values";
+    rangeValues.style.display = "flex";
+    rangeValues.style.justifyContent = "space-between";
+
+    const minValueContainer = document.createElement("div");
+    minValueContainer.appendChild(minLabelElement);
+    minValueContainer.appendChild(minValueElement);
+
+    const middleValueContainer = document.createElement("div");
+    middleValueContainer.appendChild(middleLabelElement);
+    middleValueContainer.appendChild(diffValueElement);
+    middleValueContainer.style.textAlign = "center";
+
+    const maxValueContainer = document.createElement("div");
+    maxValueContainer.appendChild(maxLabelElement);
+    maxValueContainer.appendChild(maxValueElement);
+
+    rangeValues.appendChild(minValueContainer);
+    rangeValues.appendChild(middleValueContainer);
+    rangeValues.appendChild(maxValueContainer);
+
+    rangeSliderContainer.appendChild(rangeSlider);
+    rangeSliderContainer.appendChild(rangeValues);
+
+    controlPanel.appendChild(rangeSliderContainer);
+
     container.appendChild(controlPanel);
+
+    noUiSlider.create(rangeSlider, {
+        start: [20, 80],
+        connect: true,
+        step: 1,
+        range: {
+            'min': 0,
+            'max': 100
+        },
+        format: {
+            to: value => Math.round(value),
+            from: value => Number(value)
+        }
+    });
+
+    rangeSlider.noUiSlider.on('update', function (values, handle) {
+        const minValue = parseInt(values[0]);
+        const maxValue = parseInt(values[1]);
+
+        minValueElement.textContent = minValue;
+
+        const difference = maxValue - minValue;
+        diffValueElement.textContent = difference;
+
+        const coreValue = 100 - maxValue;
+        maxValueElement.textContent = coreValue;
+
+        filterTreeByRange(minValue, maxValue, treeData, treeContainerId);
+    });
 }
 
 /**
@@ -295,6 +377,44 @@ function clampTranslation(treeContainerId) {
     _translateY = Math.min(maxY, Math.max(minY, _translateY));
 }
 
+/**
+ * @function filterTreeByRange
+ * @memberof PhylogeneticTree.ui.components.TreeControls
+ * @description Filters tree elements based on the specified range
+ * @param {number} min - Minimum range value
+ * @param {number} max - Maximum range value
+ * @param {Object} treeData - Phylogenetic tree data object
+ * @param {string} treeContainerId - ID selector for tree container
+ */
+function filterTreeByRange(min, max, treeData, treeContainerId) {
+    const treeContainer = document.querySelector(treeContainerId);
+    if (!treeContainer) return;
+
+    const nodes = treeContainer.querySelectorAll('.node');
+
+    nodes.forEach(node => {
+        const nodeValue = parseFloat(node.getAttribute('data-value') || 0);
+
+        let nodeCategory;
+        if (nodeValue < min) {
+            nodeCategory = 'singleton';
+        } else if (nodeValue > max) {
+            nodeCategory = 'core';
+        } else {
+            nodeCategory = 'dispensable';
+        }
+
+        const selectedCategory = node.getAttribute('data-filter-category');
+
+        if (!selectedCategory || nodeCategory === selectedCategory.toLowerCase()) {
+            node.style.opacity = 1;
+            node.style.display = '';
+        } else {
+            node.style.opacity = 0.2;
+        }
+    });
+}
+
 PhylogeneticTree.ui.components.TreeControls = {
     createControlPanel,
     updateTransform,
@@ -303,5 +423,6 @@ PhylogeneticTree.ui.components.TreeControls = {
     zoomOut,
     resetView,
     changeLabelSize,
-    clampTranslation
+    clampTranslation,
+    filterTreeByRange
 };

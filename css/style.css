@@ -232,3 +232,44 @@ h2 {
     overflow: hidden;
     position: relative;
 }
+
+.range-slider-container {
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.range-slider-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.range-slider {
+    height: 10px;
+    margin-bottom: 10px;
+}
+
+.range-slider-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Stili opzionali per personalizzare l'aspetto di noUiSlider */
+.noUi-connect {
+    background: #3498db;
+}
+
+.noUi-handle {
+    border-radius: 50%;
+    background: #2980b9;
+    box-shadow: none;
+    cursor: grab;
+}
+
+.noUi-handle:active {
+    cursor: grabbing;
+}

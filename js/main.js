@@ -21,6 +21,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const newickText = await fetch("../assets/albero_nj.newick").then(res => res.text());
         const treeData = PhylogeneticTree.core.parser.parseNewick2(newickText);
 
+        const geneData = await fetch("../assets/extracted_data.json").then(res => res.json());
+
+        PhylogeneticTree.ui.visualization.TreeRenderer.setGeneData(geneData);
+
+        if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal) {
+            //PhylogeneticTree.ui.visualization.TreeRendererHorizontal.setGeneData(geneData);
+        }
+
         const container = "#tree-container";
 
         PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, container);
@@ -46,7 +54,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const taxonomyData = await fetch("../assets/albero_nj.json").then(res => res.json());
         PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");
 
-        const geneData = await fetch("../assets/extracted_data.json").then(res => res.json());
         PhylogeneticTree.ui.components.Tabs.setGeneData(geneData);
 
     } catch (error) {

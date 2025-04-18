@@ -14,14 +14,14 @@ def neighbor_joining(distance_matrix):
     labels = list(distance_matrix.index)
     condensed_matrix = distance_matrix.to_numpy()[np.triu_indices(len(labels), k=1)]
     linkage_matrix = linkage(condensed_matrix, method="average")
-    root = to_tree(linkage_matrix)  # Otteniamo solo il nodo root
-    return convert_to_newick(root, labels)  # Passiamo solo root e labels
+    root = to_tree(linkage_matrix)
+    return convert_to_newick(root, labels)
 
 
 def convert_to_newick(node, labels):
     """Converte un albero di ClusterNode in una stringa in formato Newick."""
     if node.is_leaf():
-        return labels[node.id]  # Usa l'ID del nodo per ottenere il nome della specie
+        return labels[node.id]
 
     left = convert_to_newick(node.left, labels)
     right = convert_to_newick(node.right, labels)
@@ -33,10 +33,9 @@ def save_newick(newick_str, filename):
         f.write(newick_str + ";")
 
 
-# Carica la matrice da file
-file_path = "distance_matrix.index"  # Modifica con il percorso corretto
+file_path = "./distance_matrix_pandelos_ai.index"
 distance_matrix = load_distance_matrix(file_path)
 newick_tree = neighbor_joining(distance_matrix)
-save_newick(newick_tree, "output.newick")
+save_newick(newick_tree, "tree_pandelos.newick")
 
 print("Albero Newick generato con successo!")

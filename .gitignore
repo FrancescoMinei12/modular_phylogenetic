@@ -2,3 +2,4 @@
 .venv
 .vscode
 /files
+/script/virtual_env

@@ -1,291 +1,115 @@
 {
     "name": "Inner1",
-    "branchset": [
-        {
-            "name": "GCA_000006945.2"
-        },
+    "children": [
         {
             "name": "Inner2",
-            "branchset": [
+            "children": [
                 {
                     "name": "Inner3",
-                    "branchset": [
+                    "children": [
                         {
-                            "name": "Inner4",
-                            "branchset": [
-                                {
-                                    "name": "Inner5",
-                                    "branchset": [
-                                        {
-                                            "name": "GCA_000014789.1"
-                                        },
-                                        {
-                                            "name": "GCA_000016785.3"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "Inner6",
-                                    "branchset": [
-                                        {
-                                            "name": "Inner7",
-                                            "branchset": [
-                                                {
-                                                    "name": "GCA_000009065.1"
-                                                },
-                                                {
-                                                    "name": "GCA_000013650.1"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Inner8",
-                                            "branchset": [
-                                                {
-                                                    "name": "GCA_000013649.1"
-                                                },
-                                                {
-                                                    "name": "GCA_000013656.1"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
+                            "name": "GCA_000012765.1"
                         },
                         {
-                            "name": "Inner9",
-                            "branchset": [
-                                {
-                                    "name": "Inner10",
-                                    "branchset": [
-                                        {
-                                            "name": "Inner11",
-                                            "branchset": [
-                                                {
-                                                    "name": "GCA_000013659.1"
-                                                },
-                                                {
-                                                    "name": "Inner12",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCF_000006945.2"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000013646.1"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Inner13",
-                                            "branchset": [
-                                                {
-                                                    "name": "GCA_000013652.1"
-                                                },
-                                                {
-                                                    "name": "GCA_000016784.1"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "Inner14",
-                                    "branchset": [
-                                        {
-                                            "name": "Inner15",
-                                            "branchset": [
-                                                {
-                                                    "name": "GCA_000008865.2"
-                                                },
-                                                {
-                                                    "name": "GCA_000013645.1"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Inner16",
-                                            "branchset": [
-                                                {
-                                                    "name": "Inner17",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000014785.1"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000015679.1"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Inner18",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000013655.1"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000014786.1"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
+                            "name": "GCF_000012765.1"
                         }
                     ]
                 },
                 {
-                    "name": "Inner19",
-                    "branchset": [
+                    "name": "Inner4",
+                    "children": [
                         {
-                            "name": "Inner20",
-                            "branchset": [
+                            "name": "Inner5",
+                            "children": [
                                 {
-                                    "name": "Inner21",
-                                    "branchset": [
+                                    "name": "GCA_000179035.2"
+                                },
+                                {
+                                    "name": "GCF_000179035.2"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Inner6",
+                            "children": [
+                                {
+                                    "name": "GCA_006228185.1"
+                                },
+                                {
+                                    "name": "GCF_006228185.1"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Inner7",
+            "children": [
+                {
+                    "name": "Inner8",
+                    "children": [
+                        {
+                            "name": "GCA_900476175.1"
+                        },
+                        {
+                            "name": "GCF_900476175.1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Inner9",
+                    "children": [
+                        {
+                            "name": "Inner10",
+                            "children": [
+                                {
+                                    "name": "Inner11",
+                                    "children": [
                                         {
-                                            "name": "GCA_000010245.1"
+                                            "name": "GCA_024918975.1"
                                         },
                                         {
-                                            "name": "GCA_000015678.1"
+                                            "name": "GCF_024918975.1"
                                         }
                                     ]
                                 },
                                 {
-                                    "name": "Inner22",
-                                    "branchset": [
+                                    "name": "Inner12",
+                                    "children": [
                                         {
-                                            "name": "GCA_000013648.1"
+                                            "name": "GCA_000183365.1"
                                         },
                                         {
-                                            "name": "GCA_000013658.1"
+                                            "name": "GCF_000183365.1"
                                         }
                                     ]
                                 }
                             ]
                         },
                         {
-                            "name": "Inner23",
-                            "branchset": [
+                            "name": "Inner13",
+                            "children": [
                                 {
-                                    "name": "Inner24",
-                                    "branchset": [
+                                    "name": "Inner14",
+                                    "children": [
                                         {
-                                            "name": "Inner25",
-                                            "branchset": [
-                                                {
-                                                    "name": "GCA_000014787.1"
-                                                },
-                                                {
-                                                    "name": "GCA_000014788.1"
-                                                }
-                                            ]
+                                            "name": "GCA_018389705.1"
                                         },
                                         {
-                                            "name": "Inner26",
-                                            "branchset": [
-                                                {
-                                                    "name": "Inner27",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000011234.1"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000012345.1"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Inner28",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "Inner29",
-                                                            "branchset": [
-                                                                {
-                                                                    "name": "GCA_018389705.1"
-                                                                },
-                                                                {
-                                                                    "name": "GCA_000013651.1"
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Inner30",
-                                                            "branchset": [
-                                                                {
-                                                                    "name": "GCA_000013654.1"
-                                                                },
-                                                                {
-                                                                    "name": "GCA_000016783.1"
-                                                                }
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
+                                            "name": "GCF_018389705.1"
                                         }
                                     ]
                                 },
                                 {
-                                    "name": "Inner31",
-                                    "branchset": [
+                                    "name": "Inner15",
+                                    "children": [
                                         {
-                                            "name": "Inner32",
-                                            "branchset": [
-                                                {
-                                                    "name": "Inner33",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000013647.1"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000014790.1"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Inner34",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000007545.2"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000013657.1"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
+                                            "name": "GCA_000200735.1"
                                         },
                                         {
-                                            "name": "Inner35",
-                                            "branchset": [
-                                                {
-                                                    "name": "Inner36",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000013653.1"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000015680.1"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Inner37",
-                                                    "branchset": [
-                                                        {
-                                                            "name": "GCA_000009605.1"
-                                                        },
-                                                        {
-                                                            "name": "GCA_000013660.1"
-                                                        }
-                                                    ]
-                                                }
-                                            ]
+                                            "name": "GCF_000200735.1"
                                         }
                                     ]
                                 }

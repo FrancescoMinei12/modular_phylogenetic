@@ -6,6 +6,20 @@ import { PhylogeneticTree } from "../../namespace-init.js";
  * and enables interactivity through event listeners.
  */
 
+let geneData = {};
+
+/**
+ * Sets the gene data for the renderer
+ * 
+ * @param {Object} data - The extracted gene data containing prevalence information in genomes
+ */
+function setGeneData(data) {
+    geneData = data;
+    console.log("Gene data caricati:", Object.keys(data).length, "geni");
+
+    const sampleKey = Object.keys(data)[0];
+}
+
 /**
  * Renders a circular clustered tree visualization using D3.
  *
@@ -170,8 +184,33 @@ function renderTree(treeData, container) {
             d3.select(this).transition().attr("font-size", "10px");
             PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
         });
+
+    const node = chart.append("g")
+        .attr("class", "nodes")
+        .selectAll("g")
+        .data(root.leaves())
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("id", d => `node-${d.data.name.replace(/[^a-zA-Z0-9]/g, "_")}`)
+        .attr("transform", d => `rotate(${d.x - 90})translate(${d.y},0)`)
+        .each(function (d) {
+            console.log("Processing node:", d.data.name);
+
+            if (d.data.name && !d.data.name.startsWith("Inner")) {
+                const count = PhylogeneticTree.ui.components.TreeControls.countGenomesForGene(d.data.name, geneData);
+                d3.select(this).attr("data-value", count);
+                console.log(`Node ${d.data.name} data-value: ${count}`);
+            } else {
+                d3.select(this).attr("data-value", "0");
+            }
+        });
+
+    node.append("circle")
+        .attr("r", 3)
+        .attr("fill", d => d.color || "#4A90E2");
 }
 
 PhylogeneticTree.ui.visualization.TreeRenderer = {
-    renderTree
+    renderTree,
+    setGeneData
 };

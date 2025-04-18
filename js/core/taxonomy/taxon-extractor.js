@@ -9,16 +9,16 @@ import { PhylogeneticTree } from "../../namespace-init.js";
  */
 function extractTaxa(treeData) {
     const taxa = [];
-
     function traverse(node) {
-        if (node.name?.startsWith("GCA")) {
+        const isLeaf = !node.children || node.children.length === 0;
+        if (isLeaf) {
             taxa.push({
                 name: node.name.replace(/_/g, " "),
                 originalName: node.name
             });
         }
 
-        node.branchset?.forEach(child => traverse(child));
+        node.children?.forEach(child => traverse(child));
     }
 
     try {
@@ -27,7 +27,7 @@ function extractTaxa(treeData) {
     } catch (error) {
         console.error("Error extracting taxa from tree:", error);
     }
-
+    console.log("Taxa extracted:", taxa.length, "taxa");
     return taxa;
 }
 

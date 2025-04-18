@@ -11,8 +11,6 @@ import { PhylogeneticTree } from "../../namespace-init.js";
  * @description Namespace containing all tree visualization control functions
  */
 
-/* State variables for tree manipulation */
-
 let _scale = 1;
 let _initialScale = 1;
 let _translateX = 0;
@@ -155,12 +153,12 @@ function createControlPanel(containerId, treeData, treeContainerId) {
     container.appendChild(controlPanel);
 
     noUiSlider.create(rangeSlider, {
-        start: [20, 80],
+        start: [0, getMaxGenomeCount(treeData) - 1],
         connect: true,
         step: 1,
         range: {
             'min': 0,
-            'max': 100
+            'max': getMaxGenomeCount(treeData)
         },
         format: {
             to: value => Math.round(value),
@@ -171,17 +169,71 @@ function createControlPanel(containerId, treeData, treeContainerId) {
     rangeSlider.noUiSlider.on('update', function (values, handle) {
         const minValue = parseInt(values[0]);
         const maxValue = parseInt(values[1]);
+        const totalGenomes = getMaxGenomeCount(treeData);
 
         minValueElement.textContent = minValue;
 
         const difference = maxValue - minValue;
         diffValueElement.textContent = difference;
 
-        const coreValue = 100 - maxValue;
+        const coreValue = totalGenomes - maxValue;
         maxValueElement.textContent = coreValue;
+
+        minLabelElement.textContent = `Singleton: `;
+        middleLabelElement.textContent = `Dispensable: `;
+        maxLabelElement.textContent = `Core: `;
 
         filterTreeByRange(minValue, maxValue, treeData, treeContainerId);
     });
+}
+
+/**
+ * @function getMaxGenomeCount
+ * @memberof PhylogeneticTree.ui.components.TreeControls
+ * @description Gets the maximum number of unique genomes from the dataset
+ * @param {Object} treeData - Phylogenetic tree data object
+ * @returns {number} - Maximum genome count
+ */
+function getMaxGenomeCount(treeData) {
+    const genomeNames = new Set();
+
+    function traverseTree(node) {
+        if (node.name && !node.name.startsWith("Inner")) {
+            genomeNames.add(node.name);
+        }
+
+        if (node.branchset && node.branchset.length) {
+            node.branchset.forEach(child => traverseTree(child));
+        }
+    }
+
+    traverseTree(treeData);
+    return genomeNames.size;
+}
+
+/**
+ * @function countGenomesForGene
+ * @memberof PhylogeneticTree.ui.components.TreeControls
+ * @description Counts how many genes are associated with a specific genome
+ * @param {string} genomeId - The genome ID
+ * @param {Object} extractedData - Extracted data containing gene information
+ * @returns {number} - Number of genes associated with the genome
+ */
+function countGenomesForGene(genomeId, extractedData) {
+    let count = 0;
+
+    for (const geneKey in extractedData) {
+        const geneArray = extractedData[geneKey];
+
+        for (let i = 0; i < geneArray.length; i++) {
+            if (geneArray[i]['genome-name'] === genomeId) {
+                count++;
+                break;
+            }
+        }
+    }
+
+    return count;
 }
 
 /**
@@ -387,30 +439,37 @@ function clampTranslation(treeContainerId) {
  * @param {string} treeContainerId - ID selector for tree container
  */
 function filterTreeByRange(min, max, treeData, treeContainerId) {
+    console.log(`Filtraggio con range: ${min}-${max}`);
+
     const treeContainer = document.querySelector(treeContainerId);
     if (!treeContainer) return;
 
     const nodes = treeContainer.querySelectorAll('.node');
+    console.log(`Trovati ${nodes.length} nodi da filtrare`);
 
     nodes.forEach(node => {
-        const nodeValue = parseFloat(node.getAttribute('data-value') || 0);
+        const nodeValue = parseInt(node.getAttribute('data-value') || '0');
 
-        let nodeCategory;
-        if (nodeValue < min) {
+        let nodeCategory = '';
+        if (nodeValue <= min) {
             nodeCategory = 'singleton';
-        } else if (nodeValue > max) {
+        } else if (nodeValue >= max) {
             nodeCategory = 'core';
         } else {
             nodeCategory = 'dispensable';
         }
 
-        const selectedCategory = node.getAttribute('data-filter-category');
-
-        if (!selectedCategory || nodeCategory === selectedCategory.toLowerCase()) {
+        console.log(`Nodo con valore ${nodeValue} classificato come ${nodeCategory}`);
+        console.log(`Nodo: ${node.getAttribute('id')}, Valore: ${nodeValue}, Categoria: ${nodeCategory}`);
+        if (nodeCategory === 'singleton') {
             node.style.opacity = 1;
-            node.style.display = '';
+            node.querySelector('circle').setAttribute('r', '4');
+        } else if (nodeCategory === 'core') {
+            node.style.opacity = 1;
+            node.querySelector('circle').setAttribute('r', '4');
         } else {
-            node.style.opacity = 0.2;
+            node.style.opacity = 0.3;
+            node.querySelector('circle').setAttribute('r', '2');
         }
     });
 }
@@ -424,5 +483,6 @@ PhylogeneticTree.ui.components.TreeControls = {
     resetView,
     changeLabelSize,
     clampTranslation,
-    filterTreeByRange
+    filterTreeByRange,
+    countGenomesForGene
 };

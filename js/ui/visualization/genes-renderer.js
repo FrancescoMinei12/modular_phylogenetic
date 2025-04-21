@@ -1,12 +1,12 @@
 import { PhylogeneticTree } from "../../namespace-init.js";
 /**
- * @function renderGenesForProduct
- * @description Renders a table with genes associated with a specific product
- * @param {Object} data - Gene data
- * @param {string} productName - Product name to filter
+ * @function renderGenesForFamily
+ * @description Renders a table displaying all genes of a specific family
+ * @param {Object} data - The gene family data
+ * @param {string} familyId - The ID of the selected gene family
  * @param {HTMLElement} container - Element where the table will be inserted
  */
-function renderGenesForProduct(data, productName, container) {
+function renderGenesForFamily(data, familyId, container) {
     console.log("Table container element:", container);
     container.innerHTML = "";
 
@@ -20,7 +20,7 @@ function renderGenesForProduct(data, productName, container) {
     thead.classList.add("bg-gray-100", "sticky", "top-0");
     const headerRow = thead.insertRow();
 
-    const headers = ["Gene Family", "Gene ID"];
+    const headers = ["Gene ID", "Product"];
 
     headers.forEach((headerText) => {
         const headerCell = headerRow.insertCell();
@@ -32,10 +32,10 @@ function renderGenesForProduct(data, productName, container) {
     let genesFound = false;
     let rowCount = 0;
 
-    Object.entries(data).forEach(([familyId, genes]) => {
-        genes.forEach(gene => {
-            if (gene.product === productName) {
-                genesFound = true;
+    Object.entries(data).forEach(([currentFamilyId, genes]) => {
+        if (currentFamilyId === familyId) {
+            genesFound = true;
+            genes.forEach(gene => {
                 const row = tbody.insertRow();
 
                 if (rowCount % 2 === 0) {
@@ -47,29 +47,32 @@ function renderGenesForProduct(data, productName, container) {
 
                 row.classList.add("hover:bg-blue-50", "transition-colors");
 
-                const familyCell = row.insertCell();
-                familyCell.textContent = familyId;
-                familyCell.classList.add("p-3", "border-b");
-
                 const geneCell = row.insertCell();
-                geneCell.textContent = gene['locus-tag'] || "N/A";
+                geneCell.textContent = gene["locus-tag"] || "N/A";
                 geneCell.classList.add("p-3", "border-b");
 
-                // Aggiunge funzionalità di click per selezionare gene
+                const productCell = row.insertCell();
+                productCell.textContent = gene.product || "Unknown";
+                productCell.classList.add("p-3", "border-b", "text-right");
+
                 row.addEventListener("click", function () {
                     tbody.querySelectorAll("tr").forEach(r => r.classList.remove("bg-blue-100", "selected-gene"));
+
+                    // Seleziona questa riga
                     this.classList.add("bg-blue-100", "selected-gene");
+
+                    // Qui potresti aggiungere ulteriori azioni quando un gene viene selezionato
                     console.log("Selected gene:", gene);
                 });
-            }
-        });
+            });
+        }
     });
 
     if (!genesFound) {
         const row = tbody.insertRow();
         const cell = row.insertCell();
         cell.colSpan = headers.length;
-        cell.textContent = "No genes found for this product";
+        cell.textContent = "No genes found for this family";
         cell.classList.add("text-center", "p-4", "text-gray-500");
     }
 
@@ -80,11 +83,11 @@ function renderGenesForProduct(data, productName, container) {
     if (genesFound) {
         const infoText = document.createElement("div");
         infoText.classList.add("text-sm", "text-gray-500", "mt-2", "italic");
-        infoText.textContent = `${rowCount} genes found with product: ${productName}`;
+        infoText.textContent = `${rowCount} genes found in family ${familyId}`;
         container.appendChild(infoText);
     }
 }
 
-PhylogeneticTree.ui.visualization.ProductGenesRenderer = {
-    renderGenesForProduct
+PhylogeneticTree.ui.visualization.GeneRenderer = {
+    renderGenesForFamily
 };

@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const container = "#tree-container";
 
         PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, container);
-        PhylogeneticTree.ui.components.TreeControls.createControlPanel("#controls-container", treeData, container);
+        PhylogeneticTree.ui.components.TreeControls.createControlPanel("#controls-container", treeData, geneData, container);
 
         PhylogeneticTree.ui.components.layoutSwitch.createToggleSwitch("#layout-switch", (isOn) => {
             const treeContainer = document.querySelector(container);

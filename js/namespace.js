@@ -38,7 +38,13 @@ export const PhylogeneticTree = {
          * @brief Taxonomic operations
          * @description Namespace for taxonomic classification and related operations.
          */
-        taxonomy: {}
+        taxonomy: {},
+        /**
+         * @namespace utilities
+         * @brief Utility functions
+         * @description Namespace for various utility functions and helpers.
+         */
+        utilities: {}
     },
 
     /**

@@ -27,7 +27,6 @@ function extractTaxa(treeData) {
     } catch (error) {
         console.error("Error extracting taxa from tree:", error);
     }
-    console.log("Taxa extracted:", taxa.length, "taxa");
     return taxa;
 }
 

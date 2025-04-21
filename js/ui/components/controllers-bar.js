@@ -27,9 +27,10 @@ let _maxScale = 3;
  * @description Creates interactive control panel for tree manipulation
  * @param {string} containerId - ID selector for parent container
  * @param {Object} treeData - Phylogenetic tree data object
+ * @param {Object} geneData - Gene data object for filtering
  * @param {string} treeContainerId - ID selector for tree container
  */
-function createControlPanel(containerId, treeData, treeContainerId) {
+function createControlPanel(containerId, treeData, geneData, treeContainerId) {
     const container = document.querySelector(containerId);
     if (!container) return;
 
@@ -75,23 +76,30 @@ function createControlPanel(containerId, treeData, treeContainerId) {
     const labelSizeLabel = document.createElement("span");
     labelSizeLabel.textContent = "Label Size:";
 
-    const labelSizeSlider = document.createElement("input");
-    labelSizeSlider.type = "range";
-    labelSizeSlider.min = "8";
-    labelSizeSlider.max = "16";
-    labelSizeSlider.value = "12";
-    labelSizeSlider.id = "label-size-control";
-    labelSizeSlider.name = "label-size";
-    labelSizeSlider.addEventListener("input", (e) => changeLabelSize(e.target.value, treeContainerId));
+    const labelSizeDropdown = document.createElement("select");
+    labelSizeDropdown.id = "label-size-dropdown";
+    labelSizeDropdown.name = "label-size";
+
+    for (let size = 6; size <= 48; size += 2) {
+        const option = document.createElement("option");
+        option.value = size;
+        option.textContent = `${size}px`;
+        labelSizeDropdown.appendChild(option);
+    }
+
+    labelSizeDropdown.addEventListener("change", (e) => {
+        const sizeValue = e.target.value;
+        changeLabelSize(sizeValue, treeContainerId);
+    });
+
+    labelSizeControl.appendChild(labelSizeLabel);
+    labelSizeControl.appendChild(labelSizeDropdown);
 
     zoomControls.appendChild(zoomInBtn);
     zoomControls.appendChild(zoomOutBtn);
     zoomControls.appendChild(resetBtn);
 
     moveControls.appendChild(panBtn);
-
-    labelSizeControl.appendChild(labelSizeLabel);
-    labelSizeControl.appendChild(labelSizeSlider);
 
     controlPanel.appendChild(zoomControls);
     controlPanel.appendChild(moveControls);
@@ -152,12 +160,28 @@ function createControlPanel(containerId, treeData, treeContainerId) {
 
     container.appendChild(controlPanel);
 
+    const diffusivityData = PhylogeneticTree.core.utilities.Diffusivity.calculateDiffusivity(geneData);
+
+    const nodes = document.querySelectorAll(`${treeContainerId} .node`);
+
+    nodes.forEach(node => {
+        const familyKey = node.getAttribute("data-family");
+        const family = familyKey?.split(":")[0];
+
+        const matching = diffusivityData.find(d => d.family === family);
+        if (matching) {
+            node.setAttribute("data-value", matching.diffusivity);
+        } else {
+            node.setAttribute("data-value", "0");
+        }
+    });
+
     noUiSlider.create(rangeSlider, {
-        start: [0, getMaxGenomeCount(treeData) - 1],
+        start: [1, getMaxGenomeCount(treeData)],
         connect: true,
         step: 1,
         range: {
-            'min': 0,
+            'min': 1,
             'max': getMaxGenomeCount(treeData)
         },
         format: {
@@ -169,21 +193,11 @@ function createControlPanel(containerId, treeData, treeContainerId) {
     rangeSlider.noUiSlider.on('update', function (values, handle) {
         const minValue = parseInt(values[0]);
         const maxValue = parseInt(values[1]);
-        const totalGenomes = getMaxGenomeCount(treeData);
 
         minValueElement.textContent = minValue;
+        maxValueElement.textContent = maxValue;
 
-        const difference = maxValue - minValue;
-        diffValueElement.textContent = difference;
-
-        const coreValue = totalGenomes - maxValue;
-        maxValueElement.textContent = coreValue;
-
-        minLabelElement.textContent = `Singleton: `;
-        middleLabelElement.textContent = `Dispensable: `;
-        maxLabelElement.textContent = `Core: `;
-
-        filterTreeByRange(minValue, maxValue, treeData, treeContainerId);
+        categorizeTreeNodes(minValue, maxValue, treeContainerId);
     });
 }
 
@@ -439,13 +453,11 @@ function clampTranslation(treeContainerId) {
  * @param {string} treeContainerId - ID selector for tree container
  */
 function filterTreeByRange(min, max, treeData, treeContainerId) {
-    console.log(`Filtraggio con range: ${min}-${max}`);
 
     const treeContainer = document.querySelector(treeContainerId);
     if (!treeContainer) return;
 
     const nodes = treeContainer.querySelectorAll('.node');
-    console.log(`Trovati ${nodes.length} nodi da filtrare`);
 
     nodes.forEach(node => {
         const nodeValue = parseInt(node.getAttribute('data-value') || '0');
@@ -459,8 +471,6 @@ function filterTreeByRange(min, max, treeData, treeContainerId) {
             nodeCategory = 'dispensable';
         }
 
-        console.log(`Nodo con valore ${nodeValue} classificato come ${nodeCategory}`);
-        console.log(`Nodo: ${node.getAttribute('id')}, Valore: ${nodeValue}, Categoria: ${nodeCategory}`);
         if (nodeCategory === 'singleton') {
             node.style.opacity = 1;
             node.querySelector('circle').setAttribute('r', '4');
@@ -470,6 +480,42 @@ function filterTreeByRange(min, max, treeData, treeContainerId) {
         } else {
             node.style.opacity = 0.3;
             node.querySelector('circle').setAttribute('r', '2');
+        }
+    });
+}
+
+/**
+ * @function categorizeTreeNodes
+ * @description Appends categories (core, singleton, dispensable) to tree nodes based on diffusivity
+ * @param {number} min - Minimum range value for singleton
+ * @param {number} max - Maximum range value for core
+ * @param {string} treeContainerId - ID selector for tree container
+ */
+function categorizeTreeNodes(min, max, treeContainerId) {
+    const treeContainer = document.querySelector(treeContainerId);
+    if (!treeContainer) return;
+
+    const nodes = treeContainer.querySelectorAll('.node');
+
+    nodes.forEach(node => {
+        const nodeValue = parseInt(node.getAttribute('data-value') || '0');
+
+        let nodeCategory = '';
+        if (nodeValue <= min) {
+            nodeCategory = 'singleton';
+        } else if (nodeValue >= max) {
+            nodeCategory = 'core';
+        } else {
+            nodeCategory = 'dispensable';
+        }
+
+        node.setAttribute('data-category', nodeCategory);
+        if (nodeCategory === 'singleton') {
+            node.style.fill = 'red';
+        } else if (nodeCategory === 'core') {
+            node.style.fill = 'blue';
+        } else {
+            node.style.fill = 'green';
         }
     });
 }
@@ -484,5 +530,6 @@ PhylogeneticTree.ui.components.TreeControls = {
     changeLabelSize,
     clampTranslation,
     filterTreeByRange,
-    countGenomesForGene
+    countGenomesForGene,
+    categorizeTreeNodes
 };

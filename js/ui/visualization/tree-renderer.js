@@ -15,7 +15,6 @@ let geneData = {};
  */
 function setGeneData(data) {
     geneData = data;
-    console.log("Gene data caricati:", Object.keys(data).length, "geni");
 
     const sampleKey = Object.keys(data)[0];
 }
@@ -194,12 +193,9 @@ function renderTree(treeData, container) {
         .attr("id", d => `node-${d.data.name.replace(/[^a-zA-Z0-9]/g, "_")}`)
         .attr("transform", d => `rotate(${d.x - 90})translate(${d.y},0)`)
         .each(function (d) {
-            console.log("Processing node:", d.data.name);
-
             if (d.data.name && !d.data.name.startsWith("Inner")) {
                 const count = PhylogeneticTree.ui.components.TreeControls.countGenomesForGene(d.data.name, geneData);
                 d3.select(this).attr("data-value", count);
-                console.log(`Node ${d.data.name} data-value: ${count}`);
             } else {
                 d3.select(this).attr("data-value", "0");
             }

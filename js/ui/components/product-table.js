@@ -34,7 +34,7 @@ function renderProductTable(data, tableSelector) {
     nameHeaderCell.textContent = "Product";
 
     const countHeaderCell = headerRow.insertCell();
-    countHeaderCell.textContent = "Occurrences";
+    countHeaderCell.textContent = "N°";
 
     const productCounts = countProducts(data);
     const tableBody = productTable.createTBody();
@@ -64,18 +64,15 @@ function renderProductTable(data, tableSelector) {
             PhylogeneticTree.ui.interactions.highlightning.highlightProduct(data, productName);
 
             const detailsSection = document.getElementById("gene-details-section");
-
             const detailsTitle = document.getElementById("gene-details-title");
             const detailsContent = document.getElementById("gene-details-content");
 
             detailsTitle.textContent = `Genes with product: ${productName}`;
-
             detailsContent.innerHTML = "";
 
             PhylogeneticTree.ui.visualization.ProductGenesRenderer.renderGenesForProduct(data, productName, detailsContent);
 
             detailsSection.classList.remove("hidden");
-
             detailsSection.scrollIntoView({ behavior: "smooth" });
         });
     });

@@ -47,6 +47,17 @@ tr:hover {
     margin-top: 10px;
 }
 
+.table-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .clickable-row {
     cursor: pointer;
     transition: all 0.2s;
@@ -258,7 +269,6 @@ h2 {
     margin-top: 5px;
 }
 
-/* Stili opzionali per personalizzare l'aspetto di noUiSlider */
 .noUi-connect {
     background: #3498db;
 }

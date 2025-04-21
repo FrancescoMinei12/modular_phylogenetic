@@ -72,7 +72,6 @@ function renderTaxaTable(treeData, tableSelector) {
     const tableBody = taxaTable.createTBody();
 
     taxa.forEach(taxon => {
-        console.log(taxon);
         const tableRow = tableBody.insertRow();
         tableRow.classList.add("clickable-row");
         tableRow.style.cursor = "pointer";

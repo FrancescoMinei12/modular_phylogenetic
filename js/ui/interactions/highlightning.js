@@ -53,7 +53,7 @@ function highlightPathAndLabel(taxonName) {
 
 /**
  * @function highlightGeneFamily
- * @description Highlights all genomes belonging to a gene family
+ * @description Highlights all genomes belonging to a specific gene family
  * @param {Object} data - The gene family data
  * @param {string} familyId - ID of the gene family to highlight
  */
@@ -71,6 +71,7 @@ function highlightGeneFamily(data, familyId) {
     resetHighlights();
 
     const genomes = new Set();
+
     if (data[familyId] && Array.isArray(data[familyId])) {
         data[familyId].forEach(gene => {
             if (gene["genome-name"]) {

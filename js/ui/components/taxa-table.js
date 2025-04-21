@@ -18,8 +18,11 @@ function renderTaxaTable(treeData, tableSelector) {
     }
 
     PhylogeneticTree.core.io.file.loadCustomNamesFromFile(treeData, tableSelector);
-
     tableContainer.innerHTML = "";
+
+    if (!tableContainer.id) {
+        tableContainer.id = tableSelector.replace(/[^a-zA-Z0-9]/g, '');
+    }
 
     PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(tableSelector, `${tableSelector} table`);
 
@@ -57,69 +60,97 @@ function renderTaxaTable(treeData, tableSelector) {
     tableWrapper.classList.add("taxa-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
 
     const taxaTable = document.createElement("table");
-    taxaTable.classList.add("taxa-table", "w-full");
+    taxaTable.classList.add("w-full", "text-sm", "text-left", "border-collapse");
 
     const tableHeader = taxaTable.createTHead();
     const headerRow = tableHeader.insertRow();
+    headerRow.classList.add("bg-gray-100");
 
     const nameHeaderCell = headerRow.insertCell();
     nameHeaderCell.textContent = "Taxon";
+    nameHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
 
     const editHeaderCell = headerRow.insertCell();
     editHeaderCell.textContent = "Nome personalizzato";
-
-    const taxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
-    const tableBody = taxaTable.createTBody();
-
-    taxa.forEach(taxon => {
-        const tableRow = tableBody.insertRow();
-        tableRow.classList.add("clickable-row");
-        tableRow.style.cursor = "pointer";
-        tableRow.dataset.taxon = taxon.originalName;
-
-        const nameCell = tableRow.insertCell();
-        nameCell.textContent = taxon.name;
-
-        const editCell = tableRow.insertCell();
-        const editInput = document.createElement("input");
-        editInput.type = "text";
-        editInput.value = taxon.name;
-        editInput.classList.add("border", "border-gray-300", "rounded", "px-2", "py-1", "w-full", "text-sm");
-        editInput.placeholder = "Enter custom name";
-        editInput.id = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
-        editInput.name = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
-
-        editInput.addEventListener("change", function () {
-            const newName = this.value.trim();
-            if (newName) {
-                nameCell.textContent = newName;
-
-                tableRow.dataset.customName = newName;
-
-                PhylogeneticTree.core.taxonomy.CustomNameManager.updateTaxonDisplayName(taxon.originalName, newName);
-            } else {
-                this.value = taxon.name;
-            }
-        });
-
-        editInput.addEventListener("click", function (event) {
-            event.stopPropagation();
-        });
-
-        editCell.appendChild(editInput);
-
-        /**
-         * @event click
-         * @description Highlights the selected taxon and its path on the tree
-         */
-        tableRow.addEventListener("click", function () {
-            this.classList.toggle("highlighted");
-            PhylogeneticTree.ui.interactions.highlightning.highlightPathAndLabel(taxon.originalName);
-        });
-    });
+    editHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
 
     tableWrapper.appendChild(taxaTable);
     tableContainer.appendChild(tableWrapper);
+
+    const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
+
+    function renderTaxaPage(pageTaxa) {
+        const oldTbody = taxaTable.tBodies[0];
+        if (oldTbody) {
+            taxaTable.removeChild(oldTbody);
+        }
+
+        const tableBody = taxaTable.createTBody();
+
+        pageTaxa.forEach(taxon => {
+            const tableRow = tableBody.insertRow();
+            tableRow.classList.add("clickable-row", "cursor-pointer", "odd:bg-gray-50", "hover:bg-blue-50", "transition-colors");
+            tableRow.dataset.taxon = taxon.originalName;
+
+            const nameCell = tableRow.insertCell();
+            nameCell.textContent = taxon.name;
+            nameCell.classList.add("px-3", "py-2", "border-b");
+
+            const editCell = tableRow.insertCell();
+            editCell.classList.add("px-3", "py-2", "border-b");
+
+            const editInput = document.createElement("input");
+            editInput.type = "text";
+            editInput.value = taxon.name;
+            editInput.placeholder = "Enter custom name";
+            editInput.classList.add(
+                "border",
+                "border-gray-300",
+                "rounded",
+                "px-2",
+                "py-1",
+                "w-full",
+                "text-sm",
+                "focus:outline-none",
+                "focus:ring-2",
+                "focus:ring-blue-300"
+            );
+
+            editInput.id = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+            editInput.name = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
+
+            editInput.addEventListener("change", function () {
+                const newName = this.value.trim();
+                if (newName) {
+                    nameCell.textContent = newName;
+                    tableRow.dataset.customName = newName;
+                    PhylogeneticTree.core.taxonomy.CustomNameManager.updateTaxonDisplayName(taxon.originalName, newName);
+                } else {
+                    this.value = taxon.name;
+                }
+            });
+
+            editInput.addEventListener("click", function (event) {
+                event.stopPropagation();
+            });
+
+            editCell.appendChild(editInput);
+
+            tableRow.addEventListener("click", function () {
+                document.querySelectorAll(`${tableSelector} tr`).forEach(r => {
+                    r.classList.toggle("bg-yellow-100", r === this);
+                });
+                PhylogeneticTree.ui.interactions.highlightning.highlightPathAndLabel(taxon.originalName);
+            });
+        });
+    }
+
+    PhylogeneticTree.ui.components.Pagination.applyPagination(
+        allTaxa,
+        tableContainer.id,
+        renderTaxaPage,
+        { itemsPerPage: 25 }
+    );
 }
 
 /**

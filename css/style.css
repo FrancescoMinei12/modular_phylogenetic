@@ -283,3 +283,19 @@ h2 {
 .noUi-handle:active {
     cursor: grabbing;
 }
+
+.pagination-controls {
+    margin-top: 1rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid #eee;
+}
+
+.pagination-controls button {
+    min-width: 2rem;
+    text-align: center;
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

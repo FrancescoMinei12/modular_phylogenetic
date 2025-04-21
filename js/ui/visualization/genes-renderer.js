@@ -1,4 +1,5 @@
 import { PhylogeneticTree } from "../../namespace-init.js";
+
 /**
  * @function renderGenesForFamily
  * @description Renders a table displaying all genes of a specific family
@@ -7,8 +8,16 @@ import { PhylogeneticTree } from "../../namespace-init.js";
  * @param {HTMLElement} container - Element where the table will be inserted
  */
 function renderGenesForFamily(data, familyId, container) {
-    console.log("Table container element:", container);
+    if (!container) {
+        console.error("Invalid container:", container);
+        return;
+    }
+
     container.innerHTML = "";
+
+    const title = document.createElement("h3");
+    title.textContent = `Genes in Family: ${familyId}`;
+    title.classList.add("text-xl", "font-semibold", "mb-3");
 
     const tableWrapper = document.createElement("div");
     tableWrapper.classList.add("table-wrapper", "max-h-[400px]", "overflow-y-auto", "border", "rounded", "shadow");
@@ -19,75 +28,160 @@ function renderGenesForFamily(data, familyId, container) {
     const thead = genesTable.createTHead();
     thead.classList.add("bg-gray-100", "sticky", "top-0");
     const headerRow = thead.insertRow();
-
-    const headers = ["Gene ID", "Product"];
-
-    headers.forEach((headerText) => {
-        const headerCell = headerRow.insertCell();
-        headerCell.textContent = headerText;
-        headerCell.classList.add("p-3", "border-b", "font-semibold", "text-gray-700", "text-left");
+    ["Gene ID", "Product"].forEach((text) => {
+        const th = headerRow.insertCell();
+        th.textContent = text;
+        th.classList.add("p-3", "border-b", "font-semibold", "text-gray-700", "text-left");
     });
 
     const tbody = genesTable.createTBody();
-    let genesFound = false;
-    let rowCount = 0;
+    tableWrapper.appendChild(genesTable);
+    container.appendChild(title);
+    container.appendChild(tableWrapper);
 
-    Object.entries(data).forEach(([currentFamilyId, genes]) => {
-        if (currentFamilyId === familyId) {
-            genesFound = true;
-            genes.forEach(gene => {
-                const row = tbody.insertRow();
+    const genes = data[familyId] || [];
 
-                if (rowCount % 2 === 0) {
-                    row.classList.add("bg-white");
-                } else {
-                    row.classList.add("bg-gray-50");
-                }
-                rowCount++;
+    function renderPage(genesPage) {
+        tbody.innerHTML = "";
+        genesPage.forEach((gene, index) => {
+            const row = tbody.insertRow();
+            row.classList.add(
+                index % 2 === 0 ? "bg-white" : "bg-gray-50",
+                "hover:bg-blue-50",
+                "transition-colors"
+            );
 
-                row.classList.add("hover:bg-blue-50", "transition-colors");
+            const geneCell = row.insertCell();
+            geneCell.textContent = gene["locus-tag"] || "Unknown";
+            geneCell.classList.add("p-3", "border-b");
 
-                const geneCell = row.insertCell();
-                geneCell.textContent = gene["locus-tag"] || "N/A";
-                geneCell.classList.add("p-3", "border-b");
+            const productCell = row.insertCell();
+            productCell.textContent = gene.product || "Unknown";
+            productCell.classList.add("p-3", "border-b");
 
-                const productCell = row.insertCell();
-                productCell.textContent = gene.product || "Unknown";
-                productCell.classList.add("p-3", "border-b", "text-right");
-
-                row.addEventListener("click", function () {
-                    tbody.querySelectorAll("tr").forEach(r => r.classList.remove("bg-blue-100", "selected-gene"));
-
-                    // Seleziona questa riga
-                    this.classList.add("bg-blue-100", "selected-gene");
-
-                    // Qui potresti aggiungere ulteriori azioni quando un gene viene selezionato
-                    console.log("Selected gene:", gene);
-                });
+            row.addEventListener("click", () => {
+                tbody.querySelectorAll("tr").forEach(r => r.classList.remove("bg-blue-100", "selected-gene"));
+                row.classList.add("bg-blue-100", "selected-gene");
             });
-        }
-    });
+        });
+    }
 
-    if (!genesFound) {
+    if (genes.length > 0) {
+        PhylogeneticTree.ui.components.Pagination.applyPagination(
+            genes,
+            container.id || `genes-family-${familyId}`,
+            renderPage,
+            { itemsPerPage: 20 }
+        );
+
+        const info = document.createElement("div");
+        info.textContent = `${genes.length} gene${genes.length === 1 ? "" : "s"} found in family: ${familyId}`;
+        info.classList.add("text-sm", "text-gray-500", "mt-2", "italic");
+        container.appendChild(info);
+    } else {
         const row = tbody.insertRow();
         const cell = row.insertCell();
-        cell.colSpan = headers.length;
+        cell.colSpan = 2;
         cell.textContent = "No genes found for this family";
         cell.classList.add("text-center", "p-4", "text-gray-500");
     }
+}
 
+
+/**
+ * @function renderGenesForProduct
+ * @description Renders a table with genes associated with a specific product
+ * @param {Object} data - Gene data
+ * @param {string} productName - Product name to filter
+ * @param {HTMLElement} container - Element where the table will be inserted
+ */
+function renderGenesForProduct(data, productName, container) {
+    if (!container) {
+        console.error("Invalid container:", container);
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const title = document.createElement("h3");
+    title.textContent = `Genes with product: ${productName}`;
+    title.classList.add("text-xl", "font-semibold", "mb-3");
+
+    const tableWrapper = document.createElement("div");
+    tableWrapper.classList.add("table-wrapper", "max-h-[400px]", "overflow-y-auto", "border", "rounded", "shadow");
+
+    const genesTable = document.createElement("table");
+    genesTable.classList.add("w-full", "border-collapse", "table-auto");
+
+    const thead = genesTable.createTHead();
+    thead.classList.add("bg-gray-100", "sticky", "top-0");
+    const headerRow = thead.insertRow();
+    ["Gene Family", "Gene ID"].forEach((text) => {
+        const th = headerRow.insertCell();
+        th.textContent = text;
+        th.classList.add("p-3", "border-b", "font-semibold", "text-gray-700", "text-left");
+    });
+
+    const tbody = genesTable.createTBody();
     tableWrapper.appendChild(genesTable);
     container.appendChild(tableWrapper);
 
-    // Aggiungi note o conteggio sotto la tabella
-    if (genesFound) {
-        const infoText = document.createElement("div");
-        infoText.classList.add("text-sm", "text-gray-500", "mt-2", "italic");
-        infoText.textContent = `${rowCount} genes found in family ${familyId}`;
-        container.appendChild(infoText);
+    const matchingGenes = [];
+    Object.entries(data).forEach(([familyId, genes]) => {
+        genes.forEach(gene => {
+            if (gene.product === productName) {
+                matchingGenes.push({ familyId, ...gene });
+            }
+        });
+    });
+
+    function renderPage(genesPage) {
+        tbody.innerHTML = "";
+        genesPage.forEach((gene, index) => {
+            const row = tbody.insertRow();
+            row.classList.add(
+                index % 2 === 0 ? "bg-white" : "bg-gray-50",
+                "hover:bg-blue-50",
+                "transition-colors"
+            );
+
+            const familyCell = row.insertCell();
+            familyCell.textContent = gene.familyId;
+            familyCell.classList.add("p-3", "border-b");
+
+            const geneCell = row.insertCell();
+            geneCell.textContent = gene["locus-tag"] || "Unknown";
+            geneCell.classList.add("p-3", "border-b");
+
+            row.addEventListener("click", () => {
+                tbody.querySelectorAll("tr").forEach(r => r.classList.remove("bg-blue-100", "selected-gene"));
+                row.classList.add("bg-blue-100", "selected-gene");
+            });
+        });
+    }
+
+    if (matchingGenes.length > 0) {
+        PhylogeneticTree.ui.components.Pagination.applyPagination(
+            matchingGenes,
+            container.id || `genes-product-${productName.replace(/\s+/g, '-')}`,
+            renderPage,
+            { itemsPerPage: 20 }
+        );
+
+        const info = document.createElement("div");
+        info.textContent = `${matchingGenes.length} gene${matchingGenes.length === 1 ? "" : "s"} found with product: ${productName}`;
+        info.classList.add("text-sm", "text-gray-500", "mt-2", "italic");
+        container.appendChild(info);
+    } else {
+        const row = tbody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 2;
+        cell.textContent = "No genes found for this product";
+        cell.classList.add("text-center", "p-4", "text-gray-500");
     }
 }
 
 PhylogeneticTree.ui.visualization.GeneRenderer = {
-    renderGenesForFamily
+    renderGenesForFamily,
+    renderGenesForProduct
 };

@@ -143,7 +143,7 @@ function renderTaxaTable(treeData, tableSelector) {
                 document.querySelectorAll(`${tableSelector} tr`).forEach(r => {
                     r.classList.toggle("bg-yellow-100", r === this);
                 });
-                PhylogeneticTree.ui.interactions.highlightning.highlightPathAndLabel(taxon.originalName);
+                PhylogeneticTree.ui.interactions.highlighting.highlightPathAndLabel(taxon.originalName);
 
                 const geneData = PhylogeneticTree.core.data.getGeneData();
                 const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(

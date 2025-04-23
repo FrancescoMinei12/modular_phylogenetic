@@ -37,7 +37,7 @@ import "./ui/components/diffusivity-chart.js";
 
 import "./ui/config/tree-config.js";
 
-import "./ui/interactions/highlightning.js";
+import "./ui/interactions/highlighting.js";
 import "./ui/interactions/hover-functions.js";
 
 import "./ui/visualization/tree-renderer.js";

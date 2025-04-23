@@ -94,9 +94,9 @@ function showTab(tabName) {
  */
 function resetHighlights() {
     if (PhylogeneticTree.ui.interactions &&
-        PhylogeneticTree.ui.interactions.highlightning &&
-        typeof PhylogeneticTree.ui.interactions.highlightning.resetHighlights === 'function') {
-        PhylogeneticTree.ui.interactions.highlightning.resetHighlights();
+        PhylogeneticTree.ui.interactions.highlighting &&
+        typeof PhylogeneticTree.ui.interactions.highlighting.resetHighlights === 'function') {
+        PhylogeneticTree.ui.interactions.highlighting.resetHighlights();
     }
 }
 

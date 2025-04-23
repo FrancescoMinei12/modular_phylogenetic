@@ -17,127 +17,80 @@ function setGeneData(data) {
     geneData = data;
 }
 
-/**
- * Renders a circular clustered tree visualization using D3.
- *
- * @param {Object} treeData - The hierarchical tree data (from Newick parser).
- * @param {string} container - The CSS selector where the SVG tree should be rendered.
- */
-
 function renderTree(treeData, container) {
-    const minDimension = Math.min(PhylogeneticTree.ui.config.Tree.TreeConfig.width, PhylogeneticTree.ui.config.Tree.TreeConfig.height);
-    const outerRadius = minDimension * PhylogeneticTree.ui.config.Tree.TreeConfig.radial.outerRadiusRatio;
+    const { outerRadius, innerRadius } = getTreeDimensions();
+    const root = buildHierarchy(treeData, innerRadius);
+    const svg = createSvgContainer(container, outerRadius);
+    const chart = createTreeChart(svg, root, outerRadius);
+
+    PhylogeneticTree.ui.visualization.ColorManager.getColorForTaxa(root);
+
+    renderLinks(chart, root, innerRadius);
+    renderNodes(chart, root, innerRadius);
+    renderLabels(chart, root, innerRadius);
+}
+
+function getTreeDimensions() {
+    const cfg = PhylogeneticTree.ui.config.Tree.TreeConfig;
+    const minDim = Math.min(cfg.width, cfg.height);
+    const outerRadius = minDim * cfg.radial.outerRadiusRatio;
     const innerRadius = outerRadius - 100;
+    return { outerRadius, innerRadius };
+}
 
-    const root = d3.hierarchy(treeData, function (d) {
-        return d.branchset;
-    }).sum(function (d) {
-        return d.branchset ? 0 : 1;
-    }).sort(function (a, b) {
-        return (a.value - b.value) || d3.ascending(a.data.length, b.data.length);
-    });
+function buildHierarchy(treeData, innerRadius) {
+    const root = d3.hierarchy(treeData, d => d.branchset)
+        .each(d => {
+            if (d.data.name) d.data.originalName = d.data.name;
+        })
+        .sum(d => d.branchset ? 0 : 1)
+        .sort((a, b) => (a.value - b.value) || d3.ascending(a.data.length, b.data.length));
 
-    const cluster = d3.cluster()
-        .size([360, innerRadius])
-        .separation(function (a, b) { return 1; });
+    const cluster = d3.cluster().size([360, innerRadius]).separation(() => 1);
 
-    const svg = d3.select(container).append("svg")
+    const maxLength = d => d.data.length + (d.children ? d3.max(d.children, maxLength) : 0);
+    const setRadius = (d, y0, k) => {
+        d.radius = (y0 += d.data.length) * k;
+        if (d.children) d.children.forEach(child => setRadius(child, y0, k));
+    };
+
+    root.data.length = 0;
+    setRadius(root, 0, innerRadius / maxLength(root));
+    cluster(root);
+    return root;
+}
+
+function createSvgContainer(container, outerRadius) {
+    return d3.select(container).append("svg")
         .attr("width", outerRadius * 2)
         .attr("height", outerRadius * 2)
         .style("display", "block")
         .style("margin", "0 auto")
         .style("overflow", "visible");
+}
 
-    const chart = svg.append("g")
+function createTreeChart(svg, root, outerRadius) {
+    return svg.append("g")
         .attr("class", "tree-chart")
         .datum(root)
         .attr("transform", `translate(${outerRadius},${outerRadius})`);
+}
 
-    cluster(root);
+function renderLinks(chart, root, innerRadius) {
+    const linkStep = (a, r1, b, r2) => {
+        const [ca, sa] = [Math.cos((a - 90) * Math.PI / 180), Math.sin((a - 90) * Math.PI / 180)];
+        const [cb, sb] = [Math.cos((b - 90) * Math.PI / 180), Math.sin((b - 90) * Math.PI / 180)];
+        return `M${r1 * ca},${r1 * sa}A${r1},${r1} 0 0 ${b > a ? 1 : 0} ${r1 * cb},${r1 * sb}L${r2 * cb},${r2 * sb}`;
+    };
 
-    /**
-     * Recursively computes the maximum path length of the tree.
-     *
-     * @param {Object} d - A node in the tree.
-     * @returns {number} - The accumulated maximum length.
-     */
-    function maxLength(d) {
-        const result = d.data.length + (d.children ? d3.max(d.children, maxLength) : 0);
-        return result;
-    }
-
-    /**
-     * Recursively sets the radius for each node.
-     *
-     * @param {Object} d - A node in the tree.
-     * @param {number} y0 - Accumulated branch length.
-     * @param {number} k - Scale factor.
-     */
-    function setRadius(d, y0, k) {
-        d.radius = (y0 += d.data.length) * k;
-        if (d.children) d.children.forEach(function (d) { setRadius(d, y0, k); });
-    }
-
-    /**
-     * Returns the SVG path for a curved link between nodes.
-     *
-     * @param {Object} d - A link object.
-     * @returns {string} - The SVG path string.
-     */
-    function linkConstant(d) {
-        return linkStep(d.source.x, d.source.y, d.target.x, d.target.y);
-    }
-
-    /**
-     * Returns an SVG path string for a radial step arc.
-     *
-     * @param {number} startAngle - Angle in degrees for the source node.
-     * @param {number} startRadius - Radius for the source node.
-     * @param {number} endAngle - Angle in degrees for the target node.
-     * @param {number} endRadius - Radius for the target node.
-     * @returns {string} - The SVG path string.
-     */
-    function linkStep(startAngle, startRadius, endAngle, endRadius) {
-        const c0 = Math.cos(startAngle = (startAngle - 90) / 180 * Math.PI),
-            s0 = Math.sin(startAngle),
-            c1 = Math.cos(endAngle = (endAngle - 90) / 180 * Math.PI),
-            s1 = Math.sin(endAngle);
-        return "M" + startRadius * c0 + "," + startRadius * s0
-            + (endAngle === startAngle ? "" : "A" + startRadius + "," + startRadius + " 0 0 " + (endAngle > startAngle ? 1 : 0) + " " + startRadius * c1 + "," + startRadius * s1)
-            + "L" + endRadius * c1 + "," + endRadius * s1;
-    }
-
-    /**
-     * Returns an SVG path string extending the link from target to the outer radius.
-     *
-     * @param {Object} d - A link object.
-     * @returns {string} - The SVG path string.
-     */
-    function linkExtensionConstant(d) {
-        return linkStep(d.target.x, d.target.y, d.target.x, innerRadius);
-    }
-
-    root.data.length = 0;
-    setRadius(root, 0, innerRadius / maxLength(root));
-    PhylogeneticTree.ui.visualization.ColorManager.getColorForTaxa(root);
-
-    const linkExtension = chart.append("g")
-        .attr("class", "link-extensions")
+    chart.append("g").attr("class", "link-extensions")
         .selectAll("path")
-        .data(root.links().filter(d => {
-            const isLeaf = !(d.target.children || d.target.branchset);
-            return isLeaf;
-        }))
+        .data(root.links().filter(d => !(d.target.children || d.target.branchset)))
         .enter().append("path")
-        .each(function (d) {
-            d.target.linkExtensionNode = this;
-            d.target.linkExtensionData = d;
-        })
-        .attr("d", linkExtensionConstant)
+        .attr("d", d => linkStep(d.target.x, d.target.y, d.target.x, innerRadius))
         .style("pointer-events", "none");
 
-    const link = chart.append("g")
-        .attr("class", "links")
+    chart.append("g").attr("class", "links")
         .selectAll("path")
         .data(root.links())
         .enter().append("path")
@@ -149,30 +102,28 @@ function renderTree(treeData, container) {
                 target: d.target
             });
         })
-        .attr("d", linkConstant)
+        .attr("d", d => linkStep(d.source.x, d.source.y, d.target.x, d.target.y))
         .attr("stroke", d => d.target.color)
         .attr("stroke-width", 1.5)
         .style("stroke-linecap", "round");
+}
 
-    const labels = chart.append("g")
+function renderLabels(chart, root, innerRadius) {
+    chart.append("g")
         .attr("class", "labels")
         .selectAll("text")
         .data(root.leaves())
         .enter().append("text")
-        .each(function (d) {
-            d.labelNode = this;
-        })
+        .attr("data-taxon", d => d.data.originalName)
+        .attr("data-taxon", d => d.data.name)
         .attr("dy", ".31em")
         .attr("font-size", "10px")
         .attr("transform", d => {
-            const rotation = d.x - 90;
-            const translateX = innerRadius + 4;
+            const rot = d.x - 90;
             const flip = d.x >= 180 ? "rotate(180)" : "";
-            return `rotate(${rotation})translate(${translateX},0)${flip}`;
+            return `rotate(${rot})translate(${innerRadius + 4},0)${flip}`;
         })
-        .attr("text-anchor", d => {
-            return d.x < 180 ? "start" : "end";
-        })
+        .attr("text-anchor", d => d.x < 180 ? "start" : "end")
         .text(d => d.data.name.replace(/_/g, " "))
         .on("mouseover", function (event, d) {
             d3.select(this).transition().attr("font-size", "12px");
@@ -182,8 +133,10 @@ function renderTree(treeData, container) {
             d3.select(this).transition().attr("font-size", "10px");
             PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
         });
+}
 
-    const node = chart.append("g")
+function renderNodes(chart, root, innerRadius) {
+    const nodeGroup = chart.append("g")
         .attr("class", "nodes")
         .selectAll("g")
         .data(root.leaves())
@@ -191,22 +144,34 @@ function renderTree(treeData, container) {
         .attr("class", "node")
         .attr("id", d => `node-${d.data.name.replace(/[^a-zA-Z0-9]/g, "_")}`)
         .attr("transform", d => `rotate(${d.x - 90})translate(${d.y},0)`)
+        .on("mouseover", function (event, d) {
+            d3.select(this).select("circle")
+                .transition().attr("r", 5);
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(true).call(this, d);
+        })
+        .on("mouseout", function (event, d) {
+            d3.select(this).select("circle")
+                .transition().attr("r", 3);
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
+        })
         .each(function (d) {
             if (d.data.name && !d.data.name.startsWith("Inner")) {
                 const count = PhylogeneticTree.ui.components.TreeControls.countGenomesForGene(d.data.name, geneData);
                 d3.select(this).attr("data-value", count);
                 const families = PhylogeneticTree.core.utilities.Genome.mapGenomesToFamilies(geneData);
-                if (families)
-                    d3.select(this).attr("data-families", families[d.data.name] ? families[d.data.name].join(",") : "");
+                if (families) {
+                    d3.select(this).attr("data-families", families[d.data.name]?.join(",") || "");
+                }
             } else {
                 d3.select(this).attr("data-value", "0");
             }
         });
 
-    node.append("circle")
+    nodeGroup.append("circle")
         .attr("r", 3)
         .attr("fill", d => d.color || "#4A90E2");
 }
+
 
 PhylogeneticTree.ui.visualization.TreeRenderer = {
     renderTree,

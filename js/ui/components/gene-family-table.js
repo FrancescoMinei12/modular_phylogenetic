@@ -64,7 +64,7 @@ function renderGeneFamilyTable(data, tableSelector) {
                     row.classList.toggle("bg-yellow-100", row === this);
                 });
 
-                PhylogeneticTree.ui.interactions.highlightning.highlightGeneFamily(data, familyId);
+                PhylogeneticTree.ui.interactions.highlighting.highlightGeneFamily(data, familyId);
 
                 const detailsSection = document.getElementById("gene-details-section");
                 const detailsTitle = document.getElementById("gene-details-title");

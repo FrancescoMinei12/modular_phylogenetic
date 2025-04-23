@@ -63,7 +63,7 @@ function renderProductTable(data, tableSelector) {
                     row.classList.toggle("bg-yellow-100", row === this);
                 });
 
-                PhylogeneticTree.ui.interactions.highlightning.highlightProduct(data, productName);
+                PhylogeneticTree.ui.interactions.highlighting.highlightProduct(data, productName);
 
                 const detailsSection = document.getElementById("gene-details-section");
                 const detailsTitle = document.getElementById("gene-details-title");

@@ -22,7 +22,8 @@ function renderTree(treeData, container) {
         .attr("width", width)
         .attr("height", height)
         .style("display", "block")
-        .style("margin", "0 auto");
+        .style("margin", "0 auto")
+        .style("overflow", "visible");
 
     const root = d3.hierarchy(treeData, function (d) {
         return d.branchset;
@@ -52,15 +53,23 @@ function renderTree(treeData, container) {
     });
 
     /**
-     * Returns the SVG path for a horizontal link between nodes.
+     * Returns the SVG path for a rectangular (right-angled) link between nodes.
      *
      * @param {Object} d - A link object.
      * @returns {string} - The SVG path string.
      */
     function linkHorizontal(d) {
-        return d3.linkHorizontal()
-            .x(d => d.y)
-            .y(d => d.x)(d);
+        const sourceX = d.source.x;
+        const sourceY = d.source.y;
+        const targetX = d.target.x;
+        const targetY = d.target.y;
+
+        const midY = sourceY + (targetY - sourceY) / 2;
+
+        return `M${sourceY},${sourceX} 
+                L${midY},${sourceX} 
+                L${midY},${targetX} 
+                L${targetY},${targetX}`;
     }
 
     const link = chart.append("g")
@@ -96,7 +105,11 @@ function renderTree(treeData, container) {
 
     node.append("circle")
         .attr("r", 4.5)
-        .attr("fill", "#4A90E2");
+        .attr("fill", "#4A90E2")
+        .each(function (d) {
+            d3.select(d.nodeElement)
+                .attr("data-family", d.data.name);
+        });
 
     const labels = node.append("text")
         .attr("dx", "1.5em")

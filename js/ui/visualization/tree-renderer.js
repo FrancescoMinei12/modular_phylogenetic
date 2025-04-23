@@ -15,8 +15,6 @@ let geneData = {};
  */
 function setGeneData(data) {
     geneData = data;
-
-    const sampleKey = Object.keys(data)[0];
 }
 
 /**
@@ -47,7 +45,8 @@ function renderTree(treeData, container) {
         .attr("width", outerRadius * 2)
         .attr("height", outerRadius * 2)
         .style("display", "block")
-        .style("margin", "0 auto");
+        .style("margin", "0 auto")
+        .style("overflow", "visible");
 
     const chart = svg.append("g")
         .attr("class", "tree-chart")
@@ -196,6 +195,9 @@ function renderTree(treeData, container) {
             if (d.data.name && !d.data.name.startsWith("Inner")) {
                 const count = PhylogeneticTree.ui.components.TreeControls.countGenomesForGene(d.data.name, geneData);
                 d3.select(this).attr("data-value", count);
+                const families = PhylogeneticTree.core.utilities.Genome.mapGenomesToFamilies(geneData);
+                if (families)
+                    d3.select(this).attr("data-families", families[d.data.name] ? families[d.data.name].join(",") : "");
             } else {
                 d3.select(this).attr("data-value", "0");
             }

@@ -244,6 +244,10 @@ h2 {
     position: relative;
 }
 
+svg {
+    overflow: visible;
+}
+
 .range-slider-container {
     margin-top: 15px;
     padding: 10px;

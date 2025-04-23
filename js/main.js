@@ -23,6 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const geneData = await fetch("../assets/extracted_data.json").then(res => res.json());
 
+        PhylogeneticTree.core.data = PhylogeneticTree.core.data || {};
+        PhylogeneticTree.core.data.getGeneData = function () {
+            return geneData;
+        };
+
         PhylogeneticTree.ui.visualization.TreeRenderer.setGeneData(geneData);
 
         if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal) {

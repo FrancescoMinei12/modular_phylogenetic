@@ -18,7 +18,6 @@ export function calculateDiffusivity(data) {
 
     for (const familyKey in data) {
         const genomeSet = new Set();
-
         const genes = data[familyKey];
 
         genes.forEach(gene => {
@@ -27,6 +26,7 @@ export function calculateDiffusivity(data) {
         });
 
         const familyName = familyKey.split(":")[0];
+
         result.push({
             family: familyName,
             fullFamilyKey: familyKey,

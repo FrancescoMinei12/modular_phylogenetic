@@ -16,12 +16,16 @@
 import { PhylogeneticTree } from "./namespace.js";
 
 import "./core/io/file-io.js";
+
 import "./core/parser/newickParser.js";
+
 import "./core/taxonomy/taxon-extractor.js";
 import "./core/taxonomy/custom-name-manager.js";
 
 import "./core/utilities/calculate-diffusivity.js";
 import "./core/utilities/pagination.js";
+import "./core/utilities/genome-to-families.js";
+import "./core/utilities/gene-family-stats.js";
 
 import "./ui/components/taxa-table.js";
 import "./ui/components/gene-family-table.js";
@@ -29,6 +33,7 @@ import "./ui/components/product-table.js";
 import "./ui/components/tabs.js";
 import "./ui/components/layout-switch.js";
 import "./ui/components/controllers-bar.js";
+import "./ui/components/diffusivity-chart.js";
 
 import "./ui/config/tree-config.js";
 

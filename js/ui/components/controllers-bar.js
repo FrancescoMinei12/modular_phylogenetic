@@ -20,6 +20,8 @@ let _startX = 0;
 let _startY = 0;
 let _minScale = 0.5;
 let _maxScale = 3;
+let maxDiff = 1;
+let categoriesByFamily = {};
 
 /**
  * @function createControlPanel
@@ -80,7 +82,7 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
     labelSizeDropdown.id = "label-size-dropdown";
     labelSizeDropdown.name = "label-size";
 
-    for (let size = 6; size <= 48; size += 2) {
+    for (let size = 2; size <= 12; size += 2) {
         const option = document.createElement("option");
         option.value = size;
         option.textContent = `${size}px`;
@@ -161,12 +163,22 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
     container.appendChild(controlPanel);
 
     const diffusivityData = PhylogeneticTree.core.utilities.Diffusivity.calculateDiffusivity(geneData);
+    const diffValues = diffusivityData.map(d => d.diffusivity);
+    maxDiff = Math.max(...diffValues);
+    const lowThreshold = Math.ceil(maxDiff * 0.25);
+    const highThreshold = Math.floor(maxDiff * 0.75);
+
+    diffusivityData.forEach(d => {
+        if (d.diffusivity === 1) categoriesByFamily[d.family] = "singleton";
+        else if (d.diffusivity >= highThreshold) categoriesByFamily[d.family] = "core";
+        else categoriesByFamily[d.family] = "dispensable";
+    });
 
     const nodes = document.querySelectorAll(`${treeContainerId} .node`);
 
     nodes.forEach(node => {
         const familyKey = node.getAttribute("data-family");
-        const family = familyKey?.split(":")[0];
+        const family = familyKey;
 
         const matching = diffusivityData.find(d => d.family === family);
         if (matching) {
@@ -177,12 +189,12 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
     });
 
     noUiSlider.create(rangeSlider, {
-        start: [1, getMaxGenomeCount(treeData)],
+        start: [lowThreshold, highThreshold],
         connect: true,
         step: 1,
         range: {
             'min': 1,
-            'max': getMaxGenomeCount(treeData)
+            'max': maxDiff
         },
         format: {
             to: value => Math.round(value),
@@ -197,7 +209,8 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
         minValueElement.textContent = minValue;
         maxValueElement.textContent = maxValue;
 
-        categorizeTreeNodes(minValue, maxValue, treeContainerId);
+        categorizeTreeNodes(minValue, maxValue, treeContainerId, maxDiff);
+        filterTreeByRange(minValue, maxValue, treeData, treeContainerId);
     });
 }
 
@@ -431,10 +444,11 @@ function clampTranslation(treeContainerId) {
     const effectiveTreeWidth = treeRect.width / _scale;
     const effectiveTreeHeight = treeRect.height / _scale;
 
+    const labelPadding = 120;
     const margin = 50;
 
     const maxX = _scale < 1 ? containerRect.width - effectiveTreeWidth * _scale : margin;
-    const minX = _scale < 1 ? 0 : Math.min(0, containerRect.width - effectiveTreeWidth * _scale - margin);
+    const minX = _scale < 1 ? 0 : Math.min(0, containerRect.width - effectiveTreeWidth * _scale - margin - labelPadding);
 
     const maxY = _scale < 1 ? containerRect.height - effectiveTreeHeight * _scale : margin;
     const minY = _scale < 1 ? 0 : Math.min(0, containerRect.height - effectiveTreeHeight * _scale - margin);
@@ -453,33 +467,42 @@ function clampTranslation(treeContainerId) {
  * @param {string} treeContainerId - ID selector for tree container
  */
 function filterTreeByRange(min, max, treeData, treeContainerId) {
-
     const treeContainer = document.querySelector(treeContainerId);
     if (!treeContainer) return;
 
     const nodes = treeContainer.querySelectorAll('.node');
 
     nodes.forEach(node => {
-        const nodeValue = parseInt(node.getAttribute('data-value') || '0');
+        const families = node.getAttribute("data-families");
+        if (!families) return;
 
-        let nodeCategory = '';
-        if (nodeValue <= min) {
-            nodeCategory = 'singleton';
-        } else if (nodeValue >= max) {
-            nodeCategory = 'core';
-        } else {
-            nodeCategory = 'dispensable';
-        }
+        const familyList = families.split(",");
+        let singletonCount = 0;
+        let coreCount = 0;
+        let dispensableCount = 0;
 
-        if (nodeCategory === 'singleton') {
-            node.style.opacity = 1;
-            node.querySelector('circle').setAttribute('r', '4');
-        } else if (nodeCategory === 'core') {
-            node.style.opacity = 1;
-            node.querySelector('circle').setAttribute('r', '4');
-        } else {
-            node.style.opacity = 0.3;
-            node.querySelector('circle').setAttribute('r', '2');
+        familyList.forEach(fam => {
+            const parts = fam.split(":");
+            const genomeId = parts[0];
+            const cat = categoriesByFamily[genomeId];
+
+            if (cat === "singleton") singletonCount++;
+            else if (cat === "core") coreCount++;
+            else if (cat === "dispensable") dispensableCount++;
+        });
+
+        node.setAttribute("data-singleton", singletonCount);
+        node.setAttribute("data-core", coreCount);
+        node.setAttribute("data-dispensable", dispensableCount);
+
+        const hasRelevantFamilies = singletonCount > 0 || coreCount > 0 || dispensableCount > 0;
+        node.setAttribute("data-in-range", hasRelevantFamilies ? "true" : "false");
+
+        node.setAttribute("title", `Singleton: ${singletonCount}, Core: ${coreCount}, Dispensable: ${dispensableCount}`);
+
+        const circle = node.querySelector('circle');
+        if (circle) {
+            circle.style.opacity = hasRelevantFamilies ? "1.0" : "0.3";
         }
     });
 }
@@ -490,32 +513,43 @@ function filterTreeByRange(min, max, treeData, treeContainerId) {
  * @param {number} min - Minimum range value for singleton
  * @param {number} max - Maximum range value for core
  * @param {string} treeContainerId - ID selector for tree container
+ * @param {number} maxDiffValue - Maximum diffusivity value
  */
-function categorizeTreeNodes(min, max, treeContainerId) {
+function categorizeTreeNodes(min, max, treeContainerId, maxDiffValue) {
     const treeContainer = document.querySelector(treeContainerId);
     if (!treeContainer) return;
 
     const nodes = treeContainer.querySelectorAll('.node');
+    let countByCategory = { singleton: 0, dispensable: 0, core: 0, unknown: 0 };
 
     nodes.forEach(node => {
         const nodeValue = parseInt(node.getAttribute('data-value') || '0');
+        const inRange = node.getAttribute('data-in-range') === "true";
 
         let nodeCategory = '';
-        if (nodeValue <= min) {
+        if (nodeValue === 0) {
+            nodeCategory = 'unknown';
+            countByCategory.unknown++;
+        } else if (nodeValue <= min) {
             nodeCategory = 'singleton';
+            countByCategory.singleton++;
         } else if (nodeValue >= max) {
             nodeCategory = 'core';
+            countByCategory.core++;
         } else {
             nodeCategory = 'dispensable';
+            countByCategory.dispensable++;
         }
 
         node.setAttribute('data-category', nodeCategory);
-        if (nodeCategory === 'singleton') {
-            node.style.fill = 'red';
-        } else if (nodeCategory === 'core') {
-            node.style.fill = 'blue';
-        } else {
-            node.style.fill = 'green';
+
+        const circle = node.querySelector('circle');
+        if (circle) {
+            const baseSize = 3;
+            const maxSizeIncrease = 3;
+            const highlightBonus = inRange ? 1 : 0;
+            const size = baseSize + Math.min((nodeValue / maxDiffValue * maxSizeIncrease), maxSizeIncrease) + highlightBonus;
+            circle.setAttribute('r', size);
         }
     });
 }

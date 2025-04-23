@@ -137,10 +137,42 @@ function renderTaxaTable(treeData, tableSelector) {
             editCell.appendChild(editInput);
 
             tableRow.addEventListener("click", function () {
+                const existingChart = document.querySelector('.diffusivity-chart');
+                if (existingChart) existingChart.remove();
+
                 document.querySelectorAll(`${tableSelector} tr`).forEach(r => {
                     r.classList.toggle("bg-yellow-100", r === this);
                 });
                 PhylogeneticTree.ui.interactions.highlightning.highlightPathAndLabel(taxon.originalName);
+
+                const geneData = PhylogeneticTree.core.data.getGeneData();
+                const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
+                    taxon.originalName,
+                    geneData
+                );
+
+                const chart = PhylogeneticTree.ui.components.DiffusivityChart.createChart(
+                    stats.singleton,
+                    stats.dispensable,
+                    stats.core,
+                    stats.total
+                );
+
+                if (chart) {
+                    const rect = this.getBoundingClientRect();
+                    chart.style.left = `${rect.right + window.scrollX + 5}px`;
+                    chart.style.top = `${rect.top + window.scrollY}px`;
+                    document.body.appendChild(chart);
+
+                    setTimeout(() => {
+                        document.addEventListener('click', function closeChart(e) {
+                            if (!chart.contains(e.target)) {
+                                chart.remove();
+                                document.removeEventListener('click', closeChart);
+                            }
+                        });
+                    }, 100);
+                }
             });
         });
     }
@@ -159,7 +191,7 @@ function renderTaxaTable(treeData, tableSelector) {
  * @param {Object} treeData - The hierarchical tree data
  * @param {string} tableSelector - CSS selector for the table container
  */
-function resetCustomNames(treeData, tableSelector) {
+function resetCustomNames(treeData) {
     try {
         localStorage.removeItem('customTaxonNames');
 

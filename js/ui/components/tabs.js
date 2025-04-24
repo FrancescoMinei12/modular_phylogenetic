@@ -15,8 +15,8 @@ const TAB_CONFIG = {
         render: (data) => PhylogeneticTree.ui.components.ProductTable.renderProductTable(data, "#product-tab"),
         dataType: 'gene'
     },
-    'famiglie': {
-        render: (data) => PhylogeneticTree.ui.components.GeneFamilyTable.renderGeneFamilyTable(data, "#famiglie-tab"),
+    'families': {
+        render: (data) => PhylogeneticTree.ui.components.GeneFamilyTable.renderGeneFamilyTable(data, "#families-tab"),
         dataType: 'gene'
     }
 };

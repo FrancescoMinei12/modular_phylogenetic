@@ -20,19 +20,22 @@ let _startX = 0;
 let _startY = 0;
 let _minScale = 0.5;
 let _maxScale = 3;
-let maxDiff = 1;
 let categoriesByFamily = {};
+let currentThresholds = {
+    singletonThreshold: 1,
+    coreThreshold: 1,
+    dispensableCount: 1
+};
 
 /**
  * @function createControlPanel
  * @memberof PhylogeneticTree.ui.components.TreeControls
  * @description Creates interactive control panel for tree manipulation
  * @param {string} containerId - ID selector for parent container
- * @param {Object} treeData - Phylogenetic tree data object
  * @param {Object} geneData - Gene data object for filtering
  * @param {string} treeContainerId - ID selector for tree container
  */
-function createControlPanel(containerId, treeData, geneData, treeContainerId) {
+function createControlPanel(containerId, geneData, treeContainerId) {
     const container = document.querySelector(containerId);
     if (!container) return;
 
@@ -164,13 +167,16 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
 
     const diffusivityData = PhylogeneticTree.core.utilities.Diffusivity.calculateDiffusivity(geneData);
     const diffValues = diffusivityData.map(d => d.diffusivity);
-    maxDiff = Math.max(...diffValues);
-    const lowThreshold = Math.ceil(maxDiff * 0.25);
-    const highThreshold = Math.floor(maxDiff * 0.75);
+    currentThresholds.dispensableCount = Math.max(...diffValues);
+
+    const genomesCount = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTotalGenomes(geneData);
+
+    currentThresholds.singletonThreshold = 1;
+    currentThresholds.coreThreshold = genomesCount;
 
     diffusivityData.forEach(d => {
         if (d.diffusivity === 1) categoriesByFamily[d.family] = "singleton";
-        else if (d.diffusivity >= highThreshold) categoriesByFamily[d.family] = "core";
+        else if (d.diffusivity >= currentThresholds.highThreshold) categoriesByFamily[d.family] = "core";
         else categoriesByFamily[d.family] = "dispensable";
     });
 
@@ -189,18 +195,21 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
     });
 
     noUiSlider.create(rangeSlider, {
-        start: [lowThreshold, highThreshold],
+        start: [currentThresholds.singletonThreshold, currentThresholds.coreThreshold],
         connect: true,
         step: 1,
         range: {
             'min': 1,
-            'max': maxDiff
+            'max': Math.max(genomesCount, currentThresholds.dispensableCount)
         },
         format: {
             to: value => Math.round(value),
             from: value => Number(value)
         }
     });
+
+    minValueElement.textContent = currentThresholds.singletonThreshold;
+    maxValueElement.textContent = currentThresholds.coreThreshold;
 
     rangeSlider.noUiSlider.on('update', function (values, handle) {
         const minValue = parseInt(values[0]);
@@ -209,58 +218,28 @@ function createControlPanel(containerId, treeData, geneData, treeContainerId) {
         minValueElement.textContent = minValue;
         maxValueElement.textContent = maxValue;
 
-        categorizeTreeNodes(minValue, maxValue, treeContainerId, maxDiff);
-        filterTreeByRange(minValue, maxValue, treeData, treeContainerId);
+        const dispCount = maxValue - minValue;
+        diffValueElement.textContent = dispCount > 0 ? dispCount : 0;
+
+        currentThresholds.singletonThreshold = minValue;
+        currentThresholds.coreThreshold = maxValue;
+        currentThresholds.dispensableCount = dispCount > 0 ? dispCount : 0;
+
+        const event = new CustomEvent('thresholdsChanged', {
+            detail: { ...currentThresholds }
+        });
+        document.dispatchEvent(event);
     });
 }
 
 /**
- * @function getMaxGenomeCount
+ * @function getThresholds
  * @memberof PhylogeneticTree.ui.components.TreeControls
- * @description Gets the maximum number of unique genomes from the dataset
- * @param {Object} treeData - Phylogenetic tree data object
- * @returns {number} - Maximum genome count
+ * @description Restituisce i valori correnti dei threshold
+ * @returns {Object} Oggetto contenente i valori correnti dei threshold
  */
-function getMaxGenomeCount(treeData) {
-    const genomeNames = new Set();
-
-    function traverseTree(node) {
-        if (node.name && !node.name.startsWith("Inner")) {
-            genomeNames.add(node.name);
-        }
-
-        if (node.branchset && node.branchset.length) {
-            node.branchset.forEach(child => traverseTree(child));
-        }
-    }
-
-    traverseTree(treeData);
-    return genomeNames.size;
-}
-
-/**
- * @function countGenomesForGene
- * @memberof PhylogeneticTree.ui.components.TreeControls
- * @description Counts how many genes are associated with a specific genome
- * @param {string} genomeId - The genome ID
- * @param {Object} extractedData - Extracted data containing gene information
- * @returns {number} - Number of genes associated with the genome
- */
-function countGenomesForGene(genomeId, extractedData) {
-    let count = 0;
-
-    for (const geneKey in extractedData) {
-        const geneArray = extractedData[geneKey];
-
-        for (let i = 0; i < geneArray.length; i++) {
-            if (geneArray[i]['genome-name'] === genomeId) {
-                count++;
-                break;
-            }
-        }
-    }
-
-    return count;
+function getThresholds() {
+    return { ...currentThresholds };
 }
 
 /**
@@ -458,100 +437,27 @@ function clampTranslation(treeContainerId) {
 }
 
 /**
- * @function filterTreeByRange
+ * @function countGenomesForGene
  * @memberof PhylogeneticTree.ui.components.TreeControls
- * @description Filters tree elements based on the specified range
- * @param {number} min - Minimum range value
- * @param {number} max - Maximum range value
- * @param {Object} treeData - Phylogenetic tree data object
- * @param {string} treeContainerId - ID selector for tree container
+ * @description Counts how many genes are associated with a specific genome
+ * @param {string} genomeId - The genome ID
+ * @param {Object} extractedData - Extracted data containing gene information
+ * @returns {number} - Number of genes associated with the genome
  */
-function filterTreeByRange(min, max, treeData, treeContainerId) {
-    const treeContainer = document.querySelector(treeContainerId);
-    if (!treeContainer) return;
+function countGenomesForGene(genomeId, extractedData) {
+    let count = 0;
 
-    const nodes = treeContainer.querySelectorAll('.node');
+    for (const geneKey in extractedData) {
+        const geneArray = extractedData[geneKey];
 
-    nodes.forEach(node => {
-        const families = node.getAttribute("data-families");
-        if (!families) return;
-
-        const familyList = families.split(",");
-        let singletonCount = 0;
-        let coreCount = 0;
-        let dispensableCount = 0;
-
-        familyList.forEach(fam => {
-            const parts = fam.split(":");
-            const genomeId = parts[0];
-            const cat = categoriesByFamily[genomeId];
-
-            if (cat === "singleton") singletonCount++;
-            else if (cat === "core") coreCount++;
-            else if (cat === "dispensable") dispensableCount++;
-        });
-
-        node.setAttribute("data-singleton", singletonCount);
-        node.setAttribute("data-core", coreCount);
-        node.setAttribute("data-dispensable", dispensableCount);
-
-        const hasRelevantFamilies = singletonCount > 0 || coreCount > 0 || dispensableCount > 0;
-        node.setAttribute("data-in-range", hasRelevantFamilies ? "true" : "false");
-
-        node.setAttribute("title", `Singleton: ${singletonCount}, Core: ${coreCount}, Dispensable: ${dispensableCount}`);
-
-        const circle = node.querySelector('circle');
-        if (circle) {
-            circle.style.opacity = hasRelevantFamilies ? "1.0" : "0.3";
+        for (let i = 0; i < geneArray.length; i++) {
+            if (geneArray[i]['genome-name'] === genomeId) {
+                count++;
+                break;
+            }
         }
-    });
-}
-
-/**
- * @function categorizeTreeNodes
- * @description Appends categories (core, singleton, dispensable) to tree nodes based on diffusivity
- * @param {number} min - Minimum range value for singleton
- * @param {number} max - Maximum range value for core
- * @param {string} treeContainerId - ID selector for tree container
- * @param {number} maxDiffValue - Maximum diffusivity value
- */
-function categorizeTreeNodes(min, max, treeContainerId, maxDiffValue) {
-    const treeContainer = document.querySelector(treeContainerId);
-    if (!treeContainer) return;
-
-    const nodes = treeContainer.querySelectorAll('.node');
-    let countByCategory = { singleton: 0, dispensable: 0, core: 0, unknown: 0 };
-
-    nodes.forEach(node => {
-        const nodeValue = parseInt(node.getAttribute('data-value') || '0');
-        const inRange = node.getAttribute('data-in-range') === "true";
-
-        let nodeCategory = '';
-        if (nodeValue === 0) {
-            nodeCategory = 'unknown';
-            countByCategory.unknown++;
-        } else if (nodeValue <= min) {
-            nodeCategory = 'singleton';
-            countByCategory.singleton++;
-        } else if (nodeValue >= max) {
-            nodeCategory = 'core';
-            countByCategory.core++;
-        } else {
-            nodeCategory = 'dispensable';
-            countByCategory.dispensable++;
-        }
-
-        node.setAttribute('data-category', nodeCategory);
-
-        const circle = node.querySelector('circle');
-        if (circle) {
-            const baseSize = 3;
-            const maxSizeIncrease = 3;
-            const highlightBonus = inRange ? 1 : 0;
-            const size = baseSize + Math.min((nodeValue / maxDiffValue * maxSizeIncrease), maxSizeIncrease) + highlightBonus;
-            circle.setAttribute('r', size);
-        }
-    });
+    }
+    return count;
 }
 
 PhylogeneticTree.ui.components.TreeControls = {
@@ -563,7 +469,6 @@ PhylogeneticTree.ui.components.TreeControls = {
     resetView,
     changeLabelSize,
     clampTranslation,
-    filterTreeByRange,
     countGenomesForGene,
-    categorizeTreeNodes
+    getThresholds
 };

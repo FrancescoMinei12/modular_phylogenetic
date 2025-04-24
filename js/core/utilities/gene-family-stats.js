@@ -44,7 +44,8 @@ function getFamilyDiffusivity(familyId, geneData) {
  * @param {Object} geneData - The gene data object
  * @returns {Object} Statistics object
  */
-function calculateTaxonStats(taxonName, geneData) {
+
+function calculateTaxonStats(taxonName, geneData, singletonThreshold = 1, coreThreshold) {
     try {
         const taxonFamilies = getFamiliesForTaxon(taxonName, geneData);
         const totalGenomes = Object.keys(
@@ -56,9 +57,9 @@ function calculateTaxonStats(taxonName, geneData) {
         taxonFamilies.forEach(familyId => {
             const diffusivity = getFamilyDiffusivity(familyId, geneData);
 
-            if (diffusivity === 1) singleton++;
-            else if (diffusivity === totalGenomes) core++;
-            else if (diffusivity > 1) dispensable++;
+            if (diffusivity <= singletonThreshold) singleton++;
+            else if (diffusivity >= coreThreshold) core++;
+            else dispensable++;
         });
 
         return {
@@ -69,12 +70,17 @@ function calculateTaxonStats(taxonName, geneData) {
         };
     } catch (error) {
         console.error(`Error calculating stats for ${taxonName}:`, error);
-        return { singleton: 0, dispensable: 0, core: 0, total: 0 };
+        return { singleton: 0, dispensable: 0, core: 0, total: 0, totalGenomes };
     }
+}
+
+function calculateTotalGenomes(geneData) {
+    return Object.keys(PhylogeneticTree.core.utilities.Genome.mapGenomesToFamilies(geneData)).length;
 }
 
 PhylogeneticTree.core.utilities.GeneFamilyStats = {
     getFamiliesForTaxon,
     getFamilyDiffusivity,
-    calculateTaxonStats
+    calculateTaxonStats,
+    calculateTotalGenomes
 };

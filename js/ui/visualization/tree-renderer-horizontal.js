@@ -3,15 +3,18 @@ import { PhylogeneticTree } from "../../namespace-init.js";
 /**
  * @module treeRendererHorizontal
  * @description Module for rendering a left-to-right phylogenetic tree using D3.js.
- * It builds the tree layout, draws nodes and links, and enables interactivity through event listeners.
  */
 
+let geneData = {};
+
 /**
- * Renders an horizontal phylogenetic tree visualization using D3.
- *
- * @param {Object} treeData - The hierarchical tree data (from Newick parser).
- * @param {HTMLElement} container - The DOM element where the SVG tree should be rendered.
+ * Sets the gene data for the renderer
+ * @param {Object} data - The extracted gene data containing prevalence information in genomes
  */
+function setGeneData(data) {
+    geneData = data;
+}
+
 function renderTree(treeData, container) {
     const width = PhylogeneticTree.ui.config.Tree.TreeConfig.width;
     const height = PhylogeneticTree.ui.config.Tree.TreeConfig.height;
@@ -25,13 +28,10 @@ function renderTree(treeData, container) {
         .style("margin", "0 auto")
         .style("overflow", "visible");
 
-    const root = d3.hierarchy(treeData, function (d) {
-        return d.branchset;
-    }).sum(function (d) {
-        return d.branchset ? 0 : 1;
-    }).sort(function (a, b) {
-        return (a.value - b.value) || d3.ascending(a.data.length, b.data.length);
-    });
+    const root = d3.hierarchy(treeData, d => d.branchset)
+        .each(d => { if (d.data.name) d.data.originalName = d.data.name; })
+        .sum(d => d.branchset ? 0 : 1)
+        .sort((a, b) => (a.value - b.value) || d3.ascending(a.data.length, b.data.length));
 
     const chart = svg.append("g")
         .attr("class", "tree-chart")
@@ -40,39 +40,19 @@ function renderTree(treeData, container) {
 
     const treeLayout = d3.tree()
         .nodeSize([PhylogeneticTree.ui.config.Tree.TreeConfig.horizontal.nodeSpacing, 0])
-        .size([
-            height - margin.top - margin.bottom,
-            width - margin.left - margin.right
-        ]);
+        .size([height - margin.top - margin.bottom, width - margin.left - margin.right]);
 
     treeLayout(root);
 
-    root.descendants().forEach(d => {
-        d.x = d.x * 1.1;
-        d.y = d.y;
-    });
-
-    /**
-     * Returns the SVG path for a rectangular (right-angled) link between nodes.
-     *
-     * @param {Object} d - A link object.
-     * @returns {string} - The SVG path string.
-     */
+    /** @param {Object} d - A link object */
     function linkHorizontal(d) {
-        const sourceX = d.source.x;
-        const sourceY = d.source.y;
-        const targetX = d.target.x;
-        const targetY = d.target.y;
-
+        const sourceX = d.source.x, sourceY = d.source.y;
+        const targetX = d.target.x, targetY = d.target.y;
         const midY = sourceY + (targetY - sourceY) / 2;
-
-        return `M${sourceY},${sourceX} 
-                L${midY},${sourceX} 
-                L${midY},${targetX} 
-                L${targetY},${targetX}`;
+        return `M${sourceY},${sourceX}L${midY},${sourceX}L${midY},${targetX}L${targetY},${targetX}`;
     }
 
-    const link = chart.append("g")
+    chart.append("g")
         .attr("class", "links")
         .selectAll("path")
         .data(root.links())
@@ -80,14 +60,10 @@ function renderTree(treeData, container) {
         .each(function (d) {
             d.target.linkNode = this;
             d.source.linkNodes = d.source.linkNodes || [];
-            d.source.linkNodes.push({
-                element: this,
-                target: d.target
-            });
+            d.source.linkNodes.push({ element: this, target: d.target });
         })
-        .attr("class", "link")
         .attr("fill", "none")
-        .attr("stroke", "#000")
+        .attr("stroke", d => d.target.color)
         .attr("stroke-width", 1.5)
         .attr("d", linkHorizontal);
 
@@ -96,56 +72,52 @@ function renderTree(treeData, container) {
         .selectAll("g")
         .data(root.descendants())
         .enter().append("g")
-        .each(function (d) {
-            d.nodeElement = this;
-            d.data.originalName = d.data.name;
-        })
+        .each(function (d) { d.nodeElement = this; })
         .attr("class", "node")
-        .attr("transform", d => `translate(${d.y},${d.x})`);
-
-    node.append("circle")
-        .attr("r", 4.5)
-        .attr("fill", "#4A90E2")
-        .each(function (d) {
-            d3.select(d.nodeElement)
-                .attr("data-family", d.data.name);
-        });
-
-    const labels = node.append("text")
-        .attr("dx", "1.5em")
-        .attr("dy", "0.32em")
-        .attr("text-anchor", "start")
-        .text(d => d.data.name?.replace(/_/g, " ") || "")
-        .style("font-size", "10.5px")
-        .style("letter-spacing", "0.4px")
-        .each(function (d) {
-            d.labelNode = this;
-        })
+        .attr("id", d => `node-${(d.data?.name || "").replace(/[^a-zA-Z0-9]/g, "_")}`)
+        .attr("transform", d => `translate(${d.y},${d.x})`)
         .on("mouseover", function (event, d) {
-            d3.select(this)
-                .transition()
-                .style("font-size", "12px")
-                .style("letter-spacing", "0.6px");
-            PhylogeneticTree.ui.interactions.hoverFunctions
-                .mouseOvered(true)
-                .call(this, d);
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(true).call(this, d);
         })
         .on("mouseout", function (event, d) {
-            d3.select(this)
-                .transition()
-                .style("font-size", "10.5px")
-                .style("letter-spacing", "0.4px");
-            PhylogeneticTree.ui.interactions.hoverFunctions
-                .mouseOvered(false)
-                .call(this, d);
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
+        })
+        .each(function (d) {
+            if (d.data?.name && !d.data.name.startsWith("Inner")) {
+                const count = PhylogeneticTree.ui.components.TreeControls.countGenomesForGene(d.data.name, geneData);
+                d3.select(this).attr("data-value", count);
+                const families = PhylogeneticTree.core.utilities.Genome.mapGenomesToFamilies(geneData);
+                if (families) {
+                    d3.select(this).attr("data-families", families[d.data.name]?.join(",") || "");
+                }
+            } else {
+                d3.select(this).attr("data-value", "0");
+            }
+        });
+
+    node.append("text")
+        .attr("dx", "1.5em")
+        .attr("dy", "0.32em")
+        .attr("data-taxon", d => d.data?.originalName || d.data?.name || "")
+        .text(d => {
+            return !d.children ? ((d.data?.name || "").replace(/_/g, " ")) : "";
+        })
+        .style("font-size", "10.5px")
+        .style("letter-spacing", "0.4px")
+        .style("fill", "#333")
+        .attr("text-anchor", "start")
+        .each(function (d) { d.labelNode = this; })
+        .on("mouseover", function (event, d) {
+            d3.select(this).transition().style("font-size", "12px").style("letter-spacing", "0.6px");
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(true).call(this, d);
+        })
+        .on("mouseout", function (event, d) {
+            d3.select(this).transition().style("font-size", "10.5px").style("letter-spacing", "0.4px");
+            PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
         });
 }
 
-/**
- * @namespace TreeRendererHorizontal
- * @description Namespace for horizontal tree rendering functionality
- * @memberof PhylogeneticTree.ui.visualization
- */
 PhylogeneticTree.ui.visualization.TreeRendererHorizontal = {
-    renderTree
+    renderTree,
+    setGeneData
 };

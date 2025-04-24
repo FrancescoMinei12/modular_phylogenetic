@@ -146,10 +146,10 @@ function renderTaxaTable(treeData, tableSelector) {
                 PhylogeneticTree.ui.interactions.highlighting.highlightPathAndLabel(taxon.originalName);
 
                 const geneData = PhylogeneticTree.core.data.getGeneData();
-                const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
-                    taxon.originalName,
-                    geneData
-                );
+
+                const thresholds = PhylogeneticTree.ui.components.TreeControls.getThresholds();
+                const { singletonThreshold, coreThreshold, maxDiff } = thresholds;
+                const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(taxon.originalName, geneData, singletonThreshold, coreThreshold);
 
                 const chart = PhylogeneticTree.ui.components.DiffusivityChart.createChart(
                     stats.singleton,

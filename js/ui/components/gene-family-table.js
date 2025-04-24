@@ -70,7 +70,6 @@ function renderGeneFamilyTable(data, tableSelector) {
                 const detailsTitle = document.getElementById("gene-details-title");
                 const detailsContent = document.getElementById("gene-details-content");
 
-                detailsTitle.textContent = `Genes in family product: ${familyId}`;
                 detailsContent.innerHTML = "";
 
                 PhylogeneticTree.ui.visualization.GeneRenderer.renderGenesForFamily(data, familyId, detailsContent);

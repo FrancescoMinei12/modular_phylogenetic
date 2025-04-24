@@ -115,7 +115,6 @@ function renderLabels(chart, root, innerRadius) {
         .data(root.leaves())
         .enter().append("text")
         .attr("data-taxon", d => d.data.originalName)
-        .attr("data-taxon", d => d.data.name)
         .attr("dy", ".31em")
         .attr("font-size", "10px")
         .attr("transform", d => {
@@ -123,6 +122,7 @@ function renderLabels(chart, root, innerRadius) {
             const flip = d.x >= 180 ? "rotate(180)" : "";
             return `rotate(${rot})translate(${innerRadius + 4},0)${flip}`;
         })
+        .each(function (d) { d.labelNode = this; })
         .attr("text-anchor", d => d.x < 180 ? "start" : "end")
         .text(d => d.data.name.replace(/_/g, " "))
         .on("mouseover", function (event, d) {
@@ -141,17 +141,14 @@ function renderNodes(chart, root, innerRadius) {
         .selectAll("g")
         .data(root.leaves())
         .enter().append("g")
+        .each(function (d) { d.nodeElement = this; })
         .attr("class", "node")
         .attr("id", d => `node-${d.data.name.replace(/[^a-zA-Z0-9]/g, "_")}`)
         .attr("transform", d => `rotate(${d.x - 90})translate(${d.y},0)`)
         .on("mouseover", function (event, d) {
-            d3.select(this).select("circle")
-                .transition().attr("r", 5);
             PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(true).call(this, d);
         })
         .on("mouseout", function (event, d) {
-            d3.select(this).select("circle")
-                .transition().attr("r", 3);
             PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
         })
         .each(function (d) {
@@ -166,10 +163,6 @@ function renderNodes(chart, root, innerRadius) {
                 d3.select(this).attr("data-value", "0");
             }
         });
-
-    nodeGroup.append("circle")
-        .attr("r", 3)
-        .attr("fill", d => d.color || "#4A90E2");
 }
 
 

@@ -1,116 +1,112 @@
+/**
+ * @module TaxaDistributionChart
+ * @description Component for rendering the taxa distribution pie chart using Chart.js
+ */
+
 import { PhylogeneticTree } from "../../namespace-init.js";
 
-/**
- * @module DiffusivityChart
- * @description Provides visualization components for gene family diffusivity
- */
+let chartInstance = null;
 
-/**
- * @function createChart
- * @description Creates a mini chart showing gene family distribution
- * @param {number} singleton - Singleton count
- * @param {number} dispensable - Dispensable count
- * @param {number} core - Core count
- * @param {number} total - Total families count
- * @returns {HTMLElement} The chart element
- */
-function createChart(singleton, dispensable, core, total) {
-    const container = document.createElement('div');
-    container.className = 'diffusivity-chart p-3 bg-white rounded-lg shadow-lg border border-gray-300';
-    container.style.width = '220px';
-    container.style.position = 'absolute';
-    container.style.zIndex = '1000';
-    container.style.animation = 'fadeIn 0.2s ease-out';
+function createContainer() {
+    const container = document.createElement("div");
+    container.id = "taxa-distribution-chart";
+    container.classList.add(
+        "mb-4", "p-4", "bg-white", "rounded", "shadow",
+        "flex", "flex-col", "items-center"
+    );
+    container.style.height = "300px";
 
-    const title = document.createElement('div');
-    title.className = 'text-sm font-semibold mb-2 text-center';
-    title.textContent = `Gene Families: ${total}`;
+    const title = document.createElement("h3");
+    title.textContent = "Gene Family Distribution";
+    title.classList.add("text-lg", "font-semibold", "mb-2");
+
+    const canvas = document.createElement("canvas");
+    canvas.id = "taxa-pie-chart";
+    canvas.style.maxHeight = "250px";
+
+    const resetBtn = document.createElement("button");
+    resetBtn.textContent = "Reset chart to global view";
+    resetBtn.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600", "mt-2");
+    resetBtn.addEventListener("click", () => initialize());
+
     container.appendChild(title);
-
-    const chartBar = document.createElement('div');
-    chartBar.className = 'h-6 w-full bg-gray-200 rounded overflow-hidden flex mb-2';
-
-    const addBar = (value, color, label) => {
-        if (value === 0) return;
-
-        const bar = document.createElement('div');
-        bar.className = `h-full ${color} flex items-center justify-center`;
-        bar.style.width = `${(value / total) * 100}%`;
-        bar.style.minWidth = '20px';
-
-        const labelSpan = document.createElement('span');
-        labelSpan.className = 'text-xs font-bold text-white';
-        labelSpan.textContent = value;
-        bar.appendChild(labelSpan);
-
-        bar.title = `${label}: ${value} (${Math.round((value / total) * 100)}%)`;
-        chartBar.appendChild(bar);
-    };
-
-    addBar(singleton, 'chart-singleton', 'Singleton');
-    addBar(dispensable, 'chart-dispensable', 'Dispensable');
-    addBar(core, 'chart-core', 'Core');
-
-    container.appendChild(chartBar);
-
-    const legend = document.createElement('div');
-    legend.className = 'grid grid-cols-3 gap-1 text-xs text-center';
-
-    const addLegendItem = (value, colorClass, label) => {
-        const item = document.createElement('div');
-        item.className = 'flex flex-col items-center p-1';
-
-        const colorBox = document.createElement('div');
-        colorBox.className = `w-4 h-4 ${colorClass} rounded mb-1`;
-
-        const labelSpan = document.createElement('span');
-        labelSpan.textContent = label;
-
-        const valueSpan = document.createElement('span');
-        valueSpan.className = 'font-semibold';
-        valueSpan.textContent = value;
-
-        item.appendChild(colorBox);
-        item.appendChild(valueSpan);
-        item.appendChild(labelSpan);
-        legend.appendChild(item);
-    };
-
-    addLegendItem(singleton, 'chart-singleton', 'Singleton');
-    addLegendItem(dispensable, 'chart-dispensable', 'Dispensable');
-    addLegendItem(core, 'chart-core', 'Core');
-
-    container.appendChild(legend);
+    container.appendChild(canvas);
+    container.appendChild(resetBtn);
 
     return container;
 }
 
-/**
- * @function addChartStyles
- * @description Adds required styles to the document
- */
-function addChartStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-    .diffusivity-chart {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+function createChart(data, title) {
+    const canvas = document.getElementById("taxa-pie-chart");
+
+    if (chartInstance) {
+        chartInstance.destroy();
     }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .chart-singleton { background-color: #ef4444; }
-    .chart-dispensable { background-color: #3b82f6; }
-    .chart-core { background-color: #10b981; }
-    `;
-    document.head.appendChild(style);
+
+    chartInstance = new Chart(canvas, {
+        type: "pie",
+        data: {
+            labels: ["Singleton", "Dispensable", "Core"],
+            datasets: [{
+                data: [data.singleton, data.dispensable, data.core],
+                backgroundColor: ["#FF5733", "#FFC300", "#33FF57"],
+                borderColor: "#ffffff",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: "right" },
+                title: {
+                    display: true,
+                    text: `Gene Families for ${title}`
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const label = context.label || "";
+                            const value = context.raw || 0;
+                            const total = data.singleton + data.dispensable + data.core;
+                            const percent = total > 0 ? Math.round((value / total) * 100) : 0;
+                            return `${label}: ${value} (${percent}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
-PhylogeneticTree.ui.components.DiffusivityChart = {
-    createChart,
-    addChartStyles
-};
+function initialize() {
+    const geneData = PhylogeneticTree.core.data.getGeneData();
+    if (!geneData) return;
 
-PhylogeneticTree.ui.components.DiffusivityChart.addChartStyles();
+    const { singletonThreshold, coreThreshold } = PhylogeneticTree.ui.components.TreeControls.getThresholds();
+
+    let totalSingleton = 0, totalDispensable = 0, totalCore = 0;
+
+    Object.keys(geneData).forEach(familyId => {
+        const diffusivity = PhylogeneticTree.core.utilities.GeneFamilyStats.getFamilyDiffusivity(familyId, geneData);
+        if (diffusivity <= singletonThreshold) totalSingleton++;
+        else if (diffusivity >= coreThreshold) totalCore++;
+        else totalDispensable++;
+    });
+
+    createChart({ singleton: totalSingleton, dispensable: totalDispensable, core: totalCore }, "All Genomes");
+}
+
+function update(stats, taxonName) {
+    createChart({
+        singleton: stats.singleton,
+        dispensable: stats.dispensable,
+        core: stats.core
+    }, taxonName);
+}
+
+PhylogeneticTree.ui.components.TaxaDistributionChart = {
+    createContainer,
+    initialize,
+    update
+};

@@ -24,7 +24,7 @@ let categoriesByFamily = {};
 let currentThresholds = {
     singletonThreshold: 1,
     coreThreshold: 1,
-    dispensableCount: 1
+    dispensableRange: 1
 };
 
 /**
@@ -116,10 +116,6 @@ function createControlPanel(containerId, geneData, treeContainerId) {
     rangeSliderContainer.style.marginLeft = "auto";
     rangeSliderContainer.style.paddingLeft = "15px";
 
-    const rangeLabel = document.createElement("span");
-    rangeLabel.textContent = "Filtro range:";
-    rangeLabel.className = "range-slider-label";
-
     const rangeSlider = document.createElement("div");
     rangeSlider.id = "range-slider";
     rangeSlider.className = "range-slider";
@@ -167,7 +163,7 @@ function createControlPanel(containerId, geneData, treeContainerId) {
 
     const diffusivityData = PhylogeneticTree.core.utilities.Diffusivity.calculateDiffusivity(geneData);
     const diffValues = diffusivityData.map(d => d.diffusivity);
-    currentThresholds.dispensableCount = Math.max(...diffValues);
+    currentThresholds.dispensableRange = Math.max(...diffValues);
 
     const genomesCount = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTotalGenomes(geneData);
 
@@ -175,8 +171,8 @@ function createControlPanel(containerId, geneData, treeContainerId) {
     currentThresholds.coreThreshold = genomesCount;
 
     diffusivityData.forEach(d => {
-        if (d.diffusivity === 1) categoriesByFamily[d.family] = "singleton";
-        else if (d.diffusivity >= currentThresholds.highThreshold) categoriesByFamily[d.family] = "core";
+        if (d.diffusivity <= currentThresholds.singletonThreshold) categoriesByFamily[d.family] = "singleton";
+        else if (d.diffusivity >= currentThresholds.coreThreshold) categoriesByFamily[d.family] = "core";
         else categoriesByFamily[d.family] = "dispensable";
     });
 
@@ -200,7 +196,7 @@ function createControlPanel(containerId, geneData, treeContainerId) {
         step: 1,
         range: {
             'min': 1,
-            'max': Math.max(genomesCount, currentThresholds.dispensableCount)
+            'max': Math.max(genomesCount, currentThresholds.dispensableRange)
         },
         format: {
             to: value => Math.round(value),
@@ -223,12 +219,7 @@ function createControlPanel(containerId, geneData, treeContainerId) {
 
         currentThresholds.singletonThreshold = minValue;
         currentThresholds.coreThreshold = maxValue;
-        currentThresholds.dispensableCount = dispCount > 0 ? dispCount : 0;
-
-        const event = new CustomEvent('thresholdsChanged', {
-            detail: { ...currentThresholds }
-        });
-        document.dispatchEvent(event);
+        currentThresholds.dispensableRange = dispCount > 0 ? dispCount : 0;
     });
 }
 

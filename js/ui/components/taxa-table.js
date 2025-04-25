@@ -13,18 +13,12 @@ import { PhylogeneticTree } from "../../namespace-init.js";
  */
 function renderTaxaTable(treeData, tableSelector) {
     const tableContainer = document.querySelector(tableSelector);
-    if (!tableContainer) {
-        throw new Error(`Container element not found: ${tableSelector}`);
-    }
+    if (!tableContainer) throw new Error(`Container element not found: ${tableSelector}`);
 
-    PhylogeneticTree.core.io.file.loadCustomNamesFromFile(treeData, tableSelector);
     tableContainer.innerHTML = "";
 
-    if (!tableContainer.id) {
-        tableContainer.id = tableSelector.replace(/[^a-zA-Z0-9]/g, '');
-    }
-
-    PhylogeneticTree.ui.visualization.SearchBar.renderSearchBar(tableSelector, `${tableSelector} table`);
+    const chartContainer = PhylogeneticTree.ui.components.TaxaDistributionChart.createContainer();
+    tableContainer.appendChild(chartContainer);
 
     const buttonContainer = document.createElement("div");
     buttonContainer.classList.add("mb-3", "flex", "justify-between", "items-center", "w-full");
@@ -57,7 +51,8 @@ function renderTaxaTable(treeData, tableSelector) {
     tableContainer.appendChild(buttonContainer);
 
     const tableWrapper = document.createElement("div");
-    tableWrapper.classList.add("taxa-table-container", "h-[400px]", "overflow-y-auto", "pr-2");
+
+    tableWrapper.classList.add("taxa-table-container", "h-[250px]", "overflow-y-auto", "pr-2");
 
     const taxaTable = document.createElement("table");
     taxaTable.classList.add("w-full", "text-sm", "text-left", "border-collapse");
@@ -77,7 +72,17 @@ function renderTaxaTable(treeData, tableSelector) {
     tableWrapper.appendChild(taxaTable);
     tableContainer.appendChild(tableWrapper);
 
+    const paginationContainer = document.createElement("div");
+    paginationContainer.id = tableSelector.replace(/[^a-zA-Z0-9]/g, '');
+    paginationContainer.classList.add("mt-4", "mb-4");
+    tableContainer.appendChild(paginationContainer);
+
+    tableContainer.appendChild(chartContainer);
+
     const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
+
+    PhylogeneticTree.ui.components.TaxaDistributionChart.initialize();
+
 
     function renderTaxaPage(pageTaxa) {
         const oldTbody = taxaTable.tBodies[0];
@@ -137,51 +142,27 @@ function renderTaxaTable(treeData, tableSelector) {
             editCell.appendChild(editInput);
 
             tableRow.addEventListener("click", function () {
-                const existingChart = document.querySelector('.diffusivity-chart');
-                if (existingChart) existingChart.remove();
-
                 document.querySelectorAll(`${tableSelector} tr`).forEach(r => {
                     r.classList.toggle("bg-yellow-100", r === this);
                 });
+
                 PhylogeneticTree.ui.interactions.highlighting.highlightPathAndLabel(taxon.originalName);
 
                 const geneData = PhylogeneticTree.core.data.getGeneData();
 
                 const thresholds = PhylogeneticTree.ui.components.TreeControls.getThresholds();
-                const { singletonThreshold, coreThreshold, maxDiff } = thresholds;
+                const { singletonThreshold, coreThreshold } = thresholds;
                 const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(taxon.originalName, geneData, singletonThreshold, coreThreshold);
 
-                const chart = PhylogeneticTree.ui.components.DiffusivityChart.createChart(
-                    stats.singleton,
-                    stats.dispensable,
-                    stats.core,
-                    stats.total
-                );
-
-                if (chart) {
-                    const rect = this.getBoundingClientRect();
-                    chart.style.left = `${rect.right + window.scrollX + 5}px`;
-                    chart.style.top = `${rect.top + window.scrollY}px`;
-                    document.body.appendChild(chart);
-
-                    setTimeout(() => {
-                        document.addEventListener('click', function closeChart(e) {
-                            if (!chart.contains(e.target)) {
-                                chart.remove();
-                                document.removeEventListener('click', closeChart);
-                            }
-                        });
-                    }, 100);
-                }
+                PhylogeneticTree.ui.components.TaxaDistributionChart.update(stats, taxon.name);
             });
         });
     }
-
     PhylogeneticTree.ui.components.Pagination.applyPagination(
         allTaxa,
-        tableContainer.id,
+        tableSelector.replace(/[^a-zA-Z0-9]/g, ''),
         renderTaxaPage,
-        { itemsPerPage: 25 }
+        { itemsPerPage: 30 }
     );
 }
 

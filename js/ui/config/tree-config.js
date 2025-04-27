@@ -16,12 +16,12 @@ import { PhylogeneticTree } from "../../namespace-init.js";
 
 const TreeConfig = {
     width: Math.min(800, window.innerWidth * 0.85),
-    height: 800,
+    height: Math.min(800, window.innerHeight * 0.85),
 
     margin: {
-        top: 55,
+        top: 35,
         right: 90,
-        bottom: 55,
+        bottom: 35,
         left: 90
     },
 

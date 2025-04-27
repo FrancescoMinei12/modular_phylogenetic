@@ -37,7 +37,7 @@ tr:hover {
 }
 
 .taxa-table-container {
-    max-height: 350px;
+    max-height: 340px;
     overflow-y: auto;
     border: 1px solid #ccc;
     border-radius: 8px;

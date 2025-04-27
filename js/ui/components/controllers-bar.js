@@ -214,12 +214,15 @@ function createControlPanel(containerId, geneData, treeContainerId) {
         minValueElement.textContent = minValue;
         maxValueElement.textContent = maxValue;
 
-        const dispCount = maxValue - minValue;
-        diffValueElement.textContent = dispCount > 0 ? dispCount : 0;
+        if (maxValue <= minValue + 1) {
+            diffValueElement.textContent = "nessuno";
+        } else {
+            diffValueElement.textContent = `${minValue + 1} - ${maxValue - 1}`;
+        }
 
         currentThresholds.singletonThreshold = minValue;
         currentThresholds.coreThreshold = maxValue;
-        currentThresholds.dispensableRange = dispCount > 0 ? dispCount : 0;
+        currentThresholds.dispensableRange = maxValue - minValue > 0 ? maxValue - minValue : 0;
     });
 }
 
@@ -450,6 +453,7 @@ function countGenomesForGene(genomeId, extractedData) {
     }
     return count;
 }
+
 
 PhylogeneticTree.ui.components.TreeControls = {
     createControlPanel,

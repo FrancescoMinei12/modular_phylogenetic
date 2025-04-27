@@ -9,14 +9,22 @@ import { PhylogeneticTree } from "../../namespace-init.js";
 let geneData = {};
 
 /**
- * Sets the gene data for the renderer
- * 
+ * @function setGeneData
+ * @description Sets the gene data for the renderer
+ * @memberof module:treeRenderer
  * @param {Object} data - The extracted gene data containing prevalence information in genomes
  */
 function setGeneData(data) {
     geneData = data;
 }
 
+/**
+ * @function renderTree
+ * @description Main function to render the phylogenetic tree
+ * @memberof module:treeRenderer
+ * @param {Object} treeData - The tree data structure to render
+ * @param {HTMLElement} container - DOM element to contain the tree visualization
+ */
 function renderTree(treeData, container) {
     const { outerRadius, innerRadius } = getTreeDimensions();
     const root = buildHierarchy(treeData, innerRadius);
@@ -30,6 +38,12 @@ function renderTree(treeData, container) {
     renderLabels(chart, root, innerRadius);
 }
 
+/**
+ * @function getTreeDimensions
+ * @description Calculates the dimensions for the tree visualization
+ * @memberof module:treeRenderer
+ * @returns {Object} Dimensions object with outerRadius and innerRadius properties
+ */
 function getTreeDimensions() {
     const cfg = PhylogeneticTree.ui.config.Tree.TreeConfig;
     const minDim = Math.min(cfg.width, cfg.height);
@@ -38,6 +52,14 @@ function getTreeDimensions() {
     return { outerRadius, innerRadius };
 }
 
+/**
+ * @function buildHierarchy
+ * @description Builds the hierarchical tree structure from input data
+ * @memberof module:treeRenderer
+ * @param {Object} treeData - Input tree data
+ * @param {number} innerRadius - Inner radius for radial layout
+ * @returns {Object} Root node of the constructed hierarchy
+ */
 function buildHierarchy(treeData, innerRadius) {
     const root = d3.hierarchy(treeData, d => d.branchset)
         .each(d => {
@@ -60,6 +82,14 @@ function buildHierarchy(treeData, innerRadius) {
     return root;
 }
 
+/**
+ * @function createSvgContainer
+ * @description Creates the SVG container for the tree visualization
+ * @memberof module:treeRenderer
+ * @param {HTMLElement} container - DOM element to contain the SVG
+ * @param {number} outerRadius - Outer radius of the tree visualization
+ * @returns {Object} D3 selection of the created SVG element
+ */
 function createSvgContainer(container, outerRadius) {
     return d3.select(container).append("svg")
         .attr("width", outerRadius * 2)
@@ -69,6 +99,15 @@ function createSvgContainer(container, outerRadius) {
         .style("overflow", "visible");
 }
 
+/**
+ * @function createTreeChart
+ * @description Creates the main chart group within the SVG
+ * @memberof module:treeRenderer
+ * @param {Object} svg - D3 selection of the SVG container
+ * @param {Object} root - Root node of the tree hierarchy
+ * @param {number} outerRadius - Outer radius of the tree visualization
+ * @returns {Object} D3 selection of the created chart group
+ */
 function createTreeChart(svg, root, outerRadius) {
     return svg.append("g")
         .attr("class", "tree-chart")
@@ -76,6 +115,14 @@ function createTreeChart(svg, root, outerRadius) {
         .attr("transform", `translate(${outerRadius},${outerRadius})`);
 }
 
+/**
+ * @function renderLinks
+ * @description Renders the links (branches) of the phylogenetic tree
+ * @memberof module:treeRenderer
+ * @param {Object} chart - D3 selection of the chart group
+ * @param {Object} root - Root node of the tree hierarchy
+ * @param {number} innerRadius - Inner radius of the tree visualization
+ */
 function renderLinks(chart, root, innerRadius) {
     const linkStep = (a, r1, b, r2) => {
         const [ca, sa] = [Math.cos((a - 90) * Math.PI / 180), Math.sin((a - 90) * Math.PI / 180)];
@@ -108,6 +155,14 @@ function renderLinks(chart, root, innerRadius) {
         .style("stroke-linecap", "round");
 }
 
+/**
+ * @function renderLabels
+ * @description Renders the text labels for tree nodes
+ * @memberof module:treeRenderer
+ * @param {Object} chart - D3 selection of the chart group
+ * @param {Object} root - Root node of the tree hierarchy
+ * @param {number} innerRadius - Inner radius of the tree visualization
+ */
 function renderLabels(chart, root, innerRadius) {
     chart.append("g")
         .attr("class", "labels")
@@ -135,6 +190,14 @@ function renderLabels(chart, root, innerRadius) {
         });
 }
 
+/**
+ * @function renderNodes
+ * @description Renders the nodes of the phylogenetic tree
+ * @memberof module:treeRenderer
+ * @param {Object} chart - D3 selection of the chart group
+ * @param {Object} root - Root node of the tree hierarchy
+ * @param {number} innerRadius - Inner radius of the tree visualization
+ */
 function renderNodes(chart, root, innerRadius) {
     const nodeGroup = chart.append("g")
         .attr("class", "nodes")
@@ -165,7 +228,13 @@ function renderNodes(chart, root, innerRadius) {
         });
 }
 
-
+/**
+ * @namespace TreeRenderer
+ * @description Namespace containing tree rendering functions
+ * @memberof module:PhylogeneticTree.ui.visualization
+ * @property {function} renderTree - Main tree rendering function
+ * @property {function} setGeneData - Function to set gene data
+ */
 PhylogeneticTree.ui.visualization.TreeRenderer = {
     renderTree,
     setGeneData

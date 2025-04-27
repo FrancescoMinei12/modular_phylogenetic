@@ -18,7 +18,6 @@ function renderTaxaTable(treeData, tableSelector) {
     tableContainer.innerHTML = "";
 
     const chartContainer = PhylogeneticTree.ui.components.TaxaDistributionChart.createContainer();
-    tableContainer.appendChild(chartContainer);
 
     const buttonContainer = document.createElement("div");
     buttonContainer.classList.add("mb-3", "flex", "justify-between", "items-center", "w-full");
@@ -108,18 +107,7 @@ function renderTaxaTable(treeData, tableSelector) {
             editInput.type = "text";
             editInput.value = taxon.name;
             editInput.placeholder = "Enter custom name";
-            editInput.classList.add(
-                "border",
-                "border-gray-300",
-                "rounded",
-                "px-2",
-                "py-1",
-                "w-full",
-                "text-sm",
-                "focus:outline-none",
-                "focus:ring-2",
-                "focus:ring-blue-300"
-            );
+            editInput.classList.add("border", "border-gray-300", "rounded", "px-2", "py-1", "w-full", "text-sm", "focus:outline-none", "focus:ring-2", "focus:ring-blue-300");
 
             editInput.id = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;
             editInput.name = `custom-name-${taxon.originalName.replace(/[^a-zA-Z0-9]/g, '-')}`;

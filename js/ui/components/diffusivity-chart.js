@@ -43,10 +43,18 @@ function createChart(data, title) {
         chartInstance.destroy();
     }
 
+    const labels = [
+        `Singleton (${data.singleton})`,
+        `Dispensable (${data.dispensable})`,
+        `Core (${data.core})`
+    ];
+
+    const total = data.singleton + data.dispensable + data.core;
+
     chartInstance = new Chart(canvas, {
         type: "pie",
         data: {
-            labels: ["Singleton", "Dispensable", "Core"],
+            labels: labels,
             datasets: [{
                 data: [data.singleton, data.dispensable, data.core],
                 backgroundColor: ["#FF5733", "#FFC300", "#33FF57"],
@@ -58,19 +66,29 @@ function createChart(data, title) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: "right" },
+                legend: {
+                    position: "right",
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
                 title: {
                     display: true,
-                    text: `Gene Families for ${title}`
+                    text: [`Gene Families for ${title}`, `Total: ${total}`],
+                    font: {
+                        size: 14
+                    }
                 },
                 tooltip: {
                     callbacks: {
                         label: function (context) {
                             const label = context.label || "";
                             const value = context.raw || 0;
-                            const total = data.singleton + data.dispensable + data.core;
                             const percent = total > 0 ? Math.round((value / total) * 100) : 0;
-                            return `${label}: ${value} (${percent}%)`;
+                            return `${value} (${percent}%)`;
                         }
                     }
                 }

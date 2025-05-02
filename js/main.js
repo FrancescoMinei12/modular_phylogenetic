@@ -24,14 +24,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const geneData = await fetch("../assets/extracted_data.json").then(res => res.json());
 
         PhylogeneticTree.core.data = PhylogeneticTree.core.data || {};
-        PhylogeneticTree.core.data.getGeneData = function () {
-            return geneData;
-        };
+        PhylogeneticTree.core.data.getGeneData = () => geneData;
 
         PhylogeneticTree.ui.visualization.TreeRenderer.setGeneData(geneData);
-
-        if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal) {
-            //PhylogeneticTree.ui.visualization.TreeRendererHorizontal.setGeneData(geneData);
+        if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal?.setGeneData) {
+            PhylogeneticTree.ui.visualization.TreeRendererHorizontal.setGeneData(geneData);
         }
 
         const container = "#tree-container";
@@ -54,7 +51,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (Object.keys(customNames).length > 0) {
                 PhylogeneticTree.core.taxonomy.CustomNameManager.applyCustomNames(customNames, treeData, "#taxa-tab");
             }
+
+            requestAnimationFrame(() => {
+                PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats?.();
+                PhylogeneticTree.ui.visualization.TreeRendererHorizontal.updateTaxonStats?.();
+                PhylogeneticTree.ui.components.TaxaDistributionChart.initialize?.();
+            });
         });
+
+
 
         const taxonomyData = await fetch("../assets/albero_nj.json").then(res => res.json());
         PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");

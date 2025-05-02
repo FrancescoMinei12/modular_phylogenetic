@@ -223,6 +223,23 @@ function createControlPanel(containerId, geneData, treeContainerId) {
         currentThresholds.singletonThreshold = minValue;
         currentThresholds.coreThreshold = maxValue;
         currentThresholds.dispensableRange = maxValue - minValue > 0 ? maxValue - minValue : 0;
+
+        requestAnimationFrame(() => {
+            if (PhylogeneticTree.ui.visualization.TreeRenderer?.updateTaxonStats instanceof Function) {
+                PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats();
+            }
+
+            if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal?.updateTaxonStats instanceof Function) {
+                PhylogeneticTree.ui.visualization.TreeRendererHorizontal.updateTaxonStats();
+            }
+
+            const targetContainer = document.querySelector(".taxa-table-container");
+            if (targetContainer && PhylogeneticTree.ui.components.TaxaDistributionChart?.initialize instanceof Function) {
+                PhylogeneticTree.ui.components.TaxaDistributionChart.initialize();
+            } else {
+                console.warn("TaxaDistributionChart container non trovato al momento dell'inizializzazione.");
+            }
+        });
     });
 }
 

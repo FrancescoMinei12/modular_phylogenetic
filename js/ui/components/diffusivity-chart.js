@@ -6,6 +6,7 @@
 import { PhylogeneticTree } from "../../namespace-init.js";
 
 let chartInstance = null;
+let currentTaxon = null;
 
 function createContainer() {
     const container = document.createElement("div");
@@ -27,7 +28,10 @@ function createContainer() {
     const resetBtn = document.createElement("button");
     resetBtn.textContent = "Reset chart to global view";
     resetBtn.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600", "mt-2");
-    resetBtn.addEventListener("click", () => initialize());
+    resetBtn.addEventListener("click", () => {
+        currentTaxon = null;
+        initialize();
+    });
 
     container.appendChild(title);
     container.appendChild(canvas);
@@ -98,8 +102,49 @@ function createChart(data, title) {
 }
 
 function initialize() {
+    if (currentTaxon) {
+        const { singletonThreshold, coreThreshold } = PhylogeneticTree.ui.components.TreeControls.getThresholds();
+        const geneData = PhylogeneticTree.core.data.getGeneData();
+
+        const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
+            currentTaxon.originalName || currentTaxon.name,
+            geneData,
+            singletonThreshold,
+            coreThreshold
+        );
+
+        if (stats) {
+            update(stats, currentTaxon.name || "Selected Taxon");
+            return;
+        }
+    }
     const geneData = PhylogeneticTree.core.data.getGeneData();
     if (!geneData) return;
+
+    let canvas = document.getElementById("taxa-pie-chart");
+    const container = document.getElementById("taxa-distribution-chart");
+
+    if (!canvas || !container || !document.body.contains(container)) {
+        const targetContainer = document.querySelector(".taxa-table-container");
+        if (!targetContainer) {
+            console.error("Target container for chart not found");
+            return;
+        }
+
+        if (container && document.body.contains(container)) {
+            container.remove();
+        }
+
+        const newContainer = createContainer();
+        targetContainer.appendChild(newContainer);
+
+        canvas = document.getElementById("taxa-pie-chart");
+    }
+
+    if (canvas.offsetWidth === 0 || canvas.offsetHeight === 0) {
+        canvas.style.width = "100%";
+        canvas.style.height = "250px";
+    }
 
     const { singletonThreshold, coreThreshold } = PhylogeneticTree.ui.components.TreeControls.getThresholds();
 
@@ -116,6 +161,13 @@ function initialize() {
 }
 
 function update(stats, taxonName) {
+    if (taxonName && taxonName !== "All Genomes") {
+        currentTaxon = {
+            name: taxonName,
+            originalName: taxonName.replace(/\s/g, "_")
+        };
+    }
+
     createChart({
         singleton: stats.singleton,
         dispensable: stats.dispensable,
@@ -123,8 +175,14 @@ function update(stats, taxonName) {
     }, taxonName);
 }
 
+function resetToGlobal() {
+    currentTaxon = null;
+    initialize();
+}
+
 PhylogeneticTree.ui.components.TaxaDistributionChart = {
     createContainer,
     initialize,
-    update
+    update,
+    resetToGlobal
 };

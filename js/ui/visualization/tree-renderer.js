@@ -15,6 +15,7 @@ let geneData = {};
  * @param {Object} data - The extracted gene data containing prevalence information in genomes
  */
 function setGeneData(data) {
+    console.log("setGeneData chiamato con:", Object.keys(data).length, "famiglie geniche");
     geneData = data;
 }
 
@@ -164,31 +165,120 @@ function renderLinks(chart, root, innerRadius) {
  * @param {number} innerRadius - Inner radius of the tree visualization
  */
 function renderLabels(chart, root, innerRadius) {
-    chart.append("g")
-        .attr("class", "labels")
-        .selectAll("text")
+    const { singletonThreshold, coreThreshold } = PhylogeneticTree.ui.components.TreeControls.getThresholds();
+    const colors = {
+        singleton: "#FF5733",
+        dispensable: "#FFC300",
+        core: "#33FF57"
+    };
+
+    const labelGroup = chart.append("g").attr("class", "labels");
+
+    labelGroup.selectAll("text.taxon-name")
         .data(root.leaves())
         .enter().append("text")
+        .attr("class", "taxon-name")
         .attr("data-taxon", d => d.data.originalName)
         .attr("dy", ".31em")
-        .attr("font-size", "10px")
         .attr("transform", d => {
             const rot = d.x - 90;
             const flip = d.x >= 180 ? "rotate(180)" : "";
             return `rotate(${rot})translate(${innerRadius + 4},0)${flip}`;
         })
-        .each(function (d) { d.labelNode = this; })
+        .text(d => (d.data.name || "").replace(/_/g, " "))
+        .style("font-size", "10.5px")
+        .style("letter-spacing", "0.4px")
+        .style("fill", "#333")
         .attr("text-anchor", d => d.x < 180 ? "start" : "end")
-        .text(d => d.data.name.replace(/_/g, " "))
+        .each(function (d) { d.labelNode = this; })
         .on("mouseover", function (event, d) {
-            d3.select(this).transition().attr("font-size", "12px");
+            d3.select(this).transition().style("font-size", "12px").style("letter-spacing", "0.6px");
             PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(true).call(this, d);
         })
         .on("mouseout", function (event, d) {
-            d3.select(this).transition().attr("font-size", "10px");
+            d3.select(this).transition().style("font-size", "10.5px").style("letter-spacing", "0.4px");
             PhylogeneticTree.ui.interactions.hoverFunctions.mouseOvered(false).call(this, d);
         });
+
+    labelGroup.selectAll("text.taxon-stats")
+        .data(root.leaves().filter(d => d.data?.name && !d.data.name.startsWith("Inner")))
+        .enter().append("text")
+        .attr("class", "taxon-stats")
+        .attr("dy", ".31em")
+        .attr("transform", d => {
+            const offset = 12;
+            const rot = d.x - 90;
+            const flip = d.x >= 180 ? "rotate(180)" : "";
+            return `rotate(${rot})translate(${innerRadius + 4},${offset})${flip}`;
+        })
+        .attr("text-anchor", d => d.x < 180 ? "start" : "end")
+        .style("font-size", "9px")
+        .style("letter-spacing", "0.4px")
+        .each(function (d) {
+            const taxonName = d.data.originalName || d.data.name;
+            const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
+                taxonName,
+                geneData,
+                singletonThreshold,
+                coreThreshold
+            );
+            console.log("Taxon stats:", taxonName, stats);
+
+            if (stats) {
+                const t = d3.select(this);
+
+                t.append("tspan").text("[").style("fill", "#000");
+                t.append("tspan").attr("fill", colors.singleton).text(`${stats.singleton}`);
+                t.append("tspan").text("; ").style("fill", "#000");
+                t.append("tspan").attr("fill", colors.dispensable).text(`${stats.dispensable}`);
+                t.append("tspan").text("; ").style("fill", "#000");
+                t.append("tspan").attr("fill", colors.core).text(`${stats.core}`);
+                t.append("tspan").text("]").style("fill", "#000");
+            }
+        });
 }
+
+/**
+ * @function updateTaxonStats
+ * @description Updates the taxon stats displayed in the tree visualization
+ * @memberof module:treeRenderer
+ */
+function updateTaxonStats() {
+    const { singletonThreshold, coreThreshold } = PhylogeneticTree.ui.components.TreeControls.getThresholds();
+
+    const colors = {
+        singleton: "#FF5733",
+        dispensable: "#FFC300",
+        core: "#33FF57"
+    };
+
+    d3.selectAll("text.taxon-stats")
+        .each(function (d) {
+            const taxonName = d.data.originalName || d.data.name;
+            const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
+                taxonName,
+                geneData,
+                singletonThreshold,
+                coreThreshold
+            );
+
+            const text = d3.select(this);
+            text.selectAll("*").remove();
+
+            if (stats) {
+                text.append("tspan").text("[").style("fill", "#000");
+                text.append("tspan").attr("fill", colors.singleton).text(`${stats.singleton}`);
+                text.append("tspan").text("; ").style("fill", "#000");
+                text.append("tspan").attr("fill", colors.dispensable).text(`${stats.dispensable}`);
+                text.append("tspan").text("; ").style("fill", "#000");
+                text.append("tspan").attr("fill", colors.core).text(`${stats.core}`);
+                text.append("tspan").text("]").style("fill", "#000");
+            } else {
+                text.text("[0; 0; 0]");
+            }
+        });
+}
+
 
 /**
  * @function renderNodes
@@ -234,8 +324,10 @@ function renderNodes(chart, root, innerRadius) {
  * @memberof module:PhylogeneticTree.ui.visualization
  * @property {function} renderTree - Main tree rendering function
  * @property {function} setGeneData - Function to set gene data
+ * @property {function} updateTaxonStats - Function to update taxon stats
  */
 PhylogeneticTree.ui.visualization.TreeRenderer = {
     renderTree,
-    setGeneData
+    setGeneData,
+    updateTaxonStats
 };

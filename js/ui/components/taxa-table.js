@@ -78,9 +78,11 @@ function renderTaxaTable(treeData, tableSelector) {
 
     tableContainer.appendChild(chartContainer);
 
-    const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
+    requestAnimationFrame(() => {
+        PhylogeneticTree.ui.components.TaxaDistributionChart.initialize();
+    });
 
-    PhylogeneticTree.ui.components.TaxaDistributionChart.initialize();
+    const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
 
 
     function renderTaxaPage(pageTaxa) {

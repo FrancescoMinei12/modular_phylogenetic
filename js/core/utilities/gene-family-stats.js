@@ -63,10 +63,7 @@ function calculateTaxonStats(taxonName, geneData, singletonThreshold = 1, coreTh
         });
 
         return {
-            singleton,
-            dispensable,
-            core,
-            total: taxonFamilies.length
+            singleton, dispensable, core, total: taxonFamilies.length
         };
     } catch (error) {
         console.error(`Error calculating stats for ${taxonName}:`, error);

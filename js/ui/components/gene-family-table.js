@@ -31,8 +31,12 @@ function renderGeneFamilyTable(data, tableSelector) {
     familyHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
 
     const countHeaderCell = headerRow.insertCell();
-    countHeaderCell.textContent = "N°";
+    countHeaderCell.textContent = "N";
     countHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
+
+    const diffusivityHeaderCell = headerRow.insertCell();
+    diffusivityHeaderCell.textContent = "D";
+    diffusivityHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
 
     tableWrapper.appendChild(familyTable);
     tableContainer.appendChild(tableWrapper);
@@ -59,6 +63,11 @@ function renderGeneFamilyTable(data, tableSelector) {
             countCell.textContent = genes.length;
             countCell.classList.add("px-3", "py-2", "border-b");
 
+            const diffusivity = PhylogeneticTree.core.utilities.GeneFamilyStats.getFamilyDiffusivity(familyId, data);
+            const diffusivityCell = tableRow.insertCell();
+            diffusivityCell.textContent = diffusivity;
+            diffusivityCell.classList.add("px-3", "py-2", "border-b");
+
             tableRow.addEventListener("click", function () {
                 document.querySelectorAll(".clickable-row").forEach(row => {
                     row.classList.toggle("bg-yellow-100", row === this);
@@ -67,7 +76,6 @@ function renderGeneFamilyTable(data, tableSelector) {
                 PhylogeneticTree.ui.interactions.highlighting.highlightGeneFamily(data, familyId);
 
                 const detailsSection = document.getElementById("gene-details-section");
-                const detailsTitle = document.getElementById("gene-details-title");
                 const detailsContent = document.getElementById("gene-details-content");
 
                 detailsContent.innerHTML = "";
@@ -75,7 +83,7 @@ function renderGeneFamilyTable(data, tableSelector) {
                 PhylogeneticTree.ui.visualization.GeneRenderer.renderGenesForFamily(data, familyId, detailsContent);
 
                 detailsSection.classList.remove("hidden");
-                detailsSection.scrollIntoView({ behavior: "smooth" });
+                // detailsSection.scrollIntoView({ behavior: "smooth" });
             });
         });
     }
@@ -90,10 +98,19 @@ function renderGeneFamilyTable(data, tableSelector) {
 
 function extractFamilies(data) {
     const families = {};
+
     Object.entries(data).forEach(([familyId, genes]) => {
-        families[familyId] = [...(families[familyId] || []), ...genes];
+        if (!families[familyId]) {
+            families[familyId] = new Set();
+        }
+        genes.forEach(gene => families[familyId].add(gene));
     });
-    return families;
+    const result = {};
+    Object.keys(families).forEach(familyId => {
+        result[familyId] = Array.from(families[familyId]);
+    });
+
+    return result;
 }
 
 PhylogeneticTree.ui.components.GeneFamilyTable = {

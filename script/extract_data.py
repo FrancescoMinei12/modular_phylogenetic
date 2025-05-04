@@ -19,7 +19,7 @@ def extract_gene_info(json_data):
 
 
 def main():
-    file_path = "./custom_mycoplasma.json"
+    file_path = "./Pandelos-Plus.json"
     output_file = "extracted_data.json"
 
     with open(file_path, "r", encoding="utf-8") as file:

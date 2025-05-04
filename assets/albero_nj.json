@@ -2,16 +2,19 @@
     "name": "Inner1",
     "children": [
         {
+            "name": "GCF_000183365.1"
+        },
+        {
             "name": "Inner2",
             "children": [
                 {
                     "name": "Inner3",
                     "children": [
                         {
-                            "name": "GCA_000012765.1"
+                            "name": "GCF_900476175.1"
                         },
                         {
-                            "name": "GCF_000012765.1"
+                            "name": "GCF_024918975.1"
                         }
                     ]
                 },
@@ -22,10 +25,10 @@
                             "name": "Inner5",
                             "children": [
                                 {
-                                    "name": "GCA_000179035.2"
+                                    "name": "GCF_024338845.1"
                                 },
                                 {
-                                    "name": "GCF_000179035.2"
+                                    "name": "GCF_014068355.1"
                                 }
                             ]
                         },
@@ -33,10 +36,66 @@
                             "name": "Inner6",
                             "children": [
                                 {
-                                    "name": "GCA_006228185.1"
+                                    "name": "Inner7",
+                                    "children": [
+                                        {
+                                            "name": "Inner8",
+                                            "children": [
+                                                {
+                                                    "name": "GCF_000723365.1"
+                                                },
+                                                {
+                                                    "name": "Inner9",
+                                                    "children": [
+                                                        {
+                                                            "name": "GCF_000277795.1"
+                                                        },
+                                                        {
+                                                            "name": "Inner10",
+                                                            "children": [
+                                                                {
+                                                                    "name": "GCF_000508245.1"
+                                                                },
+                                                                {
+                                                                    "name": "GCF_000179035.2"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "GCF_000025845.1"
+                                        }
+                                    ]
                                 },
                                 {
-                                    "name": "GCF_006228185.1"
+                                    "name": "Inner11",
+                                    "children": [
+                                        {
+                                            "name": "Inner12",
+                                            "children": [
+                                                {
+                                                    "name": "GCF_007859615.1"
+                                                },
+                                                {
+                                                    "name": "GCF_003855455.1"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Inner13",
+                                            "children": [
+                                                {
+                                                    "name": "GCF_006228185.1"
+                                                },
+                                                {
+                                                    "name": "GCF_045276875.1"
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 }
                             ]
                         }
@@ -45,79 +104,7 @@
             ]
         },
         {
-            "name": "Inner7",
-            "children": [
-                {
-                    "name": "Inner8",
-                    "children": [
-                        {
-                            "name": "GCA_900476175.1"
-                        },
-                        {
-                            "name": "GCF_900476175.1"
-                        }
-                    ]
-                },
-                {
-                    "name": "Inner9",
-                    "children": [
-                        {
-                            "name": "Inner10",
-                            "children": [
-                                {
-                                    "name": "Inner11",
-                                    "children": [
-                                        {
-                                            "name": "GCA_024918975.1"
-                                        },
-                                        {
-                                            "name": "GCF_024918975.1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "Inner12",
-                                    "children": [
-                                        {
-                                            "name": "GCA_000183365.1"
-                                        },
-                                        {
-                                            "name": "GCF_000183365.1"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "name": "Inner13",
-                            "children": [
-                                {
-                                    "name": "Inner14",
-                                    "children": [
-                                        {
-                                            "name": "GCA_018389705.1"
-                                        },
-                                        {
-                                            "name": "GCF_018389705.1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "Inner15",
-                                    "children": [
-                                        {
-                                            "name": "GCA_000200735.1"
-                                        },
-                                        {
-                                            "name": "GCF_000200735.1"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            "name": "GCF_000012765.1"
         }
     ]
 }

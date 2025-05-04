@@ -75,7 +75,7 @@ function renderProductTable(data, tableSelector) {
                 PhylogeneticTree.ui.visualization.GeneRenderer.renderGenesForProduct(data, productName, detailsContent);
 
                 detailsSection.classList.remove("hidden");
-                detailsSection.scrollIntoView({ behavior: "smooth" });
+                // detailsSection.scrollIntoView({ behavior: "smooth" });
             });
         });
     }

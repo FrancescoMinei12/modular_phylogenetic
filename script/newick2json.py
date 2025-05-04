@@ -28,4 +28,4 @@ def newick_to_json_file(input_file, output_file):
         json.dump(tree_json, out, indent=4)
 
 
-newick_to_json_file("tree_pandelos.newick", "albero_nj.json")
+newick_to_json_file("Hao.cv6.nwk", "albero_nj.json")

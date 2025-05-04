@@ -30,7 +30,8 @@ function getFamilyDiffusivity(familyId, geneData) {
 
     familyGenes.forEach(gene => {
         if (gene["genome-name"]) {
-            distinctGenomes.add(gene["genome-name"]);
+            const normalizedGenomeName = gene["genome-name"].trim().toLowerCase();
+            distinctGenomes.add(normalizedGenomeName);
         }
     });
 

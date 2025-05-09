@@ -33,10 +33,12 @@ function renderGeneFamilyTable(data, tableSelector) {
     const countHeaderCell = headerRow.insertCell();
     countHeaderCell.textContent = "N";
     countHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
+    countHeaderCell.title = "N: Number of occurrences of the product across all genes.";
 
     const diffusivityHeaderCell = headerRow.insertCell();
     diffusivityHeaderCell.textContent = "D";
     diffusivityHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
+    diffusivityHeaderCell.title = "D: Diffusivity, the number of unique genomes where the product appears.";
 
     tableWrapper.appendChild(familyTable);
     tableContainer.appendChild(tableWrapper);

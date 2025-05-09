@@ -84,7 +84,6 @@ function renderTaxaTable(treeData, tableSelector) {
 
     const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
 
-
     function renderTaxaPage(pageTaxa) {
         const oldTbody = taxaTable.tBodies[0];
         if (oldTbody) {

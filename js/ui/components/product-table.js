@@ -31,8 +31,14 @@ function renderProductTable(data, tableSelector) {
     nameHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
 
     const countHeaderCell = headerRow.insertCell();
-    countHeaderCell.textContent = "N°";
+    countHeaderCell.textContent = "N";
     countHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
+    countHeaderCell.title = "N: Number of occurrences of the product across all genes.";
+
+    const diffusivityHeaderCell = headerRow.insertCell();
+    diffusivityHeaderCell.textContent = "D";
+    diffusivityHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
+    diffusivityHeaderCell.title = "D: Diffusivity, the number of unique genomes where the product appears.";
 
     tableWrapper.appendChild(productTable);
     tableContainer.appendChild(tableWrapper);
@@ -45,7 +51,7 @@ function renderProductTable(data, tableSelector) {
 
         const tableBody = productTable.createTBody();
 
-        pageProducts.forEach(([productName, occurrenceCount]) => {
+        pageProducts.forEach(({ productName, count, diffusivity }) => {
             const tableRow = tableBody.insertRow();
             tableRow.classList.add("clickable-row", "cursor-pointer", "odd:bg-gray-50", "hover:bg-blue-50", "transition-colors");
             tableRow.dataset.product = productName;
@@ -55,8 +61,12 @@ function renderProductTable(data, tableSelector) {
             productCell.classList.add("px-3", "py-2", "border-b");
 
             const countCell = tableRow.insertCell();
-            countCell.textContent = occurrenceCount;
+            countCell.textContent = count;
             countCell.classList.add("px-3", "py-2", "border-b");
+
+            const diffusivityCell = tableRow.insertCell();
+            diffusivityCell.textContent = diffusivity;
+            diffusivityCell.classList.add("px-3", "py-2", "border-b");
 
             tableRow.addEventListener("click", function () {
                 document.querySelectorAll(".clickable-row").forEach(row => {
@@ -75,7 +85,6 @@ function renderProductTable(data, tableSelector) {
                 PhylogeneticTree.ui.visualization.GeneRenderer.renderGenesForProduct(data, productName, detailsContent);
 
                 detailsSection.classList.remove("hidden");
-                // detailsSection.scrollIntoView({ behavior: "smooth" });
             });
         });
     }
@@ -95,11 +104,23 @@ function countProducts(data) {
         const genes = data[familyKey];
         genes.forEach(gene => {
             const productName = gene.product;
-            productMap.set(productName, (productMap.get(productName) || 0) + 1);
+            const genomeName = gene["genome-name"];
+
+            if (!productMap.has(productName)) {
+                productMap.set(productName, { count: 0, genomes: new Set() });
+            }
+
+            const productData = productMap.get(productName);
+            productData.count += 1;
+            productData.genomes.add(genomeName);
         });
     });
 
-    return Array.from(productMap.entries()).sort((a, b) => b[1] - a[1]);
+    return Array.from(productMap.entries()).map(([productName, { count, genomes }]) => ({
+        productName,
+        count,
+        diffusivity: genomes.size
+    })).sort((a, b) => b.count - a.count);
 }
 
 PhylogeneticTree.ui.components.ProductTable = {

@@ -25,17 +25,33 @@ function createContainer() {
     canvas.id = "taxa-pie-chart";
     canvas.style.maxHeight = "250px";
 
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("flex", "gap-2", "mt-2");
+
     const resetBtn = document.createElement("button");
     resetBtn.textContent = "Reset chart to global view";
-    resetBtn.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600", "mt-2");
+    resetBtn.classList.add("px-3", "py-1", "bg-blue-500", "text-white", "rounded", "text-sm", "hover:bg-blue-600");
     resetBtn.addEventListener("click", () => {
         currentTaxon = null;
         initialize();
     });
 
+    const exportPngBtn = document.createElement("button");
+    exportPngBtn.textContent = "Export as PNG";
+    exportPngBtn.classList.add("px-3", "py-1", "bg-green-500", "text-white", "rounded", "text-sm", "hover:bg-green-600");
+    exportPngBtn.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.download = "chart.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+
+    buttonContainer.appendChild(resetBtn);
+    buttonContainer.appendChild(exportPngBtn);
+
     container.appendChild(title);
     container.appendChild(canvas);
-    container.appendChild(resetBtn);
+    container.appendChild(buttonContainer);
 
     return container;
 }

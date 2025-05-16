@@ -49,9 +49,9 @@ function getFamilyDiffusivity(familyId, geneData) {
 function calculateTaxonStats(taxonName, geneData, singletonThreshold = 1, coreThreshold) {
     try {
         const taxonFamilies = getFamiliesForTaxon(taxonName, geneData);
-        const totalGenomes = Object.keys(
-            PhylogeneticTree.core.utilities.Genome.mapGenomesToFamilies(geneData)
-        ).length;
+        const totalGenomes = Object.keys(PhylogeneticTree.core.utilities.Genome.mapGenomesToFamilies(geneData)).length;
+
+        const effectiveCoreThreshold = coreThreshold !== undefined ? coreThreshold : totalGenomes;
 
         let singleton = 0, dispensable = 0, core = 0;
 
@@ -59,7 +59,7 @@ function calculateTaxonStats(taxonName, geneData, singletonThreshold = 1, coreTh
             const diffusivity = getFamilyDiffusivity(familyId, geneData);
 
             if (diffusivity <= singletonThreshold) singleton++;
-            else if (diffusivity >= coreThreshold) core++;
+            else if (diffusivity >= effectiveCoreThreshold) core++;
             else dispensable++;
         });
 

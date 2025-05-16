@@ -89,6 +89,9 @@ function createControlPanel(containerId, geneData, treeContainerId) {
         const option = document.createElement("option");
         option.value = size;
         option.textContent = `${size}px`;
+        if (size === 10) {
+            option.selected = true;
+        }
         labelSizeDropdown.appendChild(option);
     }
 
@@ -236,8 +239,6 @@ function createControlPanel(containerId, geneData, treeContainerId) {
             const targetContainer = document.querySelector(".taxa-table-container");
             if (targetContainer && PhylogeneticTree.ui.components.TaxaDistributionChart?.initialize instanceof Function) {
                 PhylogeneticTree.ui.components.TaxaDistributionChart.initialize();
-            } else {
-                console.warn("TaxaDistributionChart container non trovato al momento dell'inizializzazione.");
             }
         });
     });
@@ -437,7 +438,7 @@ function clampTranslation(treeContainerId) {
     const labelPadding = 120;
     const margin = 50;
 
-    const maxX = _scale < 1 ? containerRect.width - effectiveTreeWidth * _scale : margin;
+    const maxX = _scale < 1 ? containerRect.width - effectiveTreeWidth * _scale : margin + labelPadding;
     const minX = _scale < 1 ? 0 : Math.min(0, containerRect.width - effectiveTreeWidth * _scale - margin - labelPadding);
 
     const maxY = _scale < 1 ? containerRect.height - effectiveTreeHeight * _scale : margin;

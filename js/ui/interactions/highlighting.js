@@ -71,11 +71,9 @@ function findNodeByName(name) {
     const chart = d3.select(".tree-chart");
     const root = chart.datum();
     let found = null;
-
     root?.each(d => {
-        if (d.data?.name === name) found = d;
+        if (d?.data?.name === name) found = d;
     });
-
     return found;
 }
 

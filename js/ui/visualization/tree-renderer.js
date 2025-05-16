@@ -266,15 +266,21 @@ function updateTaxonStats() {
             text.selectAll("*").remove();
 
             if (stats) {
-                text.append("tspan").text("[").style("fill", "#000");
+                text.append("tspan").text("[").attr("fill", "#000");
                 text.append("tspan").attr("fill", colors.singleton).text(`${stats.singleton}`);
-                text.append("tspan").text("; ").style("fill", "#000");
+                text.append("tspan").text("; ").attr("fill", "#000");
                 text.append("tspan").attr("fill", colors.dispensable).text(`${stats.dispensable}`);
-                text.append("tspan").text("; ").style("fill", "#000");
+                text.append("tspan").text("; ").attr("fill", "#000");
                 text.append("tspan").attr("fill", colors.core).text(`${stats.core}`);
-                text.append("tspan").text("]").style("fill", "#000");
+                text.append("tspan").text("]").attr("fill", "#000");
             } else {
-                text.text("[0; 0; 0]");
+                text.append("tspan").text("[").attr("fill", "#000");
+                text.append("tspan").attr("fill", colors.singleton).text("0");
+                text.append("tspan").text("; ").attr("fill", "#000");
+                text.append("tspan").attr("fill", colors.dispensable).text("0");
+                text.append("tspan").text("; ").attr("fill", "#000");
+                text.append("tspan").attr("fill", colors.core).text("0");
+                text.append("tspan").text("]").attr("fill", "#000");
             }
         });
 }

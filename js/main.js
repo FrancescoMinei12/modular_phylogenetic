@@ -46,15 +46,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             } else {
                 PhylogeneticTree.ui.visualization.TreeRenderer.renderTree(treeData, container);
             }
-
-            // Utilizza la nuova funzione più robusta
-            PhylogeneticTree.core.taxonomy.CustomNameManager.reapplyCustomNamesAfterRender(treeData, "#taxa-tab");
         });
 
-
-
         const taxonomyData = await fetch("../assets/albero_nj.json").then(res => res.json());
+
         PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");
+
+        setTimeout(() => {
+            PhylogeneticTree.core.taxonomy.CustomNameManager.reapplyCustomNamesAfterRender(treeData, "#taxa-tab");
+        }, 0);
 
         PhylogeneticTree.ui.components.Tabs.setGeneData(geneData);
 

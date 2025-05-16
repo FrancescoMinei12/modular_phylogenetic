@@ -84,24 +84,32 @@ function renderTaxaTable(treeData, tableSelector) {
 
     const allTaxa = PhylogeneticTree.core.taxonomy.TaxonExtractor.extractTaxa(treeData);
 
+    /**
+     * @function renderTaxaPage
+     * @description Renders a page of taxa data in the table
+     * @param {Array} pageTaxa - Array of taxa to render on the current page
+     */
     function renderTaxaPage(pageTaxa) {
-        const oldTbody = taxaTable.tBodies[0];
-        if (oldTbody) {
-            taxaTable.removeChild(oldTbody);
+        const existingTbody = taxaTable.querySelector('tbody');
+        if (existingTbody) {
+            const newTbody = document.createElement('tbody');
+            existingTbody.parentNode.replaceChild(newTbody, existingTbody);
+        } else {
+            taxaTable.appendChild(document.createElement('tbody'));
         }
 
-        const tableBody = taxaTable.createTBody();
+        const tbody = taxaTable.querySelector('tbody');
 
         pageTaxa.forEach(taxon => {
-            const tableRow = tableBody.insertRow();
+            const tableRow = document.createElement('tr');
             tableRow.classList.add("clickable-row", "cursor-pointer", "odd:bg-gray-50", "hover:bg-blue-50", "transition-colors");
             tableRow.dataset.taxon = taxon.originalName;
 
-            const nameCell = tableRow.insertCell();
+            const nameCell = document.createElement('td');
             nameCell.textContent = taxon.name;
             nameCell.classList.add("px-3", "py-2", "border-b");
 
-            const editCell = tableRow.insertCell();
+            const editCell = document.createElement('td');
             editCell.classList.add("px-3", "py-2", "border-b");
 
             const editInput = document.createElement("input");
@@ -119,16 +127,12 @@ function renderTaxaTable(treeData, tableSelector) {
                     nameCell.textContent = newName;
                     tableRow.dataset.customName = newName;
 
-                    // Aggiorna il nome personalizzato nel gestore
                     PhylogeneticTree.core.taxonomy.CustomNameManager.updateTaxonDisplayName(taxon.originalName, newName);
 
-                    // IMPORTANTE: Usa sempre il nome originale per il calcolo delle statistiche,
-                    // ma usa il nome personalizzato solo per la visualizzazione
                     const geneData = PhylogeneticTree.core.data.getGeneData();
                     const thresholds = PhylogeneticTree.ui.components.TreeControls.getThresholds();
                     const { singletonThreshold, coreThreshold } = thresholds;
 
-                    // Calcola le statistiche usando il nome ORIGINALE
                     const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
                         taxon.originalName,
                         geneData,
@@ -147,6 +151,8 @@ function renderTaxaTable(treeData, tableSelector) {
             });
 
             editCell.appendChild(editInput);
+            tableRow.appendChild(nameCell);
+            tableRow.appendChild(editCell);
 
             tableRow.addEventListener("click", function () {
                 document.querySelectorAll(`${tableSelector} tr`).forEach(r => {
@@ -159,7 +165,6 @@ function renderTaxaTable(treeData, tableSelector) {
                 const thresholds = PhylogeneticTree.ui.components.TreeControls.getThresholds();
                 const { singletonThreshold, coreThreshold } = thresholds;
 
-                // Calcola statistiche usando il nome ORIGINALE
                 const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
                     taxon.originalName,
                     geneData,
@@ -167,10 +172,11 @@ function renderTaxaTable(treeData, tableSelector) {
                     coreThreshold
                 );
 
-                // Visualizza usando il nome personalizzato (se esiste) o quello originale
                 const displayName = tableRow.dataset.customName || taxon.name;
                 PhylogeneticTree.ui.components.TaxaDistributionChart.update(stats, displayName, taxon.originalName);
             });
+
+            tbody.appendChild(tableRow);
         });
     }
     PhylogeneticTree.ui.components.Pagination.applyPagination(

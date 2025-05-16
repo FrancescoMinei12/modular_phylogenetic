@@ -8,10 +8,10 @@ import { PhylogeneticTree } from '../../namespace-init.js';
  */
 function updateTaxonDisplayName(originalName, newName) {
     try {
-        const treeLabels = d3.selectAll(".labels text, .nodes .node text");
+        const treeLabels = d3.selectAll(".taxon-name");
 
         treeLabels.each(function (d) {
-            if (d.data && d.data.name === originalName) {
+            if (d.data && d.data.originalName === originalName) {
                 d3.select(this).text(newName);
             }
         });
@@ -19,6 +19,14 @@ function updateTaxonDisplayName(originalName, newName) {
         const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
         customNames[originalName] = newName;
         localStorage.setItem('customTaxonNames', JSON.stringify(customNames));
+
+        if (PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats) {
+            PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats();
+        }
+
+        if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal.updateTaxonStats) {
+            PhylogeneticTree.ui.visualization.TreeRendererHorizontal.updateTaxonStats();
+        }
     } catch (e) {
         console.error(`Error updating taxon name:`, e);
     }
@@ -55,7 +63,44 @@ function applyCustomNames(customNames, treeData, tableSelector) {
     }
 }
 
+/**
+ * @function reapplyCustomNamesAfterRender
+ * @description Riapplica i nomi personalizzati dopo che l'albero è stato renderizzato
+ * @param {Object} treeData - Dati dell'albero filogenetico
+ * @param {string} tableSelector - Selettore CSS per la tabella dei taxa
+ */
+function reapplyCustomNamesAfterRender(treeData, tableSelector) {
+    // Aspetta che il rendering sia completato
+    requestAnimationFrame(() => {
+        // Recupera i nomi personalizzati dal localStorage
+        const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
+
+        if (Object.keys(customNames).length === 0) {
+            return; // Nessun nome personalizzato da applicare
+        }
+
+        // Applica i nomi personalizzati a entrambe le visualizzazioni dell'albero
+        const treeLabels = d3.selectAll(".taxon-name");
+
+        treeLabels.each(function (d) {
+            if (d.data && d.data.originalName && customNames[d.data.originalName]) {
+                d3.select(this).text(customNames[d.data.originalName]);
+            }
+        });
+
+        // Aggiorna le statistiche in entrambe le visualizzazioni
+        if (PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats) {
+            PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats();
+        }
+
+        if (PhylogeneticTree.ui.visualization.TreeRendererHorizontal.updateTaxonStats) {
+            PhylogeneticTree.ui.visualization.TreeRendererHorizontal.updateTaxonStats();
+        }
+    });
+}
+
 PhylogeneticTree.core.taxonomy.CustomNameManager = {
     updateTaxonDisplayName,
-    applyCustomNames
+    applyCustomNames,
+    reapplyCustomNamesAfterRender
 }

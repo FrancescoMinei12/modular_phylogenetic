@@ -176,11 +176,11 @@ function initialize() {
     createChart({ singleton: totalSingleton, dispensable: totalDispensable, core: totalCore }, "All Genomes");
 }
 
-function update(stats, taxonName) {
+function update(stats, taxonName, originalName) {
     if (taxonName && taxonName !== "All Genomes") {
         currentTaxon = {
             name: taxonName,
-            originalName: taxonName.replace(/\s/g, "_")
+            originalName: originalName || taxonName.replace(/\s/g, "_") // Mantiene compatibilità all'indietro
         };
     }
 

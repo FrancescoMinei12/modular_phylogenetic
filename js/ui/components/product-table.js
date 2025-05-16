@@ -26,24 +26,109 @@ function renderProductTable(data, tableSelector) {
     const headerRow = tableHeader.insertRow();
     headerRow.classList.add("bg-gray-100");
 
-    const nameHeaderCell = headerRow.insertCell();
-    nameHeaderCell.textContent = "Product";
-    nameHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
+    const sortState = {
+        column: "count",
+        direction: "desc",
+    };
 
-    const countHeaderCell = headerRow.insertCell();
-    countHeaderCell.textContent = "N";
-    countHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
-    countHeaderCell.title = "N: Number of occurrences of the product across all genes.";
+    const columns = [
+        { id: "productName", label: "Product", title: "Product name" },
+        { id: "count", label: "N", title: "N: Number of occurrences of the product across all genes." },
+        { id: "diffusivity", label: "D", title: "D: Diffusivity, the number of unique genomes where the product appears." }
+    ];
 
-    const diffusivityHeaderCell = headerRow.insertCell();
-    diffusivityHeaderCell.textContent = "D";
-    diffusivityHeaderCell.classList.add("px-3", "py-2", "font-semibold", "border-b");
-    diffusivityHeaderCell.title = "D: Diffusivity, the number of unique genomes where the product appears.";
+    columns.forEach(column => {
+        const headerCell = headerRow.insertCell();
+        headerCell.classList.add("px-3", "py-2", "font-semibold", "border-b", "cursor-pointer");
+        headerCell.title = column.title;
+
+        const headerContent = document.createElement("div");
+        headerContent.classList.add("flex", "items-center", "gap-1");
+
+        const headerText = document.createElement("span");
+        headerText.textContent = column.label;
+        headerContent.appendChild(headerText);
+
+        const sortIndicator = document.createElement("span");
+        sortIndicator.classList.add("sort-indicator", "ml-1");
+        sortIndicator.innerHTML = `<svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"></svg>`;
+        headerContent.appendChild(sortIndicator);
+
+        headerCell.appendChild(headerContent);
+
+        headerCell.addEventListener("click", () => {
+            if (sortState.column === column.id) {
+                sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
+            } else {
+                sortState.column = column.id;
+                sortState.direction = "desc";
+            }
+
+            updateSortIndicators();
+
+            const existingPaginationControls = tableContainer.querySelectorAll(".pagination-controls");
+            existingPaginationControls.forEach(control => control.remove());
+
+            const sortedProducts = getSortedProducts();
+
+            PhylogeneticTree.ui.components.Pagination.applyPagination(
+                sortedProducts,
+                tableContainer.id,
+                renderProductPage,
+                { itemsPerPage: 25 }
+            );
+        });
+    });
+
+    function updateSortIndicators() {
+        columns.forEach((column, index) => {
+            const headerCell = headerRow.cells[index];
+            const svgElement = headerCell.querySelector("svg");
+
+            if (sortState.column === column.id) {
+                svgElement.classList.remove("text-gray-300");
+                svgElement.classList.add("text-gray-700");
+
+                if (sortState.direction === "asc") {
+                    svgElement.innerHTML = `
+                        <path d="M8 12l4-4 4 4m0 0l-4 4-4-4"/>
+                    `;
+                } else {
+                    svgElement.innerHTML = `
+                        <path d="M8 16l4-4 4 4m0 0l-4-4-4 4"/>
+                    `;
+                }
+            } else {
+                svgElement.classList.remove("text-gray-700");
+                svgElement.classList.add("text-gray-300");
+                svgElement.innerHTML = `
+                    <path d="M8 16l4-4 4 4m0 0l-4-4-4 4"/>
+                `;
+            }
+        });
+    }
 
     tableWrapper.appendChild(productTable);
     tableContainer.appendChild(tableWrapper);
 
     const productCounts = countProducts(data);
+
+    function getSortedProducts() {
+        return [...productCounts].sort((a, b) => {
+            const valueA = a[sortState.column];
+            const valueB = b[sortState.column];
+
+            if (typeof valueA === 'string') {
+                return sortState.direction === "asc"
+                    ? valueA.localeCompare(valueB)
+                    : valueB.localeCompare(valueA);
+            } else {
+                return sortState.direction === "asc"
+                    ? valueA - valueB
+                    : valueB - valueA;
+            }
+        });
+    }
 
     function renderProductPage(pageProducts) {
         const oldTbody = productTable.tBodies[0];
@@ -89,8 +174,15 @@ function renderProductTable(data, tableSelector) {
         });
     }
 
+    updateSortIndicators();
+
+    const existingPaginationControls = tableContainer.querySelectorAll(".pagination-controls");
+    existingPaginationControls.forEach(control => control.remove());
+
+    const initialSortedProducts = getSortedProducts();
+
     PhylogeneticTree.ui.components.Pagination.applyPagination(
-        productCounts,
+        initialSortedProducts,
         tableContainer.id,
         renderProductPage,
         { itemsPerPage: 25 }

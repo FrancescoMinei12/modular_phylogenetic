@@ -118,7 +118,25 @@ function renderTaxaTable(treeData, tableSelector) {
                 if (newName) {
                     nameCell.textContent = newName;
                     tableRow.dataset.customName = newName;
+
+                    // Aggiorna il nome personalizzato nel gestore
                     PhylogeneticTree.core.taxonomy.CustomNameManager.updateTaxonDisplayName(taxon.originalName, newName);
+
+                    // IMPORTANTE: Usa sempre il nome originale per il calcolo delle statistiche,
+                    // ma usa il nome personalizzato solo per la visualizzazione
+                    const geneData = PhylogeneticTree.core.data.getGeneData();
+                    const thresholds = PhylogeneticTree.ui.components.TreeControls.getThresholds();
+                    const { singletonThreshold, coreThreshold } = thresholds;
+
+                    // Calcola le statistiche usando il nome ORIGINALE
+                    const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
+                        taxon.originalName,
+                        geneData,
+                        singletonThreshold,
+                        coreThreshold
+                    );
+
+                    PhylogeneticTree.ui.components.TaxaDistributionChart.update(stats, newName, taxon.originalName);
                 } else {
                     this.value = taxon.name;
                 }
@@ -138,12 +156,20 @@ function renderTaxaTable(treeData, tableSelector) {
                 PhylogeneticTree.ui.interactions.highlighting.highlightPathAndLabel(taxon.originalName);
 
                 const geneData = PhylogeneticTree.core.data.getGeneData();
-
                 const thresholds = PhylogeneticTree.ui.components.TreeControls.getThresholds();
                 const { singletonThreshold, coreThreshold } = thresholds;
-                const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(taxon.originalName, geneData, singletonThreshold, coreThreshold);
 
-                PhylogeneticTree.ui.components.TaxaDistributionChart.update(stats, taxon.name);
+                // Calcola statistiche usando il nome ORIGINALE
+                const stats = PhylogeneticTree.core.utilities.GeneFamilyStats.calculateTaxonStats(
+                    taxon.originalName,
+                    geneData,
+                    singletonThreshold,
+                    coreThreshold
+                );
+
+                // Visualizza usando il nome personalizzato (se esiste) o quello originale
+                const displayName = tableRow.dataset.customName || taxon.name;
+                PhylogeneticTree.ui.components.TaxaDistributionChart.update(stats, displayName, taxon.originalName);
             });
         });
     }

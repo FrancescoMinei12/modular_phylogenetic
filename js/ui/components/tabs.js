@@ -18,8 +18,13 @@ const TAB_CONFIG = {
     'families': {
         render: (data) => PhylogeneticTree.ui.components.GeneFamilyTable.renderGeneFamilyTable(data, "#families-tab"),
         dataType: 'gene'
+    },
+    'custom': {
+        render: (data) => renderCustomTab(data, "#custom-tab"),
+        dataType: 'gene'
     }
 };
+
 
 let geneData;
 let taxonomyData;
@@ -118,3 +123,7 @@ PhylogeneticTree.ui.components.Tabs = {
     setTaxonomyData,
     showTab
 };
+
+function renderCustomTab(data, selector) {
+    PhylogeneticTree.ui.components.CustomTable.renderCustomTable({}, selector);
+}

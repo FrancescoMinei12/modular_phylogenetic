@@ -52,11 +52,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");
 
+        // Initialize custom table with genome names
+        PhylogeneticTree.ui.components.CustomTable.initializeGenomeNames(taxonomyData);
+
         setTimeout(() => {
             PhylogeneticTree.core.taxonomy.CustomNameManager.reapplyCustomNamesAfterRender(treeData, "#taxa-tab");
         }, 0);
 
         PhylogeneticTree.ui.components.Tabs.setGeneData(geneData);
+        PhylogeneticTree.ui.components.Tabs.setTaxonomyData(taxonomyData);
 
     } catch (error) {
         console.error("Error loading application data:", error);

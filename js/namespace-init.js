@@ -30,6 +30,7 @@ import "./core/utilities/gene-family-stats.js";
 import "./ui/components/taxa-table.js";
 import "./ui/components/gene-family-table.js";
 import "./ui/components/product-table.js";
+import "./ui/components/custom-table.js";
 import "./ui/components/tabs.js";
 import "./ui/components/layout-switch.js";
 import "./ui/components/controllers-bar.js";

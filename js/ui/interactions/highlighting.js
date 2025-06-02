@@ -172,10 +172,50 @@ function resetOnMouseLeave(name) {
     }
 }
 
+function highlightGenomesWithAttribute(targetAttribute, selector, customData) {
+    const matchingGenomes = new Set();
+
+    Object.entries(customData).forEach(([genome, attributes]) => {
+        if (targetAttribute === 'No attributes') {
+            if (!Array.isArray(attributes) || attributes.length === 0) {
+                matchingGenomes.add(genome);
+            }
+        } else {
+            if (Array.isArray(attributes) && attributes.includes(targetAttribute)) {
+                matchingGenomes.add(genome);
+            }
+        }
+    });
+
+    matchingGenomes.forEach(genome => {
+        document.querySelectorAll(`${selector} tr[data-taxon="${genome}"]`).forEach(row => {
+            row.classList.add("bg-yellow-100");
+        });
+    });
+
+    matchingGenomes.forEach(genome => {
+        const node = findNodeByName(genome);
+        let curr = node;
+        while (curr) {
+            applyHighlight(curr, true);
+            curr = curr.parent;
+        }
+    });
+
+    matchingGenomes.forEach(genome => {
+        const taxaRow = document.querySelector(`.taxa-table tr[data-taxon="${genome}"]`);
+        if (taxaRow) {
+            taxaRow.classList.add("highlighted");
+        }
+    });
+}
+
+
 PhylogeneticTree.ui.interactions.highlighting = {
     highlightPathAndLabel,
     highlightGeneFamily,
     highlightProduct,
     resetHighlights,
-    resetOnMouseLeave
+    resetOnMouseLeave,
+    highlightGenomesWithAttribute
 };

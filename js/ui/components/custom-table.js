@@ -45,7 +45,6 @@ function initializeGenomeNames(taxonomyData) {
         extractGenomeNames(taxonomyData);
     }
 
-    // Load existing custom data from localStorage
     customData = loadCustomDataFromStorage();
 }
 
@@ -101,10 +100,8 @@ function handleFileImport(event) {
             const importedData = JSON.parse(e.target.result);
             customData = importedData;
 
-            // Save to localStorage
             saveCustomDataToStorage();
 
-            // Re-render the table
             renderCustomTable(customData, "#custom-tab");
         } catch (error) {
             alert('Error parsing JSON file: ' + error.message);
@@ -131,7 +128,6 @@ function renderCustomTable(data, selector) {
     const container = document.querySelector(selector);
     if (!container) return;
 
-    // Se non vengono passati dati, carica quelli salvati
     const dataToRender = Object.keys(data).length > 0 ? data : loadCustomDataFromStorage();
 
     container.innerHTML = '';
@@ -159,7 +155,6 @@ function renderCustomTable(data, selector) {
 
     importLabel.appendChild(importInput);
 
-    // Add clear button
     const clearButton = document.createElement("button");
     clearButton.id = "clear-data";
     clearButton.textContent = "Clear Data";
@@ -204,7 +199,6 @@ function renderCustomTable(data, selector) {
             const genomeAttributes = dataToRender[genome];
 
             if (Array.isArray(genomeAttributes)) {
-                // Modifica la sezione per genomi senza attributi
                 if (genomeAttributes.length === 0) {
                     const row = document.createElement('tr');
                     row.classList.add("clickable-row", "cursor-pointer", "odd:bg-gray-50", "hover:bg-blue-50", "transition-colors");
@@ -223,25 +217,18 @@ function renderCustomTable(data, selector) {
                     row.addEventListener("click", function () {
                         const isCurrentlySelected = this.classList.contains("bg-yellow-100");
 
-                        // Reset previous highlights
                         document.querySelectorAll(`${selector} tr`).forEach(r => {
                             r.classList.remove("bg-yellow-100");
                         });
 
-                        // Reset tree and table highlights
                         PhylogeneticTree.ui.interactions.highlighting.resetHighlights();
 
                         if (!isCurrentlySelected) {
-                            // Se non era selezionata, selezionala
                             this.classList.add("bg-yellow-100");
-
-                            // Highlight genome in tree
                             PhylogeneticTree.ui.interactions.highlighting.highlightPathAndLabel(genome);
+                            PhylogeneticTree.ui.interactions.highlighting.highlightGenomesWithAttribute('No attributes', selector, customData);
 
-                            // Per genomi senza attributi, evidenzia tutti gli altri genomi senza attributi
-                            highlightGenomesWithAttribute('No attributes', selector);
                         }
-                        // Se era già selezionata, rimane deselezionata (non facciamo nulla)
                     });
 
                     tbody.appendChild(row);
@@ -269,27 +256,19 @@ function renderCustomTable(data, selector) {
                         row.addEventListener("click", function () {
                             const isCurrentlySelected = this.classList.contains("bg-yellow-100");
 
-                            // Reset previous highlights
                             document.querySelectorAll(`${selector} tr`).forEach(r => {
                                 r.classList.remove("bg-yellow-100");
                             });
-
-                            // Reset tree and table highlights
                             PhylogeneticTree.ui.interactions.highlighting.resetHighlights();
 
                             if (!isCurrentlySelected) {
-                                // Se non era selezionata, selezionala
                                 this.classList.add("bg-yellow-100");
-
-                                // Highlight genome in tree
                                 PhylogeneticTree.ui.interactions.highlighting.highlightPathAndLabel(genome);
-
-                                // Se c'è un attributo specifico, evidenzia tutti i genomi con lo stesso attributo
                                 if (attribute && attribute !== 'No attributes') {
-                                    highlightGenomesWithAttribute(attribute, selector);
+                                    PhylogeneticTree.ui.interactions.highlighting.highlightGenomesWithAttribute(attribute, selector, customData);
+
                                 }
                             }
-                            // Se era già selezionata, rimane deselezionata (non facciamo nulla)
                         });
 
                         tbody.appendChild(row);
@@ -305,7 +284,6 @@ function renderCustomTable(data, selector) {
     container.appendChild(buttonContainer);
     container.appendChild(tableWrapper);
 
-    // Add event listeners
     downloadButton.addEventListener('click', downloadTemplate);
     importInput.addEventListener('change', handleFileImport);
     clearButton.addEventListener('click', clearCustomData);
@@ -320,91 +298,6 @@ function saveOnTabChange() {
  */
 function getCustomData() {
     return customData;
-}
-
-/**
- * Evidenzia tutti i genomi che hanno un determinato attributo
- */
-function highlightGenomesWithAttribute(targetAttribute, selector) {
-    const matchingGenomes = new Set();
-
-    // Trova tutti i genomi che hanno questo attributo
-    Object.entries(customData).forEach(([genome, attributes]) => {
-        if (targetAttribute === 'No attributes') {
-            if (!Array.isArray(attributes) || attributes.length === 0) {
-                matchingGenomes.add(genome);
-            }
-        } else {
-            if (Array.isArray(attributes) && attributes.includes(targetAttribute)) {
-                matchingGenomes.add(genome);
-            }
-        }
-    });
-
-    // Evidenzia le righe nella tabella custom
-    matchingGenomes.forEach(genome => {
-        document.querySelectorAll(`${selector} tr[data-taxon="${genome}"]`).forEach(row => {
-            row.classList.add("bg-yellow-100");
-        });
-    });
-
-    // Evidenzia nell'albero filogenetico
-    matchingGenomes.forEach(genome => {
-        const node = findNodeByName(genome);
-        let curr = node;
-        while (curr) {
-            applyHighlight(curr, true);
-            curr = curr.parent;
-        }
-    });
-
-    // Evidenzia anche nella taxa table se esiste
-    matchingGenomes.forEach(genome => {
-        const taxaRow = document.querySelector(`.taxa-table tr[data-taxon="${genome}"]`);
-        if (taxaRow) {
-            taxaRow.classList.add("highlighted");
-        }
-    });
-}
-
-/**
- * Find a tree node by taxon name (copied from highlighting.js)
- */
-function findNodeByName(name) {
-    const chart = d3.select(".tree-chart");
-    const root = chart.datum();
-    let found = null;
-    root?.each(d => {
-        if (d?.data?.name === name) found = d;
-    });
-    return found;
-}
-
-/**
- * Apply highlight style to a tree node (copied from highlighting.js)
- */
-function applyHighlight(node, active) {
-    if (!node) return;
-
-    try {
-        if (node.linkNode) {
-            d3.select(node.linkNode).classed("link--active", active);
-        }
-
-        if (node.labelNode) {
-            d3.select(node.labelNode)
-                .classed("label--active", active)
-                .style("fill", active ? "#FF4500" : null)
-                .style("font-weight", active ? "bold" : null)
-                .style("stroke", active ? "none" : null);
-        }
-
-        if (node.nodeElement) {
-            d3.select(node.nodeElement).classed("node--active", active);
-        }
-    } catch (e) {
-        console.error("Error applying highlight:", e);
-    }
 }
 
 PhylogeneticTree.ui.components.CustomTable = {

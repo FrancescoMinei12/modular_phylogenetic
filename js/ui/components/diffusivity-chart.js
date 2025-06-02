@@ -180,7 +180,7 @@ function update(stats, taxonName, originalName) {
     if (taxonName && taxonName !== "All Genomes") {
         currentTaxon = {
             name: taxonName,
-            originalName: originalName || taxonName.replace(/\s/g, "_") // Mantiene compatibilità all'indietro
+            originalName: originalName || taxonName.replace(/\s/g, "_")
         };
     }
 

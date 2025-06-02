@@ -70,16 +70,13 @@ function applyCustomNames(customNames, treeData, tableSelector) {
  * @param {string} tableSelector - Selettore CSS per la tabella dei taxa
  */
 function reapplyCustomNamesAfterRender(treeData, tableSelector) {
-    // Aspetta che il rendering sia completato
     requestAnimationFrame(() => {
-        // Recupera i nomi personalizzati dal localStorage
         const customNames = JSON.parse(localStorage.getItem('customTaxonNames') || '{}');
 
         if (Object.keys(customNames).length === 0) {
-            return; // Nessun nome personalizzato da applicare
+            return;
         }
 
-        // Applica i nomi personalizzati a entrambe le visualizzazioni dell'albero
         const treeLabels = d3.selectAll(".taxon-name");
 
         treeLabels.each(function (d) {
@@ -88,7 +85,6 @@ function reapplyCustomNamesAfterRender(treeData, tableSelector) {
             }
         });
 
-        // Aggiorna le statistiche in entrambe le visualizzazioni
         if (PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats) {
             PhylogeneticTree.ui.visualization.TreeRenderer.updateTaxonStats();
         }

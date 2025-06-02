@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         PhylogeneticTree.ui.components.TaxaTable.renderTaxaTable(taxonomyData, "#taxa-tab");
 
-        // Initialize custom table with genome names
         PhylogeneticTree.ui.components.CustomTable.initializeGenomeNames(taxonomyData);
 
         setTimeout(() => {

@@ -50,46 +50,49 @@ function setTaxonomyData(data) {
  * @param {string} tabName - The name identifier of the tab to display
  */
 function showTab(tabName) {
-    if (!TAB_CONFIG[tabName]) {
-        console.error(`Tab "${tabName}" not found in configuration`);
-        return;
+    // Salva i dati del tab custom prima di cambiare
+    if (activeTab === 'custom') {
+        PhylogeneticTree.ui.components.CustomTable.saveOnTabChange();
     }
 
+    // Nasconde tutti i contenuti dei tab
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+
+    // Rimuove la classe attiva da tutti i tab
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('border-blue-500', 'text-blue-600');
+        btn.classList.add('border-transparent', 'text-gray-500');
+    });
+
+    // Mostra il contenuto del tab selezionato
+    const targetContent = document.getElementById(`${tabName}-tab`);
+    if (targetContent) {
+        targetContent.classList.remove('hidden');
+    }
+
+    // Fix: Usa un selettore più affidabile per il pulsante del tab
+    const targetButton = document.querySelector(`[data-tab="${tabName}"]`) ||
+        document.querySelector(`button[onclick*="${tabName}"]`);
+    if (targetButton) {
+        targetButton.classList.remove('border-transparent', 'text-gray-500');
+        targetButton.classList.add('border-blue-500', 'text-blue-600');
+    }
+
+    // Aggiorna il tab attivo
     activeTab = tabName;
 
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-
-    const tabElement = document.getElementById(`${tabName}-tab`);
-    if (tabElement) {
-        tabElement.classList.remove('hidden');
-    }
-
-    document.querySelectorAll('[id^="tab-"]').forEach(tab => {
-        tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-500');
-        tab.classList.add('text-gray-600');
-    });
-
-    const tabButton = document.getElementById(`tab-${tabName}`);
-    if (tabButton) {
-        tabButton.classList.add('text-blue-600', 'border-b-2', 'border-blue-500');
-    }
-
-    const detailsSection = document.getElementById("gene-details-section");
-    if (detailsSection) {
-        detailsSection.classList.add("hidden");
+    // Renderizza il contenuto se necessario
+    if (TAB_CONFIG[tabName]) {
+        const config = TAB_CONFIG[tabName];
+        const data = config.dataType === 'gene' ? geneData : taxonomyData;
+        if (data) {
+            config.render(data);
+        }
     }
 
     resetHighlights();
-
-    if (TAB_CONFIG[tabName].render) {
-        if (TAB_CONFIG[tabName].dataType === 'taxonomy' && taxonomyData) {
-            TAB_CONFIG[tabName].render(taxonomyData);
-        } else if (TAB_CONFIG[tabName].dataType === 'gene' && geneData) {
-            TAB_CONFIG[tabName].render(geneData);
-        }
-    }
 }
 
 /**
@@ -125,5 +128,7 @@ PhylogeneticTree.ui.components.Tabs = {
 };
 
 function renderCustomTab(data, selector) {
-    PhylogeneticTree.ui.components.CustomTable.renderCustomTable({}, selector);
+    // Carica i dati custom salvati invece di passare un oggetto vuoto
+    const customData = PhylogeneticTree.ui.components.CustomTable.getCustomData();
+    PhylogeneticTree.ui.components.CustomTable.renderCustomTable(customData, selector);
 }

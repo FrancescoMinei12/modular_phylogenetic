@@ -20,7 +20,7 @@ const TAB_CONFIG = {
         dataType: 'gene'
     },
     'custom': {
-        render: (data) => renderCustomTab(data, "#custom-tab"),
+        render: (data) => renderCustomTab("#custom-tab"),
         dataType: 'gene'
     }
 };
@@ -120,7 +120,7 @@ PhylogeneticTree.ui.components.Tabs = {
     showTab
 };
 
-function renderCustomTab(data, selector) {
+function renderCustomTab(selector) {
     const customData = PhylogeneticTree.ui.components.CustomTable.getCustomData();
     PhylogeneticTree.ui.components.CustomTable.renderCustomTable(customData, selector);
 }
